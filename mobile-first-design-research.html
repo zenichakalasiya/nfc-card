@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Mobile-First Design — Research Notes</title>
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a2e; line-height: 1.55; font-size: 11pt; max-width: 800px; margin: 0 auto; padding: 24px; }
+  h1 { color: #4f46e5; font-size: 22pt; border-bottom: 3px solid #4f46e5; padding-bottom: 8px; }
+  h2 { color: #3730a3; font-size: 15pt; margin-top: 28px; border-bottom: 1px solid #c7d2fe; padding-bottom: 4px; }
+  h3 { color: #1e1b4b; font-size: 12.5pt; margin-top: 20px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 9.5pt; }
+  th { background: #eef2ff; color: #3730a3; text-align: left; }
+  th, td { border: 1px solid #c7d2fe; padding: 6px 8px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8faff; }
+  blockquote { border-left: 4px solid #4f46e5; background: #eef2ff; margin: 12px 0; padding: 8px 16px; font-style: italic; }
+  code { background: #f1f5f9; padding: 1px 4px; border-radius: 3px; font-size: 9.5pt; }
+  li { margin: 3px 0; }
+  strong { color: #111827; }
+  hr { border: none; border-top: 1px solid #c7d2fe; margin: 24px 0; }
+  @media print {
+    h2 { page-break-after: avoid; }
+    table, blockquote { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body><h1>Mobile-First Design — Research Notes</h1>
+<p><strong>Source:</strong> Interaction Design Foundation (ixdf.org) — Mobile First topic, Mobile UX Design topic, and supporting articles by Luke Wroblewski&#39;s framework, Frank Spillers, Mads Soegaard, and IxDF course material.
+<strong>Purpose:</strong> Foundation knowledge for designing the <strong>PrintVana / PrintEve NFC Digital Business Card</strong> experience (mobile + web, using the PrintEve Design System).
+<strong>Date:</strong> 7 July 2026</p>
+<hr>
+<h2>1. What is Mobile-First Design?</h2>
+<p>Mobile-first design is an approach that <strong>embraces the constraints of smaller screens</strong> and focuses on what is <strong>indispensable</strong> for users.</p>
+<blockquote>
+<p>You start the design process by designing for the <strong>smallest device first</strong>, then <strong>progressively enhance</strong> the design for larger layouts (mobile → tablet → desktop).</p>
+</blockquote>
+<p>The concept was proposed in <strong>2009 by Luke Wroblewski</strong> (author of <em>Mobile First</em>, later Product Director at Google). His argument: starting design from the desktop version is a <em>backward</em> way of thinking. Designing mobile-first <strong>forces focus</strong> and <strong>enables innovation</strong>.</p>
+<h3>Wroblewski&#39;s 3 reasons to go mobile-first (updated by IxDF)</h3>
+<ol>
+<li><strong>Mobile has exploded</strong> — smartphones are ubiquitous; mobile devices generate <strong>over 62% of all web traffic worldwide</strong> (Statista). Since 2014, mobile users are the online majority.</li>
+<li><strong>Mobile forces you to focus</strong> — people use phones on the move, in short sharp bursts. There is no room for extraneous features. You must decide what really matters.</li>
+<li><strong>Mobile offers new capabilities</strong> — GPS, camera, accelerometer, touch, gestures, AR, biometrics, <strong>NFC</strong>. Mobile-first lets you leverage these instead of replicating a desktop experience on a small screen.</li>
+</ol>
+<hr>
+<h2>2. Progressive Enhancement vs. Graceful Degradation</h2>
+<p>Mobile-first is built on <strong>progressive enhancement</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Direction</th>
+<th>Focus</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Progressive enhancement</strong></td>
+<td>Start small/basic → add layers up</td>
+<td>Content availability for <strong>everyone</strong> first; users with better browsers/faster internet get an enhanced version</td>
+</tr>
+<tr>
+<td><strong>Graceful degradation</strong></td>
+<td>Start rich/desktop → strip down</td>
+<td>Designs for the most capable browsers first, then patches for weaker ones</td>
+</tr>
+</tbody></table>
+<p>Progressive enhancement is <strong>preferred for modern web design</strong> because content is guaranteed to reach every user, regardless of device or connection.</p>
+<p><strong>Rule:</strong> content loads before anything else. Images get alt-text (also boosts SEO).</p>
+<hr>
+<h2>3. Core Principles of the Mobile-First Approach (IxDF)</h2>
+<ol>
+<li><strong>Keep it simple</strong> — treat white space as a design element. Clean, clutter-free layout. Navigation contains only essential items (human working memory holds <strong>5–9 items</strong>).</li>
+<li><strong>Visual hierarchy</strong> — mobile-first is content-first. Prioritize information using headings, paragraphs, captions and text styles so users instantly see what matters most.</li>
+<li><strong>Optimize for scanning, not reading</strong> — users scan in known patterns (left→right, top→bottom). Put the most critical info <strong>above the fold</strong>; paragraphs max 2–3 sentences.</li>
+<li><strong>No hover effects</strong> — hover is impossible on touch. Use tap/slide/gesture events users already know (&quot;think app&quot;).</li>
+<li><strong>Leave complex graphs/large imagery for desktop</strong> — optimize images so nothing gets awkwardly cropped on mobile.</li>
+<li><strong>Fat-finger-friendly targets</strong> — tap targets <strong>no smaller than 30 px</strong> (IxDF minimum); <strong>Apple recommends ≥ 44 px</strong>; physical size ≥ 7–10 mm. Big targets = better accessibility too.</li>
+<li><strong>Consider the context of use</strong> — users are distracted, moving, one-handed, in bad light, on weak connections.</li>
+<li><strong>Information architecture is critical</strong> — it weeds out unnecessary detail. Use a content inventory to decide what earns a place on the screen.</li>
+</ol>
+<hr>
+<h2>4. Three Prioritization Approaches: Mobile-First, Task-First, Content-First</h2>
+<p>IxDF (Frank Spillers) frames three complementary approaches:</p>
+<h3>Mobile-First</h3>
+<p>Design for small screens first, then scale up. Prioritize under the constraints of <strong>movement, time, and attention</strong>.</p>
+<h3>Task-First</h3>
+<p>Design the <strong>core value proposition</strong> first. Focus on the user&#39;s primary task and make its completion effortless.</p>
+<ul>
+<li>Classic example: <strong>Shazam</strong> — one big animated button, &quot;Tap to Shazam&quot;. The main task is obvious in one second.</li>
+<li>Ask: <strong>&quot;What is our Shazam button?&quot;</strong> (For an NFC card: <strong>Save Contact</strong>.)</li>
+</ul>
+<h3>Content-First</h3>
+<p>Start with what the user <strong>wants/needs/desires</strong>, design content around it, add interface later. Three stages:</p>
+<ol>
+<li><strong>Copy</strong> — clear, concise text; define typography, sizes, heading structure (H1→H5; critical for screen-reader accessibility).</li>
+<li><strong>UI elements</strong> — buttons, icons, graphics that support the content.</li>
+<li><strong>Interaction elements</strong> — animations/transitions last.</li>
+</ol>
+<p><strong>Takeaway:</strong> the best mobile experiences combine all three: mobile constraints + one primary task + content before chrome.</p>
+<hr>
+<h2>5. Mobile UX Design — Practical Guidelines (IxDF)</h2>
+<h3>The 3 (+2) mobile mindsets (Josh Clark, <em>Tapworthy</em>)</h3>
+<table>
+<thead>
+<tr>
+<th>Mindset</th>
+<th>User situation</th>
+<th>Design response</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>&quot;I&#39;m microtasking&quot;</strong></td>
+<td>Short, frenzied bursts (buy a ticket)</td>
+<td>Make frequent tasks maximally efficient</td>
+</tr>
+<tr>
+<td><strong>&quot;I&#39;m local&quot;</strong></td>
+<td>What&#39;s around me?</td>
+<td>Use location/sensors (with permission)</td>
+</tr>
+<tr>
+<td><strong>&quot;I&#39;m bored&quot;</strong></td>
+<td>Killing time</td>
+<td>Offer browsable, entertaining content</td>
+</tr>
+<tr>
+<td><strong>Extended engagement</strong> (new)</td>
+<td>Long scroll/swipe sessions</td>
+<td>Streaming, feeds</td>
+</tr>
+<tr>
+<td><strong>Interrupted attention</strong> (new)</td>
+<td>Notifications pull users back</td>
+<td>Respect focus; match notification urgency to real urgency (Microsoft &quot;Respecting Focus&quot;)</td>
+</tr>
+</tbody></table>
+<h3>5.1 Minimize content</h3>
+<ul>
+<li>Page load <strong>&lt; 3 seconds</strong>.</li>
+<li>Reduce cognitive load; simple, straightforward UI.</li>
+<li><strong>94% of mobile users hold the phone in portrait</strong> — every pixel of <em>width</em> is precious.</li>
+<li>Small, few images. Clear visual hierarchy. Color + contrast for visibility.</li>
+<li>Text <strong>≥ 11 pt</strong>.</li>
+<li>Compress info into icons where appropriate; frame content with whitespace.</li>
+<li><strong>Card-style design patterns</strong> show actionable content easily.</li>
+<li>Consider task-oriented design.</li>
+</ul>
+<h3>5.2 Simplify navigation</h3>
+<ul>
+<li>Self-evident navigation; progressive disclosure.</li>
+<li>Buttons/tabs <strong>min 30×30 px / 7–10 mm</strong>.</li>
+<li>Full-screen menus with <strong>minimum menu levels</strong>; clear labels.</li>
+<li>Most-used items at top — but consider <strong>thumb reach</strong>.</li>
+<li><strong>One primary action per screen.</strong></li>
+<li>Don&#39;t mix navigation patterns. Show link states clearly.</li>
+<li>Hamburger menus: make them visually distinct; a labeled &quot;Menu&quot; word with a border converted better than a bare icon (James Foster study). Use ARIA attributes.</li>
+<li>Offer footer links + &quot;back to top&quot; to reduce scroll fatigue (also helps screen readers).</li>
+</ul>
+<h3>5.3 Restrict user inputs</h3>
+<ul>
+<li>Design for <strong>maximum effect from minimum interaction</strong>.</li>
+<li>Pre-fill or minimize form fields (ask for more later, e.g., on desktop).</li>
+<li>Alternative input mechanisms (voice, camera).</li>
+<li>Allow permanent sign-in (phones are biometrically locked anyway).</li>
+<li>Minimal, <strong>one-directional scrolling</strong> only.</li>
+<li>Retain data if the connection fails.</li>
+<li>Obvious search affordance (magnifying glass).</li>
+<li><strong>Skeleton screens</strong> to show background work is happening.</li>
+</ul>
+<h3>5.4 Ensure continuity &amp; consistency</h3>
+<ul>
+<li>Let users continue where they left off across mobile ↔ desktop.</li>
+<li>Keep content consistent between versions; don&#39;t erode trust with unexplained differences.</li>
+<li>Maintain brand look &amp; feel across every version.</li>
+<li>Use recognizable UI design patterns.</li>
+</ul>
+<h3>5.5 Unstable connections (very relevant for India / on-the-go use)</h3>
+<ul>
+<li>Retain data across connection breaks.</li>
+<li>Minimize page weight for rapid loading.</li>
+<li>Kill ad networks/pop-ups on mobile — they devour bandwidth.</li>
+<li>Few, small, compressed images.</li>
+</ul>
+<hr>
+<h2>6. Responsive vs. Adaptive vs. Standalone Mobile Design</h2>
+<p>(Mads Soegaard, IxDF)</p>
+<table>
+<thead>
+<tr>
+<th>Approach</th>
+<th>How it works</th>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Responsive</strong> (Ethan Marcotte)</td>
+<td>One fluid design; elements reflow to fit browser width via media queries</td>
+<td>Uniform &amp; seamless UX; SEO-friendly (one URL); easier/cheaper; template ecosystem</td>
+<td>Less control per screen size; elements shift; heavier mobile downloads</td>
+</tr>
+<tr>
+<td><strong>Adaptive</strong> (Aaron Gustafson, 2011)</td>
+<td>Multiple <strong>fixed layouts</strong>; the server/site picks the best for the detected screen (commonly 320/480/760/960/1200/1600 px)</td>
+<td>Tailor-made UX per device; often <strong>2–3× faster</strong> than responsive; ads/content optimized per device</td>
+<td>Much more work; &quot;middle&quot; devices (tablets) can fall through cracks; SEO risk with multiple versions</td>
+</tr>
+<tr>
+<td><strong>Standalone m.site</strong></td>
+<td>Separate mobile-only website (m. prefix)</td>
+<td>(Historic) dedicated mobile tuning</td>
+<td>Double maintenance; fallen out of favor; effectively dead</td>
+</tr>
+</tbody></table>
+<p><strong>Recommendation for our project:</strong> <strong>Responsive, built mobile-first</strong> — single URL (good SEO for the subdomain), one codebase, and the card page is simple enough that responsive reflow loses nothing. This is also the modern default.</p>
+<hr>
+<h2>7. Content Strategy &amp; UX Writing for Mobile</h2>
+<ul>
+<li><strong>&quot;Content is King&quot;</strong> (Bill Gates, 1996) still holds: <em>&quot;Users visit your website for its content. Everything else is just the backdrop.&quot;</em> — Jakob Nielsen.</li>
+<li>Users choose <strong>quality content over visual appeal</strong> every time.</li>
+<li>UX writing = plain language + <strong>action-oriented grammar</strong> that guides users to act (&quot;Save contact&quot;, &quot;Order prints&quot;).</li>
+<li>Content ideas must come from <strong>user research</strong> — mental models, how they decide, what info they need.</li>
+<li><strong>Use real text, never lorem ipsum</strong> — real content proves the layout actually fits, and makes localization accurate.</li>
+<li><strong>Pseudo-localization</strong>: preview designs in longer languages (German, Hindi, Gujarati…) early; translated strings expand and break layouts (Netflix logs a defect per language when this is skipped).</li>
+<li>Decide <strong>early</strong> which words/phrases/blocks get visual prominence.</li>
+<li>Keep copy short, verb-oriented, simple — small screens + short attention spans.</li>
+</ul>
+<hr>
+<h2>8. Smartphones vs. Tablets</h2>
+<ul>
+<li>Smartphones: highly mobile, distracted use, small screens, multi-tasking bursts, personal/emotional device, uncontrolled lighting.</li>
+<li>Tablets: more fixed locations, longer relaxed sessions, often shared devices, more room for media and &quot;free browsing&quot;.</li>
+<li>Both need <strong>fat-finger-friendly ≥ 44 px targets</strong>.</li>
+<li>Don&#39;t let &quot;mobile first&quot; become &quot;tablet never&quot; — check the mid-size breakpoint.</li>
+<li><strong>Hand-off principle</strong>: users move phone → tablet → desktop; keep task continuity pleasant.</li>
+</ul>
+<hr>
+<h2>9. Design-Process Checklist (Mobile-First)</h2>
+<ol>
+<li><strong>Content inventory</strong> — list every piece of information the screen could show.</li>
+<li><strong>Prioritize ruthlessly</strong> — what is indispensable? (working memory: 5–9 items)</li>
+<li><strong>Define the one primary task per screen</strong> (our &quot;Shazam button&quot;).</li>
+<li><strong>Write real copy first</strong> (content-first stages: copy → UI → interaction).</li>
+<li><strong>Design the 320–390 px layout first</strong>, portrait orientation.</li>
+<li><strong>Touch targets ≥ 44 px</strong>, spacing for thumbs, primary actions in thumb zone.</li>
+<li><strong>No hover-dependent interactions</strong>; use familiar gestures.</li>
+<li><strong>Performance budget:</strong> load &lt; 3 s on 4G; compress images; skeleton screens.</li>
+<li><strong>Progressively enhance</strong> for tablet/desktop — add, never subtract, as space grows.</li>
+<li><strong>Accessibility:</strong> heading structure, alt text, contrast, ARIA on menus.</li>
+<li><strong>Test on real devices</strong> in real contexts (sunlight, one hand, weak network).</li>
+</ol>
+<h3>Common mobile-first mistakes to avoid</h3>
+<ul>
+<li>Designing desktop first and &quot;shrinking&quot; it down.</li>
+<li>Hiding essential content behind menus to fake simplicity.</li>
+<li>Hover interactions, tiny targets, multi-directional scrolling.</li>
+<li>Placeholder text that hides layout problems.</li>
+<li>Ignoring slow/broken connections.</li>
+<li>Mixing navigation patterns between screens.</li>
+</ul>
+<hr>
+<h2>10. Applying This to the PrintVana / PrintEve NFC Card</h2>
+<p>The NFC card&#39;s landing experience is a <strong>pure mobile-first case</strong>: ~100% of first views happen on a phone (it opens <em>from a physical tap</em>), often outdoors, one-handed, on mobile data, with a stranger waiting. This maps directly:</p>
+<table>
+<thead>
+<tr>
+<th>IxDF principle</th>
+<th>NFC card application</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>One primary action per screen</td>
+<td><strong>&quot;Save Contact&quot;</strong> is our Shazam button — biggest, first, in thumb zone</td>
+</tr>
+<tr>
+<td>Above the fold</td>
+<td>Photo, name, title, company — instantly visible, zero scroll needed to identify the person</td>
+</tr>
+<tr>
+<td>5–9 items max</td>
+<td>Limit profile links (phone, email, WhatsApp, website, 2–3 socials)</td>
+</tr>
+<tr>
+<td>&lt; 3 s load, weak connections</td>
+<td>Static, tiny page; compressed avatar; no heavy scripts; works on 4G at an expo hall</td>
+</tr>
+<tr>
+<td>Portrait, one-directional scroll</td>
+<td>Single column, vertical scroll only</td>
+</tr>
+<tr>
+<td>≥ 44 px touch targets</td>
+<td>Every link is a full-width card-style row</td>
+</tr>
+<tr>
+<td>Card-style patterns</td>
+<td>Perfect fit for contact rows and action chips</td>
+</tr>
+<tr>
+<td>Restrict inputs</td>
+<td>The &quot;share your details back&quot; (lead capture) form: 2–3 pre-filled fields max</td>
+</tr>
+<tr>
+<td>Content-first, real copy</td>
+<td>Design with real names/titles (long Indian names, long company names) — pseudo-localize for Hindi/Gujarati</td>
+</tr>
+<tr>
+<td>Progressive enhancement</td>
+<td>Base page = plain HTML contact info (works everywhere); enhancements = vCard download, wallet pass, animations</td>
+</tr>
+<tr>
+<td>Continuity</td>
+<td>Same profile URL works on desktop (responsive), where the owner <em>edits</em> the card</td>
+</tr>
+<tr>
+<td>Brand consistency</td>
+<td>PrintEve Design System tokens across the card page, editor app, and marketplace</td>
+</tr>
+</tbody></table>
+<p><strong>Two distinct experiences to design:</strong></p>
+<ol>
+<li><strong>Receiver view</strong> (the tapped page) — microtasking mindset, 10-second session, one job: <em>save the contact / reach the person</em>.</li>
+<li><strong>Owner view</strong> (card editor/dashboard) — extended engagement, richer forms, still mobile-first but can lean on progressive disclosure; desktop gets an enhanced editing layout.</li>
+</ol>
+<hr>
+<h2>Sources (IxDF)</h2>
+<ol>
+<li><em>What is Mobile First?</em> — interaction-design.org/literature/topics/mobile-first</li>
+<li><em>What is Mobile User Experience (UX) Design?</em> — interaction-design.org/literature/topics/mobile-ux-design</li>
+<li>Frank Spillers, <em>What Comes First in Mobile Design: Tasks, Content, or Mobile Optimization?</em></li>
+<li>Mads Soegaard, <em>Adaptive vs. Responsive Design</em></li>
+<li><em>How to Craft Effective Mobile Experiences: The Role of Content Strategy and UX Writing</em></li>
+<li><em>How to Optimize Your Designs for Smartphones vs Tablets</em></li>
+<li>Luke Wroblewski, <em>Mobile First</em> (2009) — referenced throughout IxDF material</li>
+</ol>
+</body>
+</html>

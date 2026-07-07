@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>PrintVana NFC Card — Information Architecture & Mobile Flow</title>
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a2e; line-height: 1.55; font-size: 11pt; max-width: 800px; margin: 0 auto; padding: 24px; }
+  h1 { color: #4f46e5; font-size: 22pt; border-bottom: 3px solid #4f46e5; padding-bottom: 8px; }
+  h2 { color: #3730a3; font-size: 15pt; margin-top: 28px; border-bottom: 1px solid #c7d2fe; padding-bottom: 4px; }
+  h3 { color: #1e1b4b; font-size: 12.5pt; margin-top: 20px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 9.5pt; }
+  th { background: #eef2ff; color: #3730a3; text-align: left; }
+  th, td { border: 1px solid #c7d2fe; padding: 6px 8px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8faff; }
+  blockquote { border-left: 4px solid #4f46e5; background: #eef2ff; margin: 12px 0; padding: 8px 16px; font-style: italic; }
+  code { background: #f1f5f9; padding: 1px 4px; border-radius: 3px; font-size: 9.5pt; }
+  li { margin: 3px 0; }
+  strong { color: #111827; }
+  hr { border: none; border-top: 1px solid #c7d2fe; margin: 24px 0; }
+  @media print {
+    h2 { page-break-after: avoid; }
+    table, blockquote { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body><h1>PrintVana NFC Digital Business Card</h1>
+<h2>Information Architecture &amp; Mobile-First Flow — UX Documentation</h2>
+<p><strong>Prepared as:</strong> UX Writing + Information Architecture specification
+<strong>Platform:</strong> Mobile-first responsive web (one URL, receiver + owner experiences)
+<strong>Design system:</strong> PrintEve Design System
+<strong>Date:</strong> 7 July 2026</p>
+<p><strong>Research inputs:</strong></p>
+<ul>
+<li>Reference image: &quot;EliteCard – Alexander Sterling&quot; profile layout</li>
+<li>Live references: qlik.biz/universalbrew, qlik.biz/MehulGajjar (Opti Matrix), dzicard.com/dbc/kbg-boilers-pvt-ltd</li>
+<li>Industry scan: Uniqode, OVOU, Popl, HiHello, KADO, OmniFlow (India), businesscards.io</li>
+<li>IxDF mobile-first principles (see companion doc: <em>mobile-first-design-research</em>)</li>
+</ul>
+<hr>
+<h1>Part 1 — Who Is This Page For?</h1>
+<p>Every IA decision below follows from two people:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>The Receiver</strong> (tapped the card)</th>
+<th><strong>The Owner</strong> (bought the card)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mindset</td>
+<td>Microtasking — 10-second visit, someone is standing in front of them</td>
+<td>Extended engagement — editing, tracking</td>
+</tr>
+<tr>
+<td>Device</td>
+<td>Always a phone</td>
+<td>Phone mostly, desktop for deep editing</td>
+</tr>
+<tr>
+<td>Primary job</td>
+<td><strong>Save this person&#39;s contact</strong></td>
+<td><strong>Look impressive + capture the lead</strong></td>
+</tr>
+<tr>
+<td>Secondary jobs</td>
+<td>Call / WhatsApp / see what they offer</td>
+<td>Update info, see analytics</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>Often poor (expo hall, street, basement office)</td>
+<td>Usually stable</td>
+</tr>
+</tbody></table>
+<p><strong>The one-sentence design contract:</strong></p>
+<blockquote>
+<p><em>A stranger with one thumb, weak 4G and five seconds of patience must be able to save the contact — everything else is progressive enhancement.</em></p>
+</blockquote>
+<hr>
+<h1>Part 2 — Complete Information Architecture</h1>
+<h2>2.1 The Priority Pyramid (what loads and shows first)</h2>
+<pre><code>P0  IDENTITY        Who is this?             (0–1 s, above the fold)
+P1  ACTIONS         How do I reach them?     (thumb zone, no scroll)
+P2  CREDIBILITY     Can I trust them?        (first scroll)
+P3  OFFERINGS       What do they sell?       (second scroll)
+P4  PROOF &amp; MEDIA   Show me more             (deep scroll)
+P5  EXCHANGE        Here are MY details      (persistent CTA)
+P6  UTILITIES       Payments, files, legal   (bottom / on demand)
+</code></pre>
+<h2>2.2 Full Content Inventory — every block, field by field</h2>
+<h3>P0 · Identity Block (Hero)</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Content</th>
+<th>Rules &amp; UX notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cover banner</td>
+<td>Brand image / gradient / video still</td>
+<td>Decorative — must never delay text render. Lazy-load.</td>
+</tr>
+<tr>
+<td>Profile photo</td>
+<td>Face or logo, circular</td>
+<td>2 fallbacks: initials avatar → brand mark. Never broken image.</td>
+</tr>
+<tr>
+<td>Full name</td>
+<td>&quot;Gunjan Talsania&quot;</td>
+<td>Largest text on page (H1). Test 28+ character Indian names.</td>
+</tr>
+<tr>
+<td>Designation + Company</td>
+<td>&quot;Founder, CEO · Khyati &amp; Sons Enterprise&quot;</td>
+<td>One line, truncate gracefully.</td>
+</tr>
+<tr>
+<td>Tagline (optional)</td>
+<td>&quot;Redefining digital networking&quot;</td>
+<td>Max 60 chars. Owner-written; we provide examples.</td>
+</tr>
+<tr>
+<td>Verified badge (optional)</td>
+<td>✓ PrintVana Verified</td>
+<td>Trust marker; links to what verification means.</td>
+</tr>
+<tr>
+<td>View counter (optional)</td>
+<td>&quot;👁 288 views&quot;</td>
+<td>Social proof seen on qlik.biz. Owner can toggle off.</td>
+</tr>
+</tbody></table>
+<h3>P1 · Action Row (the money row — sticky/thumb-zone)</h3>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Microcopy</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Save Contact</strong></td>
+<td><code>Save Contact</code></td>
+<td>PRIMARY. Downloads .vcf with photo. The &quot;Shazam button&quot;.</td>
+</tr>
+<tr>
+<td>Call</td>
+<td><code>Call</code></td>
+<td><code>tel:</code> — if 2 numbers, bottom-sheet chooser (&quot;Office / Personal&quot;).</td>
+</tr>
+<tr>
+<td>WhatsApp</td>
+<td><code>WhatsApp</code></td>
+<td>Pre-filled: &quot;Hi {FirstName}, we just met — great connecting!&quot;</td>
+</tr>
+<tr>
+<td>Email</td>
+<td><code>Email</code></td>
+<td><code>mailto:</code> with subject &quot;Following up — {OwnerName}&quot;.</td>
+</tr>
+<tr>
+<td>Website</td>
+<td><code>Website</code></td>
+<td>New tab.</td>
+</tr>
+<tr>
+<td>Directions</td>
+<td><code>Directions</code></td>
+<td>Google Maps deep link.</td>
+</tr>
+<tr>
+<td>Share</td>
+<td><code>Share</code></td>
+<td>Native share sheet → WhatsApp/SMS/Email/LinkedIn + Copy link.</td>
+</tr>
+<tr>
+<td>QR</td>
+<td><code>Show QR</code></td>
+<td>Full-screen QR of this card (reverse-share when <em>their</em> phone taps ours).</td>
+</tr>
+</tbody></table>
+<p><em>Rule: max 4 visible + &quot;More&quot; overflow if owner enables &gt;4. One tap each — no interstitials.</em></p>
+<h3>P2 · Credibility Block</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Content</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>About company</td>
+<td>2 short paragraphs max</td>
+<td>UX-writer trimmed; 2–3 sentences each (IxDF scanning rule).</td>
+</tr>
+<tr>
+<td>About person (bio)</td>
+<td>1 paragraph</td>
+<td>Optional; &quot;20 years leading teams across EMEA…&quot;</td>
+</tr>
+<tr>
+<td>Expertise tags</td>
+<td><code>Strategy</code> <code>Leadership</code> <code>Innovation</code></td>
+<td>Chips, max 6.</td>
+</tr>
+<tr>
+<td>Legal identifiers</td>
+<td>GSTIN, ISO cert, CIN</td>
+<td>India-critical (both qlik.biz &amp; dzicard show GSTIN/ISO). Copy-on-tap.</td>
+</tr>
+<tr>
+<td>Social row</td>
+<td>LinkedIn, Instagram, Facebook, YouTube, X, IndiaMART</td>
+<td>Icons only, recognized patterns. Max 6, owner picks order.</td>
+</tr>
+</tbody></table>
+<h3>P3 · Offerings Block</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Content</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Section title</td>
+<td><code>What we offer</code></td>
+<td>Not &quot;Exclusive Offerings&quot; — plain language wins.</td>
+</tr>
+<tr>
+<td>Service/product cards</td>
+<td>Image + name + 1-line description</td>
+<td>Card pattern (IxDF-recommended). Horizontal scroll on mobile, grid on desktop.</td>
+</tr>
+<tr>
+<td>Category grouping</td>
+<td>&quot;Coffee / Tea / Cocoa&quot;</td>
+<td>Reference cards group SKUs under headers — support simple text lists too (SMB mode).</td>
+</tr>
+<tr>
+<td>Card CTA</td>
+<td><code>Enquire on WhatsApp</code></td>
+<td>Pre-filled with product name: &quot;Hi, I&#39;m interested in {Product}&quot;.</td>
+</tr>
+<tr>
+<td>Catalogue link</td>
+<td><code>View full catalogue (PDF)</code></td>
+<td>For businesses with long lists.</td>
+</tr>
+<tr>
+<td>Search (only if &gt;8 items)</td>
+<td><code>Search services…</code></td>
+<td>Progressive disclosure — hidden for small catalogues.</td>
+</tr>
+</tbody></table>
+<h3>P4 · Proof &amp; Media Block</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Content</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Featured video</td>
+<td>YouTube/hosted embed</td>
+<td>Click-to-load poster only (never autoload — bandwidth).</td>
+</tr>
+<tr>
+<td>Gallery</td>
+<td>3–8 images</td>
+<td>Lightbox; lazy-load.</td>
+</tr>
+<tr>
+<td>Testimonials</td>
+<td>Quote + name + role</td>
+<td>1–3, carousel.</td>
+</tr>
+<tr>
+<td>Resource center</td>
+<td>Company profile PDF, brochures, price list</td>
+<td>Show file size (&quot;PDF · 4.2 MB&quot;) — users on mobile data deserve to know.</td>
+</tr>
+<tr>
+<td>Google Review link</td>
+<td><code>⭐ Rate us on Google</code></td>
+<td>Huge for Indian SMBs — drives their local SEO.</td>
+</tr>
+</tbody></table>
+<h3>P5 · Exchange Block (lead capture — OUR differentiator)</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Content</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Floating CTA</td>
+<td><code>Share your details</code></td>
+<td>Appears after 40% scroll or 8 s. Never blocks content.</td>
+</tr>
+<tr>
+<td>Form fields</td>
+<td>Name, Phone, (Email), (Note)</td>
+<td>2 required max. Autofill-friendly. This feeds the owner&#39;s lead inbox.</td>
+</tr>
+<tr>
+<td>Consent line</td>
+<td>&quot;Your details go only to {OwnerName}.&quot;</td>
+<td>Plain-language privacy = trust.</td>
+</tr>
+<tr>
+<td>Success state</td>
+<td>&quot;Done! {FirstName} has your details.&quot;</td>
+<td>+ optional &quot;Save their contact too&quot; nudge.</td>
+</tr>
+</tbody></table>
+<h3>P6 · Utilities Block</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Content</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Payments</td>
+<td>UPI ID + QR, bank details, GPay/PhonePe/Paytm buttons</td>
+<td>dzicard has &quot;Payments&quot;; OmniFlow leads with UPI — must-have for India. Copy-on-tap UPI ID.</td>
+</tr>
+<tr>
+<td>Wallet pass</td>
+<td><code>Add to Apple Wallet</code> / <code>Add to Google Wallet</code></td>
+<td>Receiver keeps the card forever.</td>
+</tr>
+<tr>
+<td>Appointment booking</td>
+<td><code>Book a meeting</code></td>
+<td>Calendly/Google Calendar link. Optional module.</td>
+</tr>
+<tr>
+<td>Address block</td>
+<td>Full postal address</td>
+<td>Copy-on-tap + map link.</td>
+</tr>
+<tr>
+<td>Multiple numbers/emails</td>
+<td>Labeled: Office / Personal / Support</td>
+<td>qlik.biz shows 2 numbers — support up to 3, labeled.</td>
+</tr>
+<tr>
+<td>Language toggle</td>
+<td>EN / हिन्दी / ગુજરાતી</td>
+<td>Phase-2; content-first means planning string expansion NOW.</td>
+</tr>
+<tr>
+<td>Footer</td>
+<td>&quot;Made with PrintVana · Get your card&quot; + Privacy/Terms</td>
+<td>The referral loop — every card sells the next card (all 3 references do this).</td>
+</tr>
+</tbody></table>
+<h2>2.3 Features Beyond the Reference Image (research findings)</h2>
+<p>Found across Uniqode / Popl / OVOU / OmniFlow / dzicard but <strong>not</strong> in the EliteCard image:</p>
+<ol>
+<li><strong>Two-way exchange (lead capture form)</strong> — the single biggest gap; turns the card from a brochure into a lead engine.</li>
+<li><strong>Wallet passes</strong> (Apple/Google) — persistence after the tap.</li>
+<li><strong>UPI payments block</strong> — India-specific killer feature.</li>
+<li><strong>Google Review deep link</strong> — SMB local-SEO magnet.</li>
+<li><strong>Appointment booking</strong> — high value for consultants/doctors/agents.</li>
+<li><strong>View analytics for owner</strong> — views, taps by action, saves, lead count, tap locations.</li>
+<li><strong>Email-signature embed &amp; virtual meeting background</strong> with card QR — passive sharing surfaces.</li>
+<li><strong>SMS sharing + reverse QR</strong> — works when receiver has no WhatsApp.</li>
+<li><strong>Team features</strong> — locked brand templates, central roster, bulk provisioning (Phase 2, B2B).</li>
+<li><strong>CRM export</strong> — leads → CSV/Google Sheets → later Zoho/HubSpot (Phase 2).</li>
+<li><strong>View counter &amp; &quot;card sticker&quot; download</strong> (dzicard) — cheap social proof + offline QR sticker for shop counters.</li>
+<li><strong>PrintVana-unique synergy:</strong> <code>Print this card</code> — order physical NFC cards, QR stickers, standees, brochures <strong>through the PrintVana marketplace</strong>. No competitor can close this loop.</li>
+</ol>
+<h2>2.4 Module System (how IA flexes per persona)</h2>
+<p>The card = <strong>fixed core + optional modules</strong>, so a chai-stall owner and a consulting MD both look right:</p>
+<ul>
+<li><strong>Core (always):</strong> Identity + Action Row + Share + Footer</li>
+<li><strong>Modules (owner toggles):</strong> About · Offerings · Gallery · Video · Testimonials · Resources · Payments · Booking · Review link · Lead form · View counter</li>
+</ul>
+<p><em>Empty modules never render. No &quot;coming soon&quot; placeholders — IxDF: content availability first.</em></p>
+<hr>
+<h1>Part 3 — UX Writing Guide (voice, labels, microcopy)</h1>
+<h2>3.1 Voice &amp; Tone</h2>
+<ul>
+<li><strong>Warm-professional, Indian-English friendly.</strong> Say &quot;Enquire on WhatsApp&quot;, not &quot;Initiate communication&quot;.</li>
+<li><strong>Verb-first CTAs</strong> (IxDF action-oriented grammar): Save, Call, Share, Book, Pay, Enquire.</li>
+<li><strong>No jargon:</strong> &quot;vCard&quot; → <code>Save Contact</code>. &quot;VCF Card&quot; (from reference image) is developer language — never show it.</li>
+<li><strong>Numbers over adjectives:</strong> &quot;PDF · 1.8 MB&quot;, &quot;288 views&quot; — not &quot;comprehensive document&quot;.</li>
+</ul>
+<h2>3.2 Microcopy Table (canonical strings)</h2>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>❌ Avoid</th>
+<th>✅ Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Primary CTA</td>
+<td>Download VCF / Add to contacts</td>
+<td><code>Save Contact</code></td>
+</tr>
+<tr>
+<td>Lead form open</td>
+<td>Submit your information</td>
+<td><code>Share your details</code></td>
+</tr>
+<tr>
+<td>Lead form success</td>
+<td>Form submitted successfully</td>
+<td><code>Done! {Name} has your details.</code></td>
+</tr>
+<tr>
+<td>Offerings title</td>
+<td>Exclusive Offerings / Our Portfolio</td>
+<td><code>What we offer</code></td>
+</tr>
+<tr>
+<td>Enquiry CTA</td>
+<td>Contact us for inquiry</td>
+<td><code>Enquire on WhatsApp</code></td>
+</tr>
+<tr>
+<td>Payments</td>
+<td>Payment Information</td>
+<td><code>Pay {FirstName}</code> / <code>Scan to pay</code></td>
+</tr>
+<tr>
+<td>Wallet</td>
+<td>Export pass</td>
+<td><code>Add to Apple Wallet</code></td>
+</tr>
+<tr>
+<td>Offline error</td>
+<td>Network error occurred</td>
+<td><code>You&#39;re offline. The card will load when you&#39;re back.</code></td>
+</tr>
+<tr>
+<td>Broken action</td>
+<td>—</td>
+<td><code>This link isn&#39;t working. Try {alternative}.</code></td>
+</tr>
+<tr>
+<td>Share sheet</td>
+<td>Refer this card</td>
+<td><code>Share {FirstName}&#39;s card</code></td>
+</tr>
+<tr>
+<td>Referral footer</td>
+<td>Powered by PrintVana</td>
+<td><code>Made with PrintVana · Get yours</code></td>
+</tr>
+<tr>
+<td>QR screen</td>
+<td>Scan QR Code</td>
+<td><code>Point your camera here</code></td>
+</tr>
+<tr>
+<td>Loading</td>
+<td>Please wait…</td>
+<td>Skeleton screens, no text (IxDF)</td>
+</tr>
+</tbody></table>
+<h2>3.3 Content Rules for Owners (enforced in the editor)</h2>
+<ul>
+<li>Tagline ≤ 60 chars · About ≤ 2 paragraphs × 3 sentences · Tags ≤ 6 · Services: name ≤ 40 chars, description ≤ 90 chars.</li>
+<li>Editor shows <strong>live mobile preview</strong> — you write inside the constraint (content-first with real text, never lorem ipsum).</li>
+<li>Test data must include long names (&quot;Chakravarthy Venkatasubramanian&quot;), 2-line company names, Gujarati/Hindi strings (+30–40% expansion).</li>
+</ul>
+<hr>
+<h1>Part 4 — Mobile-First Flows</h1>
+<h2>4.1 Receiver Flow (the tap — 95% of traffic)</h2>
+<pre><code>NFC tap / QR scan / link
+        │
+        ▼
+┌─────────────────────────┐
+│ 0–1s  SKELETON → P0     │  Identity renders first, always &lt;1s
+│       photo·name·title  │
+└─────────┬───────────────┘
+          ▼
+┌─────────────────────────┐     ┌──────────────────┐
+│ ACTION ROW (thumb zone) │────▶│ Save Contact     │→ .vcf → phone contacts
+│ Save·Call·WA·Share·More │     │ Call / WhatsApp  │→ native apps
+└─────────┬───────────────┘     └──────────────────┘
+          ▼  (only if curious)
+   Scroll: About → Offerings → Media → Reviews
+          │
+          ▼ (40% scroll or 8s)
+┌─────────────────────────┐
+│ Floating: &quot;Share your   │──▶ 2-field form ──▶ &quot;Done!&quot; ──▶ Lead → owner
+│  details&quot; (dismissible) │
+└─────────┬───────────────┘
+          ▼
+   Footer: &quot;Made with PrintVana · Get yours&quot;  ← referral loop
+</code></pre>
+<p><strong>Flow rules</strong></p>
+<ol>
+<li>Save Contact reachable <strong>without any scroll</strong>, in the thumb zone.</li>
+<li>Every action ≤ 1 tap to native app. No login, no app install, ever.</li>
+<li>Scroll is <strong>one-directional, single column</strong> (IxDF).</li>
+<li>Lead-form nudge is dismissible and never auto-opens over content.</li>
+<li>Page weight target: <strong>&lt; 200 KB first render, &lt; 3 s on 4G</strong>.</li>
+</ol>
+<h2>4.2 Owner Flow (buy → build → share → track)</h2>
+<pre><code>Discover (PrintVana app banner / referral footer / sales)
+   │
+   ▼
+1. CLAIM        Choose handle → card.printvana.com/{yourname}
+   │            &quot;Your card link, forever.&quot;
+   ▼
+2. BUILD        Guided 4 steps, one screen each (restrict inputs):
+   │            ① Photo &amp; name → ② Contact actions → ③ Business info → ④ Extras
+   │            Live phone-frame preview at every step
+   ▼
+3. PREVIEW      &quot;See it like they will&quot; — full receiver view test
+   ▼
+4. SHARE        • Order NFC card (→ PrintVana print marketplace!)
+   │            • Download QR sticker / poster (→ print via PrintVana!)
+   │            • Wallet pass · link · email signature
+   ▼
+5. TRACK        Dashboard: Views · Saves · Action taps · Leads inbox
+   │            Lead row → one tap: Call / WhatsApp / Export
+   ▼
+6. UPDATE       Edit anytime → live instantly. &quot;No reprints. Ever.&quot;
+</code></pre>
+<p><strong>Owner-side rules</strong></p>
+<ul>
+<li>Onboarding completable on a phone in <strong>&lt; 5 minutes</strong> with only P0+P1 filled; every module skippable (&quot;Add later&quot;).</li>
+<li>Progressive disclosure: extras (payments, booking, resources) live behind &quot;Add more sections&quot;.</li>
+<li>Notification on new lead: WhatsApp/push — &quot;Rahul from Ahmedabad shared their details on your card.&quot;</li>
+</ul>
+<h2>4.3 Screen Map (sitemap)</h2>
+<pre><code>card.printvana.com/
+├── /{handle}                    ← RECEIVER card page (public, no auth)
+│    ├── #qr                     full-screen QR overlay
+│    ├── /vcf                    vCard download endpoint
+│    └── /pass                   wallet pass endpoint
+├── /studio                      ← OWNER app (auth)
+│    ├── /onboarding  (4 steps)
+│    ├── /editor      (modules, live preview)
+│    ├── /leads       (inbox, export)
+│    ├── /analytics   (views, taps, saves)
+│    ├── /share       (QR kit, signature, wallet)
+│    └── /order       (NFC card + print products → PrintVana)
+└── /               marketing / &quot;Get your card&quot;
+</code></pre>
+<hr>
+<h1>Part 5 — Responsive Strategy (mobile → web)</h1>
+<p><strong>Approach: Responsive, mobile-first, single URL</strong> (per research: adaptive = multiple layouts = maintenance + SEO cost; the card&#39;s single-column simplicity loses nothing in responsive reflow).</p>
+<table>
+<thead>
+<tr>
+<th>Breakpoint</th>
+<th>Layout behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>≤ 480 px</strong> (design origin)</td>
+<td>Single column. Action row 4 icons + More. Offerings horizontal-scroll cards. Sticky Save Contact on scroll-up.</td>
+</tr>
+<tr>
+<td><strong>481–768 px</strong> (large phone/small tablet)</td>
+<td>Same column, max-width 560 px centered. Offerings 2-up grid.</td>
+</tr>
+<tr>
+<td><strong>769–1024 px</strong> (tablet)</td>
+<td>Card centered 640 px; gallery 3-up; nav actions get text labels beside icons.</td>
+</tr>
+<tr>
+<td><strong>≥ 1025 px</strong> (desktop)</td>
+<td>Two-zone: left rail = identity + actions (sticky), right = content modules. Offerings 3-up. QR panel visible by default (&quot;Scan to open on your phone&quot;).</td>
+</tr>
+</tbody></table>
+<p><strong>Enhancement direction (never subtraction):</strong></p>
+<ul>
+<li>Base (mobile) = complete experience: every fact, every action.</li>
+<li>Desktop <em>adds</em> comfort: persistent QR (hand-off principle — desktop viewer sends card to their phone), hover states on top of tap states, wider media.</li>
+<li>Owner editor: mobile = full editing; desktop = adds side-by-side preview + bulk tools.</li>
+</ul>
+<p><strong>Performance &amp; resilience checklist</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> P0 text renders before any image (progressive enhancement)</li>
+<li><input disabled="" type="checkbox"> Poster-only video embeds; lazy gallery</li>
+<li><input disabled="" type="checkbox"> vCard + core contact data work with JS disabled</li>
+<li><input disabled="" type="checkbox"> Offline revisit: cached card shell (PWA) — &quot;on-the-move users, unstable networks&quot; (IxDF)</li>
+<li><input disabled="" type="checkbox"> All tap targets ≥ 44 px; text ≥ 11 pt; portrait-first</li>
+<li><input disabled="" type="checkbox"> Heading order H1→H3 clean; alt text everywhere; ARIA on overflow menu (screen readers)</li>
+<li><input disabled="" type="checkbox"> Pseudo-localization pass (Hindi/Gujarati +40% string length)</li>
+</ul>
+<hr>
+<h1>Part 6 — What We Deliberately Leave Out (and why)</h1>
+<table>
+<thead>
+<tr>
+<th>Rejected element</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>App install requirement</td>
+<td>Kills the 10-second promise. Web only.</td>
+</tr>
+<tr>
+<td>Login to view card</td>
+<td>Same. Public page.</td>
+</tr>
+<tr>
+<td>Autoplaying video/audio</td>
+<td>Data cost + surprise = distrust (IxDF: kill bandwidth eaters).</td>
+</tr>
+<tr>
+<td>Hover-dependent anything</td>
+<td>Touch-first (IxDF: no hover on mobile).</td>
+</tr>
+<tr>
+<td>Carousel hero banners</td>
+<td>Attention span; one static/gradient banner.</td>
+</tr>
+<tr>
+<td>Pop-up newsletter/ads</td>
+<td>This is a person&#39;s card, not a funnel.</td>
+</tr>
+<tr>
+<td>Long forms</td>
+<td>2 required fields max, everywhere.</td>
+</tr>
+<tr>
+<td>&quot;VCF/vCard&quot; jargon in UI</td>
+<td>Receiver language, not developer language.</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>Appendix A — Reference Card Teardowns (research evidence)</h1>
+<p><strong>qlik.biz/universalbrew (Gunjan Talsania)</strong> — view counter (288), name/company/role, Call·WhatsApp·Website chips, GSTIN, categorized product list (Coffee/Tea/Cocoa), address, 2 phones, email, social (LinkedIn/FB/Insta), vCard export, share via WA/email/FB/LI/X, &quot;Create Your Digital Card&quot; referral, powered-by. <em>Weakness: wall of text, no lead capture, no payments.</em></p>
+<p><strong>qlik.biz/MehulGajjar (Kristal Graphitech)</strong> — same skeleton + Google Maps location chip; Instagram only; referral code in signup link (viral loop!). <em>Weakness: no imagery for a visual business (printing/signage).</em></p>
+<p><strong>dzicard.com/dbc/kbg-boilers (Amit Gajjar)</strong> — Inquiry CTA, Share, Call/WhatsApp/Email/SMS, Save vCard, QR code, <strong>Legal Info</strong> (ISO cert), <strong>Payments</strong> section, products list, maps link, 6 socials incl. IndiaMART &amp; YouTube, downloadable QR sticker, feedback link, referral CTA. <em>Strongest feature set of the three; weakness: dated visual design, typo&#39;d email (&quot;gmail.ccom&quot;) shows the need for input validation in our editor.</em></p>
+<p><strong>EliteCard reference image</strong> — premium visual bar: cover art, avatar, tagline, 7 action chips, About + tags, QR panel, offerings with search + Enquire, media spotlight video, portfolio grid, resource PDFs with sizes, testimonial, clean footer. <em>Gaps we close: lead capture, payments, booking, wallet, review link, analytics.</em></p>
+<h1>Appendix B — Field Validation Rules (editor)</h1>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Phone</td>
+<td>E.164, India default +91, live format check</td>
+</tr>
+<tr>
+<td>Email</td>
+<td>RFC + typo suggestions (&quot;gmail.ccom → gmail.com?&quot;)</td>
+</tr>
+<tr>
+<td>UPI ID</td>
+<td><code>name@bank</code> pattern check</td>
+</tr>
+<tr>
+<td>GSTIN</td>
+<td>15-char checksum validation</td>
+</tr>
+<tr>
+<td>Handle</td>
+<td>3–30 chars, lowercase, unique, no impersonation of brands</td>
+</tr>
+<tr>
+<td>Images</td>
+<td>Auto-compress to WebP, face-crop suggestion for avatar</td>
+</tr>
+<tr>
+<td>Links</td>
+<td>HTTPS enforced, dead-link checker weekly</td>
+</tr>
+</tbody></table>
+<hr>
+<p><em>Companion document: <code>mobile-first-design-research.md</code> (IxDF principles this IA implements).</em>
+<em>Next phase: wireframes → PrintEve Design System tokens → hi-fi mobile screens.</em></p>
+</body>
+</html>

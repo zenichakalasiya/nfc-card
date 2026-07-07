@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PrintVana NFC Digital Business Card — Project Hub</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  :root {
+    --green: #16A34A; --green-dark: #15803D; --green-soft: #DCFCE7;
+    --ink: #0F172A; --muted: #64748B; --subtle: #94A3B8;
+    --border: #E2E8F0; --surface: #F8FAFC; --bg: #FFFFFF;
+  }
+  body { margin: 0; font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--surface); color: var(--ink); -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 48px 20px 64px; }
+  .hero { background: linear-gradient(120deg, #0F172A 0%, #1E293B 70%, #24443457 100%); border-radius: 24px; padding: 48px 32px; color: #fff; position: relative; overflow: hidden; }
+  .hero::after { content: ""; position: absolute; inset: 0; background: radial-gradient(70% 130% at 88% 0%, rgb(34 197 94 / 0.3) 0%, transparent 60%); pointer-events: none; }
+  .hero p.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #4ADE80; margin: 0 0 12px; }
+  .hero h1 { font-size: clamp(26px, 5vw, 38px); font-weight: 800; letter-spacing: -0.02em; margin: 0 0 12px; line-height: 1.15; }
+  .hero p.sub { font-size: 15px; color: rgb(255 255 255 / 0.75); margin: 0; max-width: 54ch; line-height: 1.6; }
+  h2 { font-size: 14px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 40px 0 14px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+  a.card { display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; text-decoration: none; color: var(--ink); transition: transform .15s, box-shadow .15s, border-color .15s; }
+  a.card:hover { transform: translateY(-3px); border-color: #86EFAC; box-shadow: 0 8px 24px -4px rgb(15 23 42 / 0.10); }
+  .card .tag { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; }
+  .tag--demo { background: var(--green-soft); color: #166534; }
+  .tag--doc { background: #E0F2FE; color: #075985; }
+  .card h3 { font-size: 15px; font-weight: 700; margin: 0 0 5px; letter-spacing: -0.01em; }
+  .card p { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.55; }
+  .card .go { display: inline-flex; align-items: center; gap: 5px; margin-top: 12px; font-size: 13px; font-weight: 600; color: var(--green); }
+  footer { text-align: center; margin-top: 48px; font-size: 12px; color: var(--subtle); }
+  footer strong { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <p class="eyebrow">PrintVana · Project Hub</p>
+    <h1>NFC Digital Business Card</h1>
+    <p class="sub">Tap a card, meet a person. Live demos of the receiver experience and the owner dashboard, plus the research and information architecture behind them — built on the PrintEve Design System.</p>
+  </div>
+
+  <h2>Live Demos</h2>
+  <div class="grid">
+    <a class="card" href="PrintEve%20Design%20System%20(1)/ui_kits/digital-card/index.html">
+      <span class="tag tag--demo">Demo</span>
+      <h3>Digital Card — Receiver View</h3>
+      <p>What a stranger sees after tapping the NFC card. Two personas, dark mode, lead capture, real vCard download.</p>
+      <span class="go">Open demo →</span>
+    </a>
+    <a class="card" href="PrintEve%20Design%20System%20(1)/ui_kits/studio/index.html">
+      <span class="tag tag--demo">Demo</span>
+      <h3>Card Studio — Owner Dashboard</h3>
+      <p>Stats, leads inbox with CSV export, analytics, card editor with live phone preview, share &amp; order.</p>
+      <span class="go">Open demo →</span>
+    </a>
+    <a class="card" href="PrintEve%20Design%20System%20(1)/ui_kits/homepage/index.html">
+      <span class="tag tag--demo">Demo</span>
+      <h3>PrintEve Homepage</h3>
+      <p>The marketplace marketing homepage UI kit — hero, categories, partner CTA, cart drawer, dark mode.</p>
+      <span class="go">Open demo →</span>
+    </a>
+  </div>
+
+  <h2>Research &amp; Specs</h2>
+  <div class="grid">
+    <a class="card" href="nfc-card-information-architecture.html">
+      <span class="tag tag--doc">Spec</span>
+      <h3>Information Architecture &amp; Flows</h3>
+      <p>Complete IA, UX-writing guide, mobile-first flows and responsive strategy. <a href="nfc-card-information-architecture.pdf" style="color:var(--green)">PDF</a></p>
+      <span class="go">Read →</span>
+    </a>
+    <a class="card" href="mobile-first-design-research.html">
+      <span class="tag tag--doc">Research</span>
+      <h3>Mobile-First Design Research</h3>
+      <p>IxDF-sourced principles that drive every design decision on the card. <a href="mobile-first-design-research.pdf" style="color:var(--green)">PDF</a></p>
+      <span class="go">Read →</span>
+    </a>
+  </div>
+
+  <footer>Made with <strong>PrintVana</strong> · PrintEve Design System · 2026</footer>
+</div>
+</body>
+</html>

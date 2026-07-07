@@ -1,0 +1,716 @@
+<!-- @dsCard group="PrintVana Digital Card" viewport="1280x860" name="Card Studio" subtitle="Owner dashboard — overview, leads inbox, analytics, card editor, share & order" -->
+<!-- @startingPoint section="Screens" subtitle="PrintVana Card Studio — owner dashboard" viewport="1280x860" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Card Studio — PrintVana</title>
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--color-surface); color: var(--color-text); font-family: var(--font-sans); font-size: 14px; -webkit-font-smoothing: antialiased; }
+  button { font-family: inherit; }
+
+  /* ============ App frame ============ */
+  .app { display: grid; grid-template-columns: 232px 1fr; grid-template-rows: 56px 1fr; min-height: 100vh; }
+  @media (max-width: 900px) { .app { grid-template-columns: 1fr; } }
+
+  /* Topbar */
+  .top { grid-column: 1 / -1; display: flex; align-items: center; gap: 16px; padding: 0 20px; background: var(--color-background); border-bottom: 1px solid var(--color-border); position: sticky; top: 0; z-index: 30; }
+  .top__logo { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; color: var(--color-text); }
+  .top__logo img { width: 26px; height: 26px; }
+  .top__logo strong { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; }
+  .top__logo span { font-size: 15px; font-weight: 400; color: var(--color-text-muted); }
+  .top__spacer { flex: 1; }
+  .top__link { display: none; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--color-text-muted); text-decoration: none; padding: 7px 12px; border-radius: var(--radius-full); border: 1px solid var(--color-border); transition: color .15s, border-color .15s; }
+  .top__link:hover { color: var(--color-primary); border-color: var(--color-primary); }
+  @media (min-width: 641px) { .top__link { display: inline-flex; } }
+  .top__avatar { width: 34px; height: 34px; border-radius: var(--radius-full); background: var(--color-primary-soft); color: var(--color-primary-soft-fg); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+
+  /* Sidebar */
+  .nav { background: var(--color-background); border-right: 1px solid var(--color-border); padding: 16px 12px; display: flex; flex-direction: column; gap: 2px; }
+  @media (max-width: 900px) { .nav { display: none; } }
+  .nav__item { display: flex; align-items: center; gap: 11px; padding: 9px 12px; border-radius: var(--radius-md); border: 0; background: none; color: var(--color-text-muted); font-size: 13.5px; font-weight: 500; cursor: pointer; text-align: left; width: 100%; transition: background .15s, color .15s; }
+  .nav__item:hover { background: var(--color-surface); color: var(--color-text); }
+  .nav__item[data-active="true"] { background: var(--color-primary-soft); color: var(--color-primary-soft-fg); font-weight: 600; }
+  .nav__item svg { flex-shrink: 0; }
+  .nav__badge { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: var(--radius-full); background: var(--color-primary); color: #fff; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+  .nav__order { margin-top: auto; padding: 14px; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface); }
+  .nav__order h4 { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+  .nav__order p { font-size: 12px; color: var(--color-text-muted); margin: 0 0 10px; line-height: 1.5; }
+  .nav__order a { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--color-primary); text-decoration: none; }
+  .nav__order a:hover { text-decoration: underline; }
+
+  /* Mobile bottom nav */
+  .bnav { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 30; background: var(--color-background); border-top: 1px solid var(--color-border); padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); }
+  @media (max-width: 900px) { .bnav { display: grid; grid-template-columns: repeat(5, 1fr); } }
+  .bnav__item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; border: 0; background: none; color: var(--color-text-muted); font-size: 10px; font-weight: 600; cursor: pointer; border-radius: var(--radius-md); }
+  .bnav__item[data-active="true"] { color: var(--color-primary); }
+
+  /* Main */
+  .main { padding: 24px; max-width: 1120px; width: 100%; }
+  @media (max-width: 900px) { .main { padding: 16px 16px 90px; } }
+  .view { display: none; }
+  .view[data-active="true"] { display: block; }
+  .view__head { margin-bottom: 20px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .view__title { font-size: 20px; font-weight: var(--weight-bold); letter-spacing: var(--tracking-tight); margin: 0; }
+  .view__sub { font-size: 13px; color: var(--color-text-muted); margin: 4px 0 0; }
+
+  .card { background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius-lg); }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 38px; padding: 0 16px; border-radius: var(--radius-full); font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; transition: background .15s, border-color .15s, color .15s; }
+  .btn--primary { background: var(--color-primary); color: var(--color-primary-foreground); border: 1px solid transparent; }
+  .btn--primary:hover { background: var(--color-primary-hover); }
+  .btn--outline { background: var(--color-background); color: var(--color-text); border: 1px solid var(--color-border-strong); }
+  .btn--outline:hover { border-color: var(--color-text-muted); background: var(--color-surface); }
+  .btn--sm { height: 32px; padding: 0 12px; font-size: 12px; }
+
+  /* ============ Overview ============ */
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 1100px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .stat { padding: 16px; }
+  .stat__label { font-size: 12px; font-weight: 500; color: var(--color-text-muted); margin: 0; display: flex; align-items: center; gap: 7px; }
+  .stat__label svg { color: var(--color-text-subtle); }
+  .stat__value { font-size: 26px; font-weight: var(--weight-bold); letter-spacing: var(--tracking-tight); margin: 8px 0 0; line-height: 1; }
+  .stat__delta { font-size: 12px; font-weight: 600; margin: 8px 0 0; display: inline-flex; align-items: center; gap: 4px; }
+  .stat__delta[data-dir="up"] { color: var(--color-success); }
+  .stat__delta[data-dir="down"] { color: var(--color-danger); }
+  .stat__delta span { color: var(--color-text-subtle); font-weight: 400; }
+
+  .ov-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 12px; margin-top: 12px; align-items: start; }
+  @media (max-width: 1100px) { .ov-grid { grid-template-columns: 1fr; } }
+  .panel__head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--color-border); }
+  .panel__title { font-size: 14px; font-weight: 600; margin: 0; }
+  .panel__link { font-size: 12px; font-weight: 600; color: var(--color-primary); text-decoration: none; border: 0; background: none; cursor: pointer; }
+  .panel__link:hover { text-decoration: underline; }
+
+  .lead-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--color-border); }
+  .lead-row:last-child { border-bottom: 0; }
+  .lead-row__avatar { width: 36px; height: 36px; border-radius: var(--radius-full); background: var(--color-surface-2); color: var(--color-text-muted); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .lead-row__body { flex: 1; min-width: 0; }
+  .lead-row__name { font-size: 13.5px; font-weight: 600; margin: 0; }
+  .lead-row__meta { font-size: 12px; color: var(--color-text-muted); margin: 2px 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lead-row__time { font-size: 11px; color: var(--color-text-subtle); flex-shrink: 0; }
+  .icon-btn { width: 32px; height: 32px; border-radius: var(--radius-full); border: 1px solid var(--color-border); background: var(--color-background); color: var(--color-text-muted); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: color .15s, border-color .15s; text-decoration: none; }
+  .icon-btn:hover { color: var(--color-primary); border-color: var(--color-primary); }
+
+  .quick { display: flex; flex-direction: column; }
+  .quick a { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-bottom: 1px solid var(--color-border); text-decoration: none; color: var(--color-text); font-size: 13.5px; font-weight: 500; transition: background .15s; }
+  .quick a:last-child { border-bottom: 0; }
+  .quick a:hover { background: var(--color-surface); }
+  .quick a svg:first-child { color: var(--color-primary); flex-shrink: 0; }
+  .quick a svg:last-child { margin-left: auto; color: var(--color-text-subtle); }
+
+  /* ============ Leads ============ */
+  .toolbar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .toolbar input[type="search"] { flex: 1; min-width: 180px; height: 38px; border: 1px solid var(--color-border); border-radius: var(--radius-full); background: var(--color-background); padding: 0 16px; font-size: 13px; font-family: inherit; color: var(--color-text); }
+  .toolbar input:focus-visible { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); }
+  .toolbar select { height: 38px; border: 1px solid var(--color-border); border-radius: var(--radius-full); background: var(--color-background); padding: 0 12px; font-size: 13px; font-family: inherit; color: var(--color-text); cursor: pointer; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 640px; }
+  thead th { text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--color-text-subtle); padding: 11px 16px; border-bottom: 1px solid var(--color-border); white-space: nowrap; }
+  tbody td { padding: 12px 16px; border-bottom: 1px solid var(--color-border); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr { transition: background .15s; }
+  tbody tr:hover { background: var(--color-surface); }
+  .t-name { font-weight: 600; white-space: nowrap; }
+  .t-phone { color: var(--color-text-muted); white-space: nowrap; }
+  .t-note { color: var(--color-text-muted); max-width: 260px; }
+  .chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: var(--radius-full); white-space: nowrap; }
+  .chip--nfc { background: var(--color-primary-soft); color: var(--color-primary-soft-fg); }
+  .chip--qr { background: var(--slate-100); color: var(--slate-600); }
+  [data-theme="dark"] .chip--qr { background: var(--color-surface-2); color: var(--color-text-muted); }
+  .chip--link { background: rgb(14 165 233 / 0.12); color: #0369A1; }
+  .t-time { color: var(--color-text-subtle); font-size: 12px; white-space: nowrap; }
+  .t-actions { display: flex; gap: 6px; }
+
+  /* ============ Analytics ============ */
+  .an-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 1100px) { .an-grid { grid-template-columns: 1fr; } }
+  .chart { padding: 16px; }
+  .chart__bars { display: flex; align-items: flex-end; gap: 6px; height: 160px; margin-top: 16px; }
+  .bar { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; gap: 6px; cursor: default; }
+  .bar__fill { background: var(--color-primary); border-radius: 4px 4px 0 0; opacity: .85; transition: opacity .15s; min-height: 4px; }
+  .bar:hover .bar__fill { opacity: 1; }
+  .bar__label { font-size: 9.5px; color: var(--color-text-subtle); text-align: center; }
+  .break { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+  .break__row { display: grid; grid-template-columns: 110px 1fr 44px; align-items: center; gap: 12px; font-size: 13px; }
+  .break__name { color: var(--color-text); font-weight: 500; }
+  .break__track { height: 8px; border-radius: var(--radius-full); background: var(--color-surface-2); overflow: hidden; }
+  .break__fill { display: block; height: 100%; border-radius: var(--radius-full); background: var(--color-primary); }
+  .break__val { text-align: right; color: var(--color-text-muted); font-weight: 600; font-size: 12px; }
+  .geo { display: flex; flex-direction: column; }
+  .geo__row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--color-border); font-size: 13px; }
+  .geo__row:last-child { border-bottom: 0; }
+  .geo__city { font-weight: 500; display: flex; align-items: center; gap: 9px; }
+  .geo__city svg { color: var(--color-text-subtle); }
+  .geo__count { color: var(--color-text-muted); font-weight: 600; font-size: 12px; }
+
+  /* ============ My Card (editor) ============ */
+  .ed-grid { display: grid; grid-template-columns: 1fr 360px; gap: 16px; align-items: start; }
+  @media (max-width: 1100px) { .ed-grid { grid-template-columns: 1fr; } }
+  .ed-form { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .ed-form h3 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--color-text-subtle); margin: 8px 0 0; }
+  .ed-form h3:first-child { margin-top: 0; }
+  .f { display: flex; flex-direction: column; gap: 6px; }
+  .f label { font-size: 12px; font-weight: 600; }
+  .f input, .f textarea, .f select { width: 100%; height: 40px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); padding: 0 12px; font-size: 13.5px; font-family: inherit; color: var(--color-text); }
+  .f textarea { height: auto; padding: 10px 12px; resize: vertical; }
+  .f input:focus-visible, .f textarea:focus-visible { outline: none; border-color: var(--color-primary); background: var(--color-background); box-shadow: 0 0 0 3px var(--color-primary-soft); }
+  .f__hint { font-size: 11px; color: var(--color-text-subtle); }
+  .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px) { .f-row { grid-template-columns: 1fr; } }
+
+  .module { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--color-border); }
+  .module:last-child { border-bottom: 0; }
+  .module__body { flex: 1; }
+  .module__name { font-size: 13.5px; font-weight: 600; margin: 0; }
+  .module__desc { font-size: 12px; color: var(--color-text-muted); margin: 1px 0 0; }
+  .switch { position: relative; width: 38px; height: 22px; flex-shrink: 0; cursor: pointer; }
+  .switch input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .switch__track { position: absolute; inset: 0; border-radius: var(--radius-full); background: var(--color-border-strong); transition: background .15s; }
+  .switch input:checked + .switch__track { background: var(--color-primary); }
+  .switch__thumb { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: var(--radius-full); background: #fff; transition: transform .15s; box-shadow: var(--shadow-xs); }
+  .switch input:checked ~ .switch__thumb { transform: translateX(16px); }
+
+  .preview { position: sticky; top: 76px; }
+  @media (max-width: 1100px) { .preview { position: static; } }
+  .preview__frame { width: 320px; height: 560px; margin: 0 auto; border: 8px solid var(--slate-900); border-radius: 36px; overflow: hidden; background: var(--color-surface); box-shadow: var(--shadow-lg); }
+  [data-theme="dark"] .preview__frame { border-color: #000; }
+  .preview__frame iframe { width: 400px; height: 700px; border: 0; transform: scale(0.8); transform-origin: 0 0; }
+  .preview__note { text-align: center; font-size: 11px; color: var(--color-text-subtle); margin-top: 12px; }
+
+  /* ============ Share ============ */
+  .sh-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+  @media (max-width: 1100px) { .sh-grid { grid-template-columns: 1fr; } }
+  .sh-card { padding: 20px; }
+  .sh-card h3 { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+  .sh-card > p { font-size: 12.5px; color: var(--color-text-muted); margin: 0 0 14px; line-height: 1.5; }
+  .sh-qr { width: 168px; height: 168px; display: block; margin: 4px auto 14px; color: var(--color-text); }
+  .linkbox { display: flex; align-items: center; gap: 8px; border: 1px solid var(--color-border); border-radius: var(--radius-full); background: var(--color-surface); padding: 5px 5px 5px 16px; }
+  .linkbox code { flex: 1; font-size: 12.5px; color: var(--color-text); font-family: var(--font-mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sigbox { border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); padding: 12px 14px; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.6; color: var(--color-text-muted); overflow-x: auto; white-space: pre; }
+  .sh-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .order-hero { display: flex; align-items: center; gap: 18px; padding: 20px; }
+  .order-hero img { width: 72px; height: 72px; flex-shrink: 0; }
+  .order-hero h3 { font-size: 15px; font-weight: 700; margin: 0 0 4px; letter-spacing: var(--tracking-snug); }
+  .order-hero p { font-size: 12.5px; color: var(--color-text-muted); margin: 0 0 10px; line-height: 1.5; }
+  .order-hero .price { color: var(--color-text); font-weight: 700; }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 8px); background: var(--color-text); color: var(--color-background); font-size: 13px; font-weight: 500; padding: 9px 16px; border-radius: var(--radius-full); box-shadow: var(--shadow-lg); z-index: 70; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
+  .toast[data-show="true"] { opacity: 1; transform: translate(-50%, 0); }
+  @media (max-width: 900px) { .toast { bottom: 86px; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Topbar -->
+  <header class="top">
+    <a class="top__logo" href="#">
+      <img src="../../assets/logo-mark.svg" alt="" />
+      <strong>PrintVana</strong><span>Studio</span>
+    </a>
+    <div class="top__spacer"></div>
+    <a class="top__link" href="../digital-card/index.html" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+      View My Card
+    </a>
+    <span class="top__avatar" title="Priya Sharma">PS</span>
+  </header>
+
+  <!-- Sidebar -->
+  <nav class="nav" aria-label="Studio">
+    <button class="nav__item" data-view="overview" data-active="true">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+      Overview
+    </button>
+    <button class="nav__item" data-view="leads">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Leads
+      <span class="nav__badge">3</span>
+    </button>
+    <button class="nav__item" data-view="analytics">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 13l3-3 4 4 5-5"/></svg>
+      Analytics
+    </button>
+    <button class="nav__item" data-view="card">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"/><circle cx="8.5" cy="11" r="2"/><path d="M13 9h5m-5 4h5M5.5 17c.5-1.5 1.7-2 3-2s2.5.5 3 2"/></svg>
+      My Card
+    </button>
+    <button class="nav__item" data-view="share">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98m-.01-10.98-6.82 3.98"/></svg>
+      Share &amp; Order
+    </button>
+    <div class="nav__order">
+      <h4>Printed NFC cards</h4>
+      <p>Tap-to-share cards printed and delivered by PrintVana partners.</p>
+      <a href="#" data-goto="share">Order now
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- ============ OVERVIEW ============ -->
+    <section class="view" data-view-panel="overview" data-active="true">
+      <div class="view__head">
+        <div>
+          <h1 class="view__title">Good morning, Priya</h1>
+          <p class="view__sub">Your card is live at <strong>card.printvana.com/priya</strong> — here's the last 30 days.</p>
+        </div>
+        <a class="btn btn--primary" href="#" data-goto="card">Edit My Card</a>
+      </div>
+      <div class="stats">
+        <div class="card stat">
+          <p class="stat__label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>Card views</p>
+          <p class="stat__value">1,284</p>
+          <p class="stat__delta" data-dir="up">▲ 12% <span>vs last month</span></p>
+        </div>
+        <div class="card stat">
+          <p class="stat__label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Contacts saved</p>
+          <p class="stat__value">342</p>
+          <p class="stat__delta" data-dir="up">▲ 8% <span>vs last month</span></p>
+        </div>
+        <div class="card stat">
+          <p class="stat__label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6m3-3h-6"/></svg>Leads captured</p>
+          <p class="stat__value">57</p>
+          <p class="stat__delta" data-dir="up">▲ 21% <span>vs last month</span></p>
+        </div>
+        <div class="card stat">
+          <p class="stat__label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>WhatsApp taps</p>
+          <p class="stat__value">208</p>
+          <p class="stat__delta" data-dir="down">▼ 3% <span>vs last month</span></p>
+        </div>
+      </div>
+      <div class="ov-grid">
+        <div class="card">
+          <div class="panel__head">
+            <h2 class="panel__title">Recent leads</h2>
+            <button class="panel__link" data-goto="leads">View all</button>
+          </div>
+          <div class="lead-row">
+            <span class="lead-row__avatar">RM</span>
+            <div class="lead-row__body">
+              <p class="lead-row__name">Rahul Mehta</p>
+              <p class="lead-row__meta">Met at Plast India Expo — need mailer boxes</p>
+            </div>
+            <span class="lead-row__time">2h ago</span>
+            <a class="icon-btn" href="tel:+919876543210" aria-label="Call Rahul"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></a>
+          </div>
+          <div class="lead-row">
+            <span class="lead-row__avatar">SK</span>
+            <div class="lead-row__body">
+              <p class="lead-row__name">Sana Khan</p>
+              <p class="lead-row__meta">Interested in food-grade pouches for her tea brand</p>
+            </div>
+            <span class="lead-row__time">Yesterday</span>
+            <a class="icon-btn" href="#" aria-label="Call Sana"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></a>
+          </div>
+          <div class="lead-row">
+            <span class="lead-row__avatar">VD</span>
+            <div class="lead-row__body">
+              <p class="lead-row__name">Vikram Desai</p>
+              <p class="lead-row__meta">Bulk order enquiry — 20,000 mono cartons</p>
+            </div>
+            <span class="lead-row__time">2d ago</span>
+            <a class="icon-btn" href="#" aria-label="Call Vikram"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="panel__head"><h2 class="panel__title">Quick actions</h2></div>
+          <div class="quick">
+            <a href="#" data-goto="card">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+              Edit my card
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
+            <a href="#" data-goto="share">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3m5-1v.01M12 7v3a2 2 0 0 1-2 2H7m-4 0h.01M12 3h.01M12 16v.01M16 12h1m4 0v.01M12 21v-1"/></svg>
+              Download QR kit
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
+            <a href="#" data-goto="share">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"/><circle cx="8.5" cy="11" r="2"/><path d="M13 9h5m-5 4h5M5.5 17c.5-1.5 1.7-2 3-2s2.5.5 3 2"/></svg>
+              Order printed NFC cards
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
+            <a href="../digital-card/index.html" target="_blank" rel="noopener">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              Preview my card
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LEADS ============ -->
+    <section class="view" data-view-panel="leads">
+      <div class="view__head">
+        <div>
+          <h1 class="view__title">Leads</h1>
+          <p class="view__sub">People who shared their details on your card. 57 total, 3 new this week.</p>
+        </div>
+        <button class="btn btn--outline" id="exportCsv">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Export CSV
+        </button>
+      </div>
+      <div class="toolbar">
+        <input type="search" id="leadSearch" placeholder="Search leads by name, phone or note" />
+        <select id="leadFilter" aria-label="Filter by source">
+          <option value="">All sources</option>
+          <option value="NFC tap">NFC tap</option>
+          <option value="QR scan">QR scan</option>
+          <option value="Link">Link</option>
+        </select>
+      </div>
+      <div class="card table-wrap">
+        <table id="leadTable">
+          <thead>
+            <tr><th>Name</th><th>Phone</th><th>Note</th><th>Source</th><th>When</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="t-name">Rahul Mehta</td><td class="t-phone">+91 98765 43210</td>
+              <td class="t-note">Met at Plast India Expo — need mailer boxes</td>
+              <td><span class="chip chip--nfc">NFC tap</span></td><td class="t-time">Today, 9:40 am</td>
+              <td class="t-actions"><a class="icon-btn" href="#" aria-label="Call"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></a><a class="icon-btn" href="#" aria-label="WhatsApp"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a></td>
+            </tr>
+            <tr>
+              <td class="t-name">Sana Khan</td><td class="t-phone">+91 90040 22331</td>
+              <td class="t-note">Food-grade pouches for her tea brand</td>
+              <td><span class="chip chip--qr">QR scan</span></td><td class="t-time">Yesterday</td>
+              <td class="t-actions"><a class="icon-btn" href="#" aria-label="Call"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></a><a class="icon-btn" href="#" aria-label="WhatsApp"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a></td>
+            </tr>
+            <tr>
+              <td class="t-name">Vikram Desai</td><td class="t-phone">+91 98980 11224</td>
+              <td class="t-note">Bulk order enquiry — 20,000 mono cartons</td>
+              <td><span class="chip chip--nfc">NFC tap</span></td><td class="t-time">2 days ago</td>
+              <td class="t-actions"><a class="icon-btn" href="#" aria-label="Call"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></a><a class="icon-btn" href="#" aria-label="WhatsApp"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a></td>
+            </tr>
+            <tr>
+              <td class="t-name">Meera Pillai</td><td class="t-phone">+91 96543 87001</td>
+              <td class="t-note">Wants samples of kraft mailers</td>
+              <td><span class="chip chip--link">Link</span></td><td class="t-time">4 days ago</td>
+              <td class="t-actions"><a class="icon-btn" href="#" aria-label="Call"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></a><a class="icon-btn" href="#" aria-label="WhatsApp"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a></td>
+            </tr>
+            <tr>
+              <td class="t-name">Arvind Shah</td><td class="t-phone">+91 98250 90876</td>
+              <td class="t-note">—</td>
+              <td><span class="chip chip--qr">QR scan</span></td><td class="t-time">Last week</td>
+              <td class="t-actions"><a class="icon-btn" href="#" aria-label="Call"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></a><a class="icon-btn" href="#" aria-label="WhatsApp"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a></td>
+            </tr>
+            <tr>
+              <td class="t-name">Divya Nair</td><td class="t-phone">+91 90909 12456</td>
+              <td class="t-note">Referred by Kavya — insert cards for skincare kits</td>
+              <td><span class="chip chip--link">Link</span></td><td class="t-time">Last week</td>
+              <td class="t-actions"><a class="icon-btn" href="#" aria-label="Call"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></a><a class="icon-btn" href="#" aria-label="WhatsApp"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ ANALYTICS ============ -->
+    <section class="view" data-view-panel="analytics">
+      <div class="view__head">
+        <div>
+          <h1 class="view__title">Analytics</h1>
+          <p class="view__sub">How people find and use your card.</p>
+        </div>
+        <select class="toolbar" style="height: 38px; border: 1px solid var(--color-border); border-radius: var(--radius-full); background: var(--color-background); padding: 0 12px; font-size: 13px; font-family: inherit; color: var(--color-text);">
+          <option>Last 14 days</option><option>Last 30 days</option><option>Last 90 days</option>
+        </select>
+      </div>
+      <div class="card chart">
+        <h2 class="panel__title" style="margin: 0;">Card views</h2>
+        <div class="chart__bars" id="viewChart"></div>
+      </div>
+      <div class="an-grid" style="margin-top: 12px;">
+        <div class="card chart">
+          <h2 class="panel__title" style="margin: 0;">What visitors tap</h2>
+          <div class="break">
+            <div class="break__row"><span class="break__name">Save Contact</span><span class="break__track"><span class="break__fill" style="width: 62%"></span></span><span class="break__val">62%</span></div>
+            <div class="break__row"><span class="break__name">WhatsApp</span><span class="break__track"><span class="break__fill" style="width: 38%"></span></span><span class="break__val">38%</span></div>
+            <div class="break__row"><span class="break__name">Call</span><span class="break__track"><span class="break__fill" style="width: 24%"></span></span><span class="break__val">24%</span></div>
+            <div class="break__row"><span class="break__name">Services</span><span class="break__track"><span class="break__fill" style="width: 19%"></span></span><span class="break__val">19%</span></div>
+            <div class="break__row"><span class="break__name">Exchange info</span><span class="break__track"><span class="break__fill" style="width: 11%"></span></span><span class="break__val">11%</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="panel__head"><h2 class="panel__title">Where taps happen</h2></div>
+          <div class="geo">
+            <div class="geo__row"><span class="geo__city"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Ahmedabad</span><span class="geo__count">684 views</span></div>
+            <div class="geo__row"><span class="geo__city"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Mumbai</span><span class="geo__count">231 views</span></div>
+            <div class="geo__row"><span class="geo__city"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Bengaluru</span><span class="geo__count">178 views</span></div>
+            <div class="geo__row"><span class="geo__city"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Surat</span><span class="geo__count">102 views</span></div>
+            <div class="geo__row"><span class="geo__city"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Delhi NCR</span><span class="geo__count">89 views</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MY CARD ============ -->
+    <section class="view" data-view-panel="card">
+      <div class="view__head">
+        <div>
+          <h1 class="view__title">My Card</h1>
+          <p class="view__sub">Changes go live instantly — no reprints, ever.</p>
+        </div>
+        <a class="btn btn--outline" href="../digital-card/index.html" target="_blank" rel="noopener">Preview</a>
+      </div>
+      <div class="ed-grid">
+        <div class="card ed-form">
+          <h3>Identity</h3>
+          <div class="f-row">
+            <div class="f"><label for="ed-name">Full name</label><input id="ed-name" value="Priya Sharma" /></div>
+            <div class="f"><label for="ed-role">Role &amp; company</label><input id="ed-role" value="Founder & CEO, Sharma Packaging Solutions" /></div>
+          </div>
+          <div class="f-row">
+            <div class="f"><label for="ed-loc">Location</label><input id="ed-loc" value="Ahmedabad, Gujarat" /></div>
+            <div class="f"><label for="ed-tag">Tagline</label><input id="ed-tag" value="Sustainable packaging for D2C brands" maxlength="60" /><span class="f__hint">Max 60 characters.</span></div>
+          </div>
+          <h3>Contact</h3>
+          <div class="f-row">
+            <div class="f"><label for="ed-phone">Phone</label><input id="ed-phone" type="tel" value="+91 98250 12345" /></div>
+            <div class="f"><label for="ed-email">Email</label><input id="ed-email" type="email" value="priya@sharmapack.in" /></div>
+          </div>
+          <div class="f-row">
+            <div class="f"><label for="ed-site">Website</label><input id="ed-site" type="url" value="https://sharmapack.in" /></div>
+            <div class="f"><label for="ed-upi">UPI ID</label><input id="ed-upi" value="sharmapack@icici" /><span class="f__hint">Shown in the Payments section.</span></div>
+          </div>
+          <h3>About</h3>
+          <div class="f">
+            <label for="ed-about">About your business</label>
+            <textarea id="ed-about" rows="4">Sharma Packaging Solutions designs and manufactures sustainable packaging for D2C brands across India — mono cartons, mailer boxes and food-grade pouches. Every order ships with a 3-day proofing guarantee.</textarea>
+            <span class="f__hint">Two short paragraphs read best on mobile.</span>
+          </div>
+          <h3>Sections</h3>
+          <div>
+            <div class="module">
+              <span class="module__body"><p class="module__name">Services</p><p class="module__desc">3 services with WhatsApp enquiry</p></span>
+              <label class="switch"><input type="checkbox" checked /><span class="switch__track"></span><span class="switch__thumb"></span></label>
+            </div>
+            <div class="module">
+              <span class="module__body"><p class="module__name">Highlights</p><p class="module__desc">Testimonial, files and Google reviews</p></span>
+              <label class="switch"><input type="checkbox" checked /><span class="switch__track"></span><span class="switch__thumb"></span></label>
+            </div>
+            <div class="module">
+              <span class="module__body"><p class="module__name">Payments</p><p class="module__desc">UPI ID and wallet passes</p></span>
+              <label class="switch"><input type="checkbox" checked /><span class="switch__track"></span><span class="switch__thumb"></span></label>
+            </div>
+            <div class="module">
+              <span class="module__body"><p class="module__name">Exchange info</p><p class="module__desc">Visitors can share their details back</p></span>
+              <label class="switch"><input type="checkbox" checked /><span class="switch__track"></span><span class="switch__thumb"></span></label>
+            </div>
+            <div class="module">
+              <span class="module__body"><p class="module__name">View counter</p><p class="module__desc">Show total views on your card</p></span>
+              <label class="switch"><input type="checkbox" checked /><span class="switch__track"></span><span class="switch__thumb"></span></label>
+            </div>
+          </div>
+        </div>
+        <div class="preview">
+          <div class="preview__frame">
+            <iframe src="../digital-card/index.html?embed=1" title="Live card preview" loading="lazy"></iframe>
+          </div>
+          <p class="preview__note">Live preview — exactly what a visitor sees after the tap.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SHARE & ORDER ============ -->
+    <section class="view" data-view-panel="share">
+      <div class="view__head">
+        <div>
+          <h1 class="view__title">Share &amp; Order</h1>
+          <p class="view__sub">Every way to put your card in front of people.</p>
+        </div>
+      </div>
+      <div class="sh-grid">
+        <div class="card sh-card">
+          <h3>Your card link</h3>
+          <p>One link, everywhere — bio, invoices, WhatsApp status.</p>
+          <div class="linkbox">
+            <code>card.printvana.com/priya</code>
+            <button class="btn btn--primary btn--sm" id="copyLink">Copy</button>
+          </div>
+          <h3 style="margin-top: 20px;">QR code</h3>
+          <p>Print it on anything — shop counter, packaging, standee.</p>
+          <svg class="sh-qr" viewBox="0 0 29 29" shape-rendering="crispEdges" aria-hidden="true">
+            <g fill="currentColor">
+              <rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="var(--color-background)"/><rect x="2" y="2" width="3" height="3"/>
+              <rect x="22" y="0" width="7" height="7"/><rect x="23" y="1" width="5" height="5" fill="var(--color-background)"/><rect x="24" y="2" width="3" height="3"/>
+              <rect x="0" y="22" width="7" height="7"/><rect x="1" y="23" width="5" height="5" fill="var(--color-background)"/><rect x="2" y="24" width="3" height="3"/>
+              <rect x="9" y="1" width="2" height="1"/><rect x="13" y="0" width="1" height="2"/><rect x="16" y="1" width="2" height="2"/><rect x="19" y="0" width="1" height="1"/>
+              <rect x="9" y="4" width="1" height="3"/><rect x="11" y="5" width="3" height="1"/><rect x="15" y="4" width="1" height="2"/><rect x="18" y="5" width="2" height="1"/>
+              <rect x="1" y="9" width="2" height="1"/><rect x="4" y="9" width="1" height="2"/><rect x="6" y="10" width="1" height="1"/><rect x="0" y="13" width="1" height="2"/><rect x="2" y="12" width="2" height="2"/><rect x="5" y="13" width="2" height="1"/><rect x="1" y="16" width="1" height="2"/><rect x="3" y="17" width="2" height="1"/><rect x="6" y="16" width="1" height="1"/><rect x="0" y="19" width="2" height="1"/><rect x="4" y="19" width="1" height="1"/>
+              <rect x="9" y="9" width="2" height="2"/><rect x="12" y="8" width="1" height="3"/><rect x="14" y="10" width="3" height="1"/><rect x="18" y="9" width="1" height="2"/><rect x="20" y="8" width="1" height="1"/>
+              <rect x="8" y="13" width="3" height="1"/><rect x="12" y="12" width="2" height="2"/><rect x="15" y="13" width="1" height="2"/><rect x="17" y="12" width="2" height="1"/><rect x="20" y="13" width="1" height="2"/>
+              <rect x="9" y="16" width="1" height="3"/><rect x="11" y="17" width="2" height="1"/><rect x="14" y="16" width="2" height="2"/><rect x="17" y="17" width="1" height="1"/><rect x="19" y="16" width="2" height="1"/>
+              <rect x="8" y="20" width="2" height="1"/><rect x="11" y="21" width="1" height="2"/><rect x="13" y="20" width="3" height="1"/><rect x="17" y="20" width="1" height="2"/><rect x="19" y="21" width="2" height="1"/>
+              <rect x="9" y="24" width="2" height="2"/><rect x="12" y="25" width="2" height="1"/><rect x="15" y="24" width="1" height="3"/><rect x="17" y="25" width="2" height="2"/><rect x="20" y="24" width="1" height="1"/>
+              <rect x="22" y="9" width="2" height="1"/><rect x="25" y="9" width="1" height="2"/><rect x="27" y="10" width="1" height="1"/><rect x="23" y="12" width="1" height="2"/><rect x="25" y="13" width="2" height="1"/><rect x="22" y="16" width="1" height="1"/><rect x="24" y="15" width="2" height="2"/><rect x="27" y="16" width="1" height="2"/><rect x="23" y="19" width="2" height="1"/><rect x="26" y="19" width="1" height="1"/>
+              <rect x="22" y="22" width="2" height="2"/><rect x="25" y="23" width="2" height="1"/><rect x="24" y="25" width="1" height="2"/><rect x="26" y="26" width="2" height="1"/>
+            </g>
+          </svg>
+          <div class="sh-actions">
+            <button class="btn btn--outline btn--sm">Download PNG</button>
+            <button class="btn btn--outline btn--sm">Download sticker sheet</button>
+            <button class="btn btn--outline btn--sm">Wallet pass</button>
+          </div>
+        </div>
+        <div>
+          <div class="card order-hero">
+            <img src="../../assets/illustrations/business-cards.svg" alt="" />
+            <div>
+              <h3>Order your printed NFC card</h3>
+              <p>Matte PVC, tap-enabled, printed and delivered by a PrintVana partner near you. <span class="price">From ₹499</span> · pack of 2.</p>
+              <a class="btn btn--primary" href="#">Order NFC Cards</a>
+            </div>
+          </div>
+          <div class="card sh-card" style="margin-top: 12px;">
+            <h3>Email signature</h3>
+            <p>Paste this into Gmail or Outlook — every email shares your card.</p>
+            <div class="sigbox">Priya Sharma · Founder &amp; CEO
+Sharma Packaging Solutions
+&lt;a href="https://card.printvana.com/priya"&gt;
+  View my digital card
+&lt;/a&gt;</div>
+            <div class="sh-actions">
+              <button class="btn btn--outline btn--sm" id="copySig">Copy signature</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Mobile bottom nav -->
+<nav class="bnav" aria-label="Studio">
+  <button class="bnav__item" data-view="overview" data-active="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+    Overview
+  </button>
+  <button class="bnav__item" data-view="leads">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Leads
+  </button>
+  <button class="bnav__item" data-view="analytics">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 13l3-3 4 4 5-5"/></svg>
+    Analytics
+  </button>
+  <button class="bnav__item" data-view="card">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"/><circle cx="8.5" cy="11" r="2"/><path d="M13 9h5m-5 4h5M5.5 17c.5-1.5 1.7-2 3-2s2.5.5 3 2"/></svg>
+    My Card
+  </button>
+  <button class="bnav__item" data-view="share">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98m-.01-10.98-6.82 3.98"/></svg>
+    Share
+  </button>
+</nav>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Toast ---------- */
+  var toastEl = document.getElementById('toast'), toastTimer;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.setAttribute('data-show', 'true');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.removeAttribute('data-show'); }, 2200);
+  }
+
+  /* ---------- View switching ---------- */
+  function show(view) {
+    document.querySelectorAll('[data-view-panel]').forEach(function (p) {
+      p.setAttribute('data-active', String(p.getAttribute('data-view-panel') === view));
+    });
+    document.querySelectorAll('[data-view]').forEach(function (b) {
+      b.setAttribute('data-active', String(b.getAttribute('data-view') === view));
+    });
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll('[data-view]').forEach(function (b) {
+    b.addEventListener('click', function () { show(b.getAttribute('data-view')); });
+  });
+  document.querySelectorAll('[data-goto]').forEach(function (a) {
+    a.addEventListener('click', function (e) { e.preventDefault(); show(a.getAttribute('data-goto')); });
+  });
+
+  /* ---------- Views chart (static demo data) ---------- */
+  var days = [42, 61, 55, 78, 96, 71, 64, 88, 112, 93, 84, 129, 101, 118];
+  var labels = ['24', '25', '26', '27', '28', '29', '30', '1', '2', '3', '4', '5', '6', '7'];
+  var max = Math.max.apply(null, days);
+  document.getElementById('viewChart').innerHTML = days.map(function (v, i) {
+    return '<div class="bar" title="' + v + ' views">' +
+      '<div class="bar__fill" style="height:' + Math.round(v / max * 100) + '%"></div>' +
+      '<div class="bar__label">' + labels[i] + '</div></div>';
+  }).join('');
+
+  /* ---------- Leads search + filter ---------- */
+  var search = document.getElementById('leadSearch');
+  var filter = document.getElementById('leadFilter');
+  function applyFilter() {
+    var q = search.value.toLowerCase();
+    var src = filter.value;
+    document.querySelectorAll('#leadTable tbody tr').forEach(function (tr) {
+      var matchQ = !q || tr.textContent.toLowerCase().indexOf(q) !== -1;
+      var matchS = !src || tr.querySelector('.chip').textContent.trim() === src;
+      tr.style.display = (matchQ && matchS) ? '' : 'none';
+    });
+  }
+  search.addEventListener('input', applyFilter);
+  filter.addEventListener('change', applyFilter);
+
+  /* ---------- Export CSV ---------- */
+  document.getElementById('exportCsv').addEventListener('click', function () {
+    var rows = [['Name', 'Phone', 'Note', 'Source', 'When']];
+    document.querySelectorAll('#leadTable tbody tr').forEach(function (tr) {
+      if (tr.style.display === 'none') return;
+      var c = tr.querySelectorAll('td');
+      rows.push([c[0].textContent, c[1].textContent, c[2].textContent, c[3].textContent.trim(), c[4].textContent]);
+    });
+    var csv = rows.map(function (r) { return r.map(function (f) { return '"' + f.replace(/"/g, '""') + '"'; }).join(','); }).join('\r\n');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = 'printvana-leads.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    toast('Leads exported');
+  });
+
+  /* ---------- Copy helpers ---------- */
+  document.getElementById('copyLink').addEventListener('click', function () {
+    if (navigator.clipboard) { navigator.clipboard.writeText('https://card.printvana.com/priya'); toast('Link copied'); }
+  });
+  document.getElementById('copySig').addEventListener('click', function () {
+    if (navigator.clipboard) { navigator.clipboard.writeText('Priya Sharma · Founder & CEO\nSharma Packaging Solutions\nhttps://card.printvana.com/priya'); toast('Signature copied'); }
+  });
+
+  /* ---------- Editor autosave feel ---------- */
+  var saveTimer;
+  document.querySelectorAll('.ed-form input, .ed-form textarea').forEach(function (el) {
+    el.addEventListener('input', function () {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(function () { toast('Saved — your card is up to date'); }, 900);
+    });
+  });
+  document.querySelectorAll('.switch input').forEach(function (el) {
+    el.addEventListener('change', function () { toast(el.checked ? 'Section shown on your card' : 'Section hidden from your card'); });
+  });
+})();
+</script>
+</body>
+</html>

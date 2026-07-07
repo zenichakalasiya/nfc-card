@@ -1,0 +1,702 @@
+<!-- @dsCard group="PrintVana Digital Card" viewport="390x844" name="Digital Business Card" subtitle="NFC-tap receiver view — professional card-on-canvas layout, two personas, dark mode" -->
+<!-- @startingPoint section="Screens" subtitle="NFC digital business card — receiver view" viewport="390x844" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Priya Sharma — Digital Card — PrintVana</title>
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--color-surface); color: var(--color-text); font-family: var(--font-sans); font-size: 14px; -webkit-font-smoothing: antialiased; }
+
+  /* ============ Shell — card-on-canvas ============ */
+  .dc { min-height: 100vh; display: flex; justify-content: center; gap: 24px; padding: 0 0 96px; }
+  .dc__main { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 12px; }
+  .dc__side { display: none; width: 300px; flex-direction: column; gap: 12px; }
+  @media (min-width: 640px) { .dc { padding: 24px 20px 96px; } }
+  @media (min-width: 1025px) { .dc__side { display: flex; } .dc__side > * { position: sticky; top: 24px; } }
+
+  .card { background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden; }
+  @media (max-width: 639px) { .dc__main > .card { border-radius: 0; border-left: 0; border-right: 0; } .dc__main > .card:first-child { border-top: 0; } }
+
+  /* ============ P0 — Identity ============ */
+  .id__cover { height: 92px; background: linear-gradient(120deg, #0F172A 0%, #1E293B 70%, #24443457 100%), #0F172A; position: relative; }
+  .id__cover::after { content: ""; position: absolute; inset: 0; background: radial-gradient(70% 130% at 88% 0%, rgb(34 197 94 / 0.28) 0%, transparent 60%); }
+  [data-theme="dark"] .id__cover { background: linear-gradient(120deg, #060A08 0%, #101713 100%); }
+  .id__cover-tools { position: absolute; top: 12px; right: 12px; z-index: 1; display: flex; align-items: center; gap: 8px; }
+  .id__views { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; color: rgb(255 255 255 / 0.75); letter-spacing: .01em; }
+  .id__theme { width: 30px; height: 30px; border: 1px solid rgb(255 255 255 / 0.22); background: rgb(255 255 255 / 0.08); color: rgb(255 255 255 / 0.85); border-radius: var(--radius-full); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background .15s; }
+  .id__theme:hover { background: rgb(255 255 255 / 0.16); }
+  .id__body { padding: 0 20px 20px; }
+  .id__avatar { position: relative; z-index: 1; width: 96px; height: 96px; margin-top: -48px; border-radius: var(--radius-full); border: 4px solid var(--color-background); background: var(--color-primary-soft); color: var(--color-primary-soft-fg); display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: var(--weight-bold); letter-spacing: -0.02em; }
+  .id__name-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .id__name { font-size: 22px; font-weight: var(--weight-bold); letter-spacing: var(--tracking-tight); margin: 0; line-height: 1.2; }
+  .id__verified { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; color: var(--color-text-muted); border: 1px solid var(--color-border); padding: 2px 8px; border-radius: var(--radius-full); }
+  .id__verified svg { color: var(--color-primary); }
+  .id__role { margin: 5px 0 0; font-size: 15px; color: var(--color-text); }
+  .id__meta { margin: 4px 0 0; font-size: 13px; color: var(--color-text-muted); }
+  .id__meta span + span::before { content: " · "; color: var(--color-text-subtle); }
+
+  /* Pill buttons — LinkedIn-style */
+  .id__cta-row { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .pill { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 40px; padding: 0 18px; border-radius: var(--radius-full); font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; text-decoration: none; transition: background .15s, border-color .15s, color .15s; }
+  .pill--primary { background: var(--color-primary); color: var(--color-primary-foreground); border: 1px solid transparent; flex: 1; min-width: 150px; }
+  .pill--primary:hover { background: var(--color-primary-hover); }
+  .pill--outline { background: transparent; color: var(--color-text); border: 1px solid var(--color-border-strong); }
+  .pill--outline:hover { border-color: var(--color-text-muted); background: var(--color-surface); }
+  @media (max-width: 480px) {
+    .pill--primary { flex-basis: 100%; }
+    .id__cta-row a.pill--outline { flex: 1; }
+  }
+
+  /* Quick actions — icon chip rail */
+  .id__quick { display: flex; gap: 4px; margin: 16px -8px 0; padding: 0 8px; overflow-x: auto; scrollbar-width: none; }
+  .id__quick::-webkit-scrollbar { display: none; }
+  .qa { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 64px; padding: 8px 6px; border: 0; background: none; border-radius: var(--radius-md); color: var(--color-text-muted); font-size: 11px; font-weight: 500; font-family: inherit; cursor: pointer; text-decoration: none; transition: color .15s, background .15s; }
+  .qa:hover { background: var(--color-surface); color: var(--color-text); }
+  .qa__icon { width: 42px; height: 42px; border-radius: var(--radius-full); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; color: var(--color-text); transition: border-color .15s, color .15s; }
+  .qa:hover .qa__icon { border-color: var(--color-primary); color: var(--color-primary); }
+
+  /* ============ Section cards ============ */
+  .sec { padding: 20px; }
+  .sec__title { font-size: 15px; font-weight: var(--weight-semibold); letter-spacing: var(--tracking-snug); margin: 0 0 14px; display: flex; align-items: center; justify-content: space-between; }
+  .sec__title a { font-size: 13px; font-weight: 600; color: var(--color-primary); text-decoration: none; }
+  .sec__title a:hover { text-decoration: underline; }
+  .sec p { margin: 0 0 10px; font-size: 14px; line-height: 1.6; color: var(--color-text-muted); }
+  .sec p:last-child { margin-bottom: 0; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .tag { font-size: 12px; font-weight: 500; color: var(--color-text); background: var(--color-surface); border: 1px solid var(--color-border); padding: 4px 10px; border-radius: var(--radius-full); }
+
+  /* Details rows */
+  .row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--color-border); }
+  .row:last-child { border-bottom: 0; padding-bottom: 0; }
+  .row:first-of-type { padding-top: 0; }
+  .row__icon { width: 34px; height: 34px; border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text-muted); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .row__body { flex: 1; min-width: 0; }
+  .row__label { font-size: 11px; font-weight: 600; color: var(--color-text-subtle); text-transform: uppercase; letter-spacing: .05em; margin: 0; }
+  .row__value { font-size: 14px; color: var(--color-text); margin: 1px 0 0; word-break: break-word; }
+  .row__value a { color: inherit; text-decoration: none; }
+  .row__value a:hover { color: var(--color-primary); }
+  .ghost-btn { flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px; border: 0; background: none; color: var(--color-text-subtle); font-size: 12px; font-weight: 600; font-family: inherit; padding: 7px 9px; border-radius: var(--radius-sm); cursor: pointer; transition: color .15s, background .15s; }
+  .ghost-btn:hover { color: var(--color-primary); background: var(--color-surface); }
+  .ghost-btn[data-copied="true"] { color: var(--color-primary); }
+
+  /* Offerings — media rows */
+  .offer { display: flex; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--color-border); }
+  .offer:last-child { border-bottom: 0; padding-bottom: 0; }
+  .offer:first-of-type { padding-top: 0; }
+  .offer__thumb { width: 48px; height: 48px; border-radius: var(--radius-lg); background: var(--color-primary-soft); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .offer__thumb img { width: 32px; height: 32px; }
+  .offer__body { flex: 1; min-width: 0; }
+  .offer__name { font-size: 14px; font-weight: 600; margin: 0; }
+  .offer__desc { font-size: 13px; color: var(--color-text-muted); margin: 2px 0 0; line-height: 1.5; }
+  .offer__cta { flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--color-primary); text-decoration: none; white-space: nowrap; }
+  .offer__cta:hover { text-decoration: underline; }
+
+  /* Quote — minimal */
+  .quote { border-left: 2px solid var(--color-primary); padding: 2px 0 2px 16px; margin: 0; }
+  .quote p { font-size: 14px; line-height: 1.6; color: var(--color-text); font-style: italic; margin: 0 0 8px; }
+  .quote footer { font-size: 12px; font-weight: 600; color: var(--color-text-muted); }
+
+  /* Socials */
+  .socials { display: flex; gap: 6px; margin-top: 16px; }
+  .socials a { width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--radius-full); border: 1px solid var(--color-border); color: var(--color-text-muted); transition: color .15s, border-color .15s; }
+  .socials a:hover { color: var(--color-primary); border-color: var(--color-primary); }
+
+  /* Wallets */
+  .wallets { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+  .wallets a { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 40px; border-radius: var(--radius-full); border: 1px solid var(--color-border-strong); background: transparent; color: var(--color-text); font-size: 13px; font-weight: 600; text-decoration: none; transition: border-color .15s, background .15s; }
+  .wallets a:hover { border-color: var(--color-text-muted); background: var(--color-surface); }
+
+  /* ============ Side rail (desktop) ============ */
+  .side-card { padding: 20px; text-align: center; }
+  .side-card h3 { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+  .side-card p { font-size: 12px; color: var(--color-text-muted); margin: 0 0 12px; line-height: 1.5; }
+  .side-card .qr-svg { width: 148px; height: 148px; margin: 4px auto 12px; display: block; }
+  .side-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--color-primary); text-decoration: none; }
+  .side-link:hover { text-decoration: underline; }
+
+  /* ============ Footer ============ */
+  .dc__footer { text-align: center; padding: 20px 20px 0; }
+  .dc__footer-brand { display: inline-flex; align-items: center; gap: 7px; color: var(--color-text-muted); font-size: 12px; font-weight: 500; text-decoration: none; }
+  .dc__footer-brand img { width: 16px; height: 16px; }
+  .dc__footer-brand strong { color: var(--color-text); font-weight: 700; }
+  .dc__footer-links { margin-top: 8px; font-size: 11px; color: var(--color-text-subtle); }
+  .dc__footer-links a { color: inherit; text-decoration: none; margin: 0 5px; }
+  .dc__footer-links a:hover { color: var(--color-primary); }
+  .dc__get { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; height: 34px; padding: 0 16px; border-radius: var(--radius-full); border: 1px solid var(--color-border-strong); color: var(--color-text); font-size: 12px; font-weight: 600; text-decoration: none; transition: border-color .15s, color .15s; }
+  .dc__get:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+  /* Persona demo switch */
+  .persona { position: fixed; bottom: 16px; left: 16px; z-index: 45; display: inline-flex; border: 1px solid var(--color-border); background: var(--color-background); border-radius: var(--radius-full); padding: 3px; box-shadow: var(--shadow-card); }
+  @media (max-width: 1024px) { .persona { bottom: 78px; } }
+  .persona button { border: 0; background: none; font-family: inherit; font-size: 11px; font-weight: 600; color: var(--color-text-muted); padding: 5px 12px; border-radius: var(--radius-full); cursor: pointer; }
+  .persona button[data-active="true"] { background: var(--color-text); color: var(--color-background); }
+
+  /* ============ Lead bar + sheet ============ */
+  .leadbar { position: fixed; left: 50%; transform: translateX(-50%); bottom: 16px; width: min(calc(100% - 32px), 568px); z-index: 40; display: flex; align-items: center; gap: 12px; background: color-mix(in srgb, var(--color-background) 94%, transparent); backdrop-filter: blur(10px); border: 1px solid var(--color-border); border-radius: var(--radius-full); padding: 8px 8px 8px 18px; box-shadow: var(--shadow-lg); opacity: 0; pointer-events: none; transition: opacity .25s; }
+  .leadbar[data-show="true"] { opacity: 1; pointer-events: auto; }
+  .leadbar__text { flex: 1; min-width: 0; font-size: 13px; font-weight: 500; color: var(--color-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .leadbar__btn { flex-shrink: 0; height: 36px; padding: 0 16px; border: 0; border-radius: var(--radius-full); background: var(--color-primary); color: var(--color-primary-foreground); font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; transition: background .15s; }
+  .leadbar__btn:hover { background: var(--color-primary-hover); }
+  .leadbar__close { flex-shrink: 0; width: 30px; height: 30px; border: 0; background: none; color: var(--color-text-subtle); cursor: pointer; border-radius: var(--radius-full); display: inline-flex; align-items: center; justify-content: center; }
+  .leadbar__close:hover { background: var(--color-surface); color: var(--color-text); }
+  @media (min-width: 1025px) { .leadbar { left: auto; right: 32px; transform: none; width: 380px; } }
+
+  .scrim { position: fixed; inset: 0; background: rgb(15 23 42 / 0.5); z-index: 50; opacity: 0; pointer-events: none; transition: opacity .25s; }
+  .scrim[data-open="true"] { opacity: 1; pointer-events: auto; }
+  .sheet { position: fixed; left: 50%; transform: translate(-50%, 105%); bottom: 0; width: min(100%, 560px); background: var(--color-background); border-radius: var(--radius-2xl) var(--radius-2xl) 0 0; z-index: 51; padding: 20px 20px 32px; transition: transform .28s cubic-bezier(.32,.72,0,1); box-shadow: var(--shadow-lg); }
+  .sheet[data-open="true"] { transform: translate(-50%, 0); }
+  @media (min-width: 1025px) { .sheet { bottom: auto; top: 50%; border-radius: var(--radius-2xl); transform: translate(-50%, 60%); opacity: 0; pointer-events: none; } .sheet[data-open="true"] { transform: translate(-50%, -50%); opacity: 1; pointer-events: auto; } }
+  .sheet__grab { width: 36px; height: 4px; border-radius: var(--radius-full); background: var(--color-border-strong); margin: 0 auto 18px; }
+  @media (min-width: 1025px) { .sheet__grab { display: none; } }
+  .sheet h2 { font-size: 18px; font-weight: var(--weight-bold); letter-spacing: var(--tracking-tight); margin: 0 0 4px; }
+  .sheet__sub { color: var(--color-text-muted); font-size: 13px; margin: 0 0 18px; }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--color-text); }
+  .field label em { color: var(--color-text-subtle); font-weight: 400; font-style: normal; }
+  .field input, .field textarea { width: 100%; height: 44px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); padding: 0 12px; font-size: 14px; font-family: inherit; color: var(--color-text); }
+  .field textarea { height: auto; padding: 10px 12px; resize: vertical; }
+  .field input:focus-visible, .field textarea:focus-visible { outline: none; border-color: var(--color-primary); background: var(--color-background); box-shadow: 0 0 0 3px var(--color-primary-soft); }
+  .sheet__submit { width: 100%; height: 44px; border: 0; border-radius: var(--radius-full); background: var(--color-primary); color: var(--color-primary-foreground); font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; transition: background .15s; margin-top: 4px; }
+  .sheet__submit:hover { background: var(--color-primary-hover); }
+  .sheet__consent { font-size: 11px; color: var(--color-text-subtle); text-align: center; margin: 12px 0 0; }
+  .sheet__success { text-align: center; padding: 24px 0 12px; display: none; }
+  .sheet__success-icon { width: 56px; height: 56px; border-radius: var(--radius-full); background: var(--color-primary-soft); color: var(--color-primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+  .sheet__success h3 { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
+  .sheet__success p { color: var(--color-text-muted); font-size: 13px; margin: 0; }
+  .sheet[data-state="success"] .sheet__form { display: none; }
+  .sheet[data-state="success"] .sheet__success { display: block; }
+
+  /* QR overlay */
+  .qr-panel { position: fixed; inset: 0; z-index: 60; background: var(--color-background); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 24px; text-align: center; }
+  .qr-panel[data-open="true"] { display: flex; }
+  .qr-panel__box { width: 232px; height: 232px; border-radius: var(--radius-xl); border: 1px solid var(--color-border); padding: 16px; background: #fff; }
+  .qr-panel__close { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; border: 1px solid var(--color-border); background: var(--color-background); border-radius: var(--radius-full); color: var(--color-text); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+  .qr-panel h2 { font-size: 17px; font-weight: 700; margin: 0 0 4px; }
+  .qr-panel p { color: var(--color-text-muted); font-size: 13px; margin: 0; }
+
+  .toast { position: fixed; bottom: 84px; left: 50%; transform: translate(-50%, 8px); background: var(--color-text); color: var(--color-background); font-size: 13px; font-weight: 500; padding: 9px 16px; border-radius: var(--radius-full); box-shadow: var(--shadow-lg); z-index: 70; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
+  .toast[data-show="true"] { opacity: 1; transform: translate(-50%, 0); }
+
+  [hidden] { display: none !important; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="dc">
+  <main class="dc__main">
+
+    <!-- P0 + P1 · Identity card -->
+    <section class="card" aria-label="Identity">
+      <div class="id__cover">
+        <div class="id__cover-tools">
+          <span class="id__views" title="Card views">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span data-bind="views">1,284</span>
+          </span>
+          <button class="id__theme" id="themeToggle" aria-label="Toggle dark mode">
+            <svg id="iconMoon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            <svg id="iconSun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="id__body">
+        <div class="id__avatar" data-bind="initials" aria-hidden="true">PS</div>
+        <div class="id__name-row">
+          <h1 class="id__name" data-bind="name">Priya Sharma</h1>
+          <span class="id__verified" title="Identity verified by PrintVana">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Verified
+          </span>
+        </div>
+        <p class="id__role" data-bind="role">Founder &amp; CEO, Sharma Packaging Solutions</p>
+        <p class="id__meta"><span data-bind="location">Ahmedabad, Gujarat</span><span data-bind="tagline">Sustainable packaging for D2C brands</span></p>
+        <div class="id__cta-row">
+          <button class="pill pill--primary" id="saveContact">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Save Contact
+          </button>
+          <a class="pill pill--outline" data-bind-href="whatsapp" href="#" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            WhatsApp
+          </a>
+          <button class="pill pill--outline" id="shareCard" aria-label="Share this card">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98m-.01-10.98-6.82 3.98"/></svg>
+          </button>
+        </div>
+        <div class="id__quick" role="navigation" aria-label="Quick actions">
+          <a class="qa" data-bind-href="tel" href="#">
+            <span class="qa__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+            Call
+          </a>
+          <a class="qa" data-bind-href="email" href="#">
+            <span class="qa__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+            Email
+          </a>
+          <a class="qa" data-bind-href="website" href="#" target="_blank" rel="noopener">
+            <span class="qa__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg></span>
+            Website
+          </a>
+          <a class="qa" data-bind-href="maps" href="#" target="_blank" rel="noopener">
+            <span class="qa__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+            Directions
+          </a>
+          <button class="qa" id="showQr">
+            <span class="qa__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3m5-1v.01M12 7v3a2 2 0 0 1-2 2H7m-4 0h.01M12 3h.01M12 16v.01M16 12h1m4 0v.01M12 21v-1"/></svg></span>
+            QR code
+          </button>
+          <button class="qa" id="openLead2">
+            <span class="qa__icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6m3-3h-6"/></svg></span>
+            Exchange
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- P2 · About -->
+    <section class="card sec" aria-labelledby="t-about">
+      <h2 class="sec__title" id="t-about">About</h2>
+      <div data-bind-html="about"></div>
+      <div class="tags" data-bind-html="tags"></div>
+      <div class="socials" data-bind-html="socials" aria-label="Profiles"></div>
+    </section>
+
+    <!-- P2 · Details -->
+    <section class="card sec" aria-labelledby="t-details">
+      <h2 class="sec__title" id="t-details">Details</h2>
+      <div data-bind-html="details"></div>
+    </section>
+
+    <!-- P3 · Services -->
+    <section class="card sec" aria-labelledby="t-offer">
+      <h2 class="sec__title" id="t-offer"><span data-bind="offerTitle">Services</span></h2>
+      <div data-bind-html="offers"></div>
+    </section>
+
+    <!-- P4 · Highlights -->
+    <section class="card sec" aria-labelledby="t-proof">
+      <h2 class="sec__title" id="t-proof">Highlights</h2>
+      <blockquote class="quote">
+        <p data-bind="quote">"Sharma Packaging turned our unboxing into our best marketing channel."</p>
+        <footer data-bind="quoteBy">Kavya Iyer, Founder — Terra Foods</footer>
+      </blockquote>
+      <div style="margin-top: 16px;" data-bind-html="resources"></div>
+    </section>
+
+    <!-- P6 · Payments -->
+    <section class="card sec" id="paySection" aria-labelledby="t-pay">
+      <h2 class="sec__title" id="t-pay"><span data-bind="payTitle">Payments</span></h2>
+      <div data-bind-html="payments"></div>
+      <div class="wallets">
+        <a href="#">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></svg>
+          Apple Wallet
+        </a>
+        <a href="#">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></svg>
+          Google Wallet
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="dc__footer">
+      <a class="dc__footer-brand" href="#">
+        <img src="../../assets/logo-mark.svg" alt="" />
+        <span>Made with <strong>PrintVana</strong> Digital Cards</span>
+      </a>
+      <br />
+      <a class="dc__get" href="#">Get Your Card
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </a>
+      <p class="dc__footer-links"><a href="#">Privacy</a>·<a href="#">Terms</a>·<a href="#">Report This Card</a></p>
+    </footer>
+  </main>
+
+  <!-- Desktop side rail -->
+  <aside class="dc__side">
+    <div>
+      <div class="card side-card">
+        <svg class="qr-svg" viewBox="0 0 29 29" shape-rendering="crispEdges" aria-hidden="true">
+          <rect width="29" height="29" fill="none"/>
+          <g fill="currentColor">
+            <rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="var(--color-background)"/><rect x="2" y="2" width="3" height="3"/>
+            <rect x="22" y="0" width="7" height="7"/><rect x="23" y="1" width="5" height="5" fill="var(--color-background)"/><rect x="24" y="2" width="3" height="3"/>
+            <rect x="0" y="22" width="7" height="7"/><rect x="1" y="23" width="5" height="5" fill="var(--color-background)"/><rect x="2" y="24" width="3" height="3"/>
+            <rect x="9" y="1" width="2" height="1"/><rect x="13" y="0" width="1" height="2"/><rect x="16" y="1" width="2" height="2"/><rect x="19" y="0" width="1" height="1"/>
+            <rect x="9" y="4" width="1" height="3"/><rect x="11" y="5" width="3" height="1"/><rect x="15" y="4" width="1" height="2"/><rect x="18" y="5" width="2" height="1"/>
+            <rect x="1" y="9" width="2" height="1"/><rect x="4" y="9" width="1" height="2"/><rect x="6" y="10" width="1" height="1"/><rect x="0" y="13" width="1" height="2"/><rect x="2" y="12" width="2" height="2"/><rect x="5" y="13" width="2" height="1"/><rect x="1" y="16" width="1" height="2"/><rect x="3" y="17" width="2" height="1"/><rect x="6" y="16" width="1" height="1"/><rect x="0" y="19" width="2" height="1"/><rect x="4" y="19" width="1" height="1"/>
+            <rect x="9" y="9" width="2" height="2"/><rect x="12" y="8" width="1" height="3"/><rect x="14" y="10" width="3" height="1"/><rect x="18" y="9" width="1" height="2"/><rect x="20" y="8" width="1" height="1"/>
+            <rect x="8" y="13" width="3" height="1"/><rect x="12" y="12" width="2" height="2"/><rect x="15" y="13" width="1" height="2"/><rect x="17" y="12" width="2" height="1"/><rect x="20" y="13" width="1" height="2"/>
+            <rect x="9" y="16" width="1" height="3"/><rect x="11" y="17" width="2" height="1"/><rect x="14" y="16" width="2" height="2"/><rect x="17" y="17" width="1" height="1"/><rect x="19" y="16" width="2" height="1"/>
+            <rect x="8" y="20" width="2" height="1"/><rect x="11" y="21" width="1" height="2"/><rect x="13" y="20" width="3" height="1"/><rect x="17" y="20" width="1" height="2"/><rect x="19" y="21" width="2" height="1"/>
+            <rect x="9" y="24" width="2" height="2"/><rect x="12" y="25" width="2" height="1"/><rect x="15" y="24" width="1" height="3"/><rect x="17" y="25" width="2" height="2"/><rect x="20" y="24" width="1" height="1"/>
+            <rect x="22" y="9" width="2" height="1"/><rect x="25" y="9" width="1" height="2"/><rect x="27" y="10" width="1" height="1"/><rect x="23" y="12" width="1" height="2"/><rect x="25" y="13" width="2" height="1"/><rect x="22" y="16" width="1" height="1"/><rect x="24" y="15" width="2" height="2"/><rect x="27" y="16" width="1" height="2"/><rect x="23" y="19" width="2" height="1"/><rect x="26" y="19" width="1" height="1"/>
+            <rect x="22" y="22" width="2" height="2"/><rect x="25" y="23" width="2" height="1"/><rect x="24" y="25" width="1" height="2"/><rect x="26" y="26" width="2" height="1"/>
+          </g>
+        </svg>
+        <h3>On your phone?</h3>
+        <p>Point your camera at the code to open <span data-bind="firstName">Priya</span>'s card and save it in one tap.</p>
+      </div>
+      <div class="card side-card" style="margin-top: 12px;">
+        <h3>Your card, this professional</h3>
+        <p>Create your own digital business card and order the printed NFC card with PrintVana.</p>
+        <a class="side-link" href="#">Get Your Card
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- Persona demo switch -->
+<div class="persona" role="tablist" aria-label="Demo persona">
+  <button data-persona="business" data-active="true">Business</button>
+  <button data-persona="individual">Individual</button>
+</div>
+
+<!-- P5 · Lead capture -->
+<aside class="leadbar" id="leadBar" aria-label="Share your details">
+  <span class="leadbar__text">Met <span data-bind="firstName">Priya</span> just now? Share your details.</span>
+  <button class="leadbar__btn" id="openLead">Exchange Info</button>
+  <button class="leadbar__close" id="closeLeadBar" aria-label="Dismiss">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+</aside>
+
+<div class="scrim" id="scrim"></div>
+<section class="sheet" id="leadSheet" role="dialog" aria-modal="true" aria-labelledby="lead-title">
+  <div class="sheet__grab"></div>
+  <form class="sheet__form" id="leadForm">
+    <h2 id="lead-title">Share Your Details</h2>
+    <p class="sheet__sub">Two fields, ten seconds — <span data-bind="firstName">Priya</span> gets your contact instantly.</p>
+    <div class="field">
+      <label for="lead-name">Your Name</label>
+      <input id="lead-name" name="name" type="text" autocomplete="name" required placeholder="Rahul Mehta" />
+    </div>
+    <div class="field">
+      <label for="lead-phone">Phone</label>
+      <input id="lead-phone" name="phone" type="tel" autocomplete="tel" required placeholder="+91 98765 43210" />
+    </div>
+    <div class="field">
+      <label for="lead-note">Note <em>(optional)</em></label>
+      <textarea id="lead-note" name="note" rows="2" placeholder="Where did you meet? What do you need?"></textarea>
+    </div>
+    <button class="sheet__submit" type="submit">Send</button>
+    <p class="sheet__consent">Your details go only to <span data-bind="name">Priya Sharma</span>. No spam, no lists.</p>
+  </form>
+  <div class="sheet__success">
+    <div class="sheet__success-icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+    <h3>Done! <span data-bind="firstName">Priya</span> has your details.</h3>
+    <p>Want their number too? Tap Save Contact above.</p>
+  </div>
+</section>
+
+<div class="qr-panel" id="qrPanel" role="dialog" aria-modal="true" aria-label="Card QR code">
+  <button class="qr-panel__close" id="closeQr" aria-label="Close">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+  <div class="qr-panel__box">
+    <svg viewBox="0 0 29 29" width="100%" height="100%" shape-rendering="crispEdges">
+      <rect width="29" height="29" fill="#fff"/>
+      <g fill="#0F172A">
+        <rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="#fff"/><rect x="2" y="2" width="3" height="3"/>
+        <rect x="22" y="0" width="7" height="7"/><rect x="23" y="1" width="5" height="5" fill="#fff"/><rect x="24" y="2" width="3" height="3"/>
+        <rect x="0" y="22" width="7" height="7"/><rect x="1" y="23" width="5" height="5" fill="#fff"/><rect x="2" y="24" width="3" height="3"/>
+        <rect x="9" y="1" width="2" height="1"/><rect x="13" y="0" width="1" height="2"/><rect x="16" y="1" width="2" height="2"/><rect x="19" y="0" width="1" height="1"/>
+        <rect x="9" y="4" width="1" height="3"/><rect x="11" y="5" width="3" height="1"/><rect x="15" y="4" width="1" height="2"/><rect x="18" y="5" width="2" height="1"/>
+        <rect x="1" y="9" width="2" height="1"/><rect x="4" y="9" width="1" height="2"/><rect x="6" y="10" width="1" height="1"/><rect x="0" y="13" width="1" height="2"/><rect x="2" y="12" width="2" height="2"/><rect x="5" y="13" width="2" height="1"/><rect x="1" y="16" width="1" height="2"/><rect x="3" y="17" width="2" height="1"/><rect x="6" y="16" width="1" height="1"/><rect x="0" y="19" width="2" height="1"/><rect x="4" y="19" width="1" height="1"/>
+        <rect x="9" y="9" width="2" height="2"/><rect x="12" y="8" width="1" height="3"/><rect x="14" y="10" width="3" height="1"/><rect x="18" y="9" width="1" height="2"/><rect x="20" y="8" width="1" height="1"/>
+        <rect x="8" y="13" width="3" height="1"/><rect x="12" y="12" width="2" height="2"/><rect x="15" y="13" width="1" height="2"/><rect x="17" y="12" width="2" height="1"/><rect x="20" y="13" width="1" height="2"/>
+        <rect x="9" y="16" width="1" height="3"/><rect x="11" y="17" width="2" height="1"/><rect x="14" y="16" width="2" height="2"/><rect x="17" y="17" width="1" height="1"/><rect x="19" y="16" width="2" height="1"/>
+        <rect x="8" y="20" width="2" height="1"/><rect x="11" y="21" width="1" height="2"/><rect x="13" y="20" width="3" height="1"/><rect x="17" y="20" width="1" height="2"/><rect x="19" y="21" width="2" height="1"/>
+        <rect x="9" y="24" width="2" height="2"/><rect x="12" y="25" width="2" height="1"/><rect x="15" y="24" width="1" height="3"/><rect x="17" y="25" width="2" height="2"/><rect x="20" y="24" width="1" height="1"/>
+        <rect x="22" y="9" width="2" height="1"/><rect x="25" y="9" width="1" height="2"/><rect x="27" y="10" width="1" height="1"/><rect x="23" y="12" width="1" height="2"/><rect x="25" y="13" width="2" height="1"/><rect x="22" y="16" width="1" height="1"/><rect x="24" y="15" width="2" height="2"/><rect x="27" y="16" width="1" height="2"/><rect x="23" y="19" width="2" height="1"/><rect x="26" y="19" width="1" height="1"/>
+        <rect x="22" y="22" width="2" height="2"/><rect x="25" y="23" width="2" height="1"/><rect x="24" y="25" width="1" height="2"/><rect x="26" y="26" width="2" height="1"/>
+      </g>
+    </svg>
+  </div>
+  <div>
+    <h2>Point your camera here</h2>
+    <p>Opens <span data-bind="firstName">Priya</span>'s card on your phone — no app needed.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Icons for generated rows ---------- */
+  var I = {
+    copy: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>',
+    download: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>',
+    file: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>',
+    star: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+    cal: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
+    phone: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+    mail: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+    pin: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
+    id: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"/><circle cx="8.5" cy="11" r="2"/><path d="M13 9h5m-5 4h5M5.5 17c.5-1.5 1.7-2 3-2s2.5.5 3 2"/></svg>',
+    upi: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/></svg>',
+    link: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+    linkedin: '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>',
+    instagram: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>',
+    youtube: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>',
+    layers: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 10-5 10 5-10 5z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></svg>',
+    dribbble: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M19.13 5.09C15.22 9.14 10 10.44 2.25 10.94m19.5 2.12c-7.73-1.15-12.15.35-16.38 6.44m4.13-16.8c4.4 6.05 5.86 10.13 6.5 17.05"/></svg>'
+  };
+
+  /* ---------- Row builders ---------- */
+  function detailRow(icon, label, value, copyText, href) {
+    var v = href ? '<a href="' + href + '">' + value + '</a>' : value;
+    return '<div class="row">' +
+      '<div class="row__icon">' + icon + '</div>' +
+      '<div class="row__body"><p class="row__label">' + label + '</p><p class="row__value">' + v + '</p></div>' +
+      (copyText ? '<button class="ghost-btn" data-copy="' + copyText.replace(/"/g, '&quot;') + '">' + I.copy + 'Copy</button>' : '') +
+      '</div>';
+  }
+  function offerRow(o) {
+    return '<div class="offer">' +
+      '<div class="offer__thumb"><img src="' + o.img + '" alt="" /></div>' +
+      '<div class="offer__body"><p class="offer__name">' + o.name + '</p><p class="offer__desc">' + o.desc + '</p></div>' +
+      '<a class="offer__cta" href="' + o.href + '" target="_blank" rel="noopener">' + o.cta + '</a>' +
+      '</div>';
+  }
+  function resourceRow(r) {
+    return '<div class="row">' +
+      '<div class="row__icon">' + (r.icon || I.file) + '</div>' +
+      '<div class="row__body"><p class="row__label">' + r.label + '</p><p class="row__value">' + r.value + '</p></div>' +
+      '<a class="ghost-btn" href="' + (r.href || '#') + '"' + (r.download ? ' download' : '') + (r.newTab ? ' target="_blank" rel="noopener"' : '') + '>' + (r.action || (I.download + 'Get')) + '</a>' +
+      '</div>';
+  }
+  function social(icon, label) { return '<a href="#" aria-label="' + label + '">' + icon + '</a>'; }
+
+  /* ---------- Personas ---------- */
+  var ILL = '../../assets/illustrations/';
+  var wa = function (phone, text) { return 'https://wa.me/' + phone + '?text=' + encodeURIComponent(text); };
+
+  var PERSONAS = {
+    business: {
+      title: 'Priya Sharma — Digital Card — PrintVana',
+      views: '1,284', initials: 'PS', name: 'Priya Sharma', firstName: 'Priya',
+      role: 'Founder & CEO, Sharma Packaging Solutions',
+      location: 'Ahmedabad, Gujarat', tagline: 'Sustainable packaging for D2C brands',
+      offerTitle: 'Services', payTitle: 'Payments', payHidden: false,
+      tel: 'tel:+919825012345',
+      whatsapp: wa('919825012345', 'Hi Priya, we just met — great connecting!'),
+      email: 'mailto:priya@sharmapack.in?subject=Following%20up%20%E2%80%94%20Priya%20Sharma',
+      website: 'https://sharmapack.in',
+      maps: 'https://maps.app.goo.gl/example',
+      about: '<p>Sharma Packaging Solutions designs and manufactures sustainable packaging for D2C brands across India — mono cartons, mailer boxes and food-grade pouches. Every order ships with a 3-day proofing guarantee.</p><p>Priya has spent 12 years in print and packaging, and works directly with over 400 brands from Ahmedabad to Bengaluru.</p>',
+      tags: ['Sustainable Packaging', 'D2C Brands', 'Food-Grade', 'Bulk Orders'],
+      socials: [[I.linkedin, 'LinkedIn'], [I.instagram, 'Instagram'], [I.layers, 'IndiaMART'], [I.youtube, 'YouTube']],
+      details: [
+        [I.phone, 'Phone', '+91 98250 12345', '+919825012345', 'tel:+919825012345'],
+        [I.mail, 'Email', 'priya@sharmapack.in', 'priya@sharmapack.in', 'mailto:priya@sharmapack.in'],
+        [I.id, 'GSTIN', '24ABCDE1234F1Z5', '24ABCDE1234F1Z5', null],
+        [I.pin, 'Address', '214 GIDC Estate, Vatva, Ahmedabad 382445, Gujarat', '214 GIDC Estate, Vatva, Ahmedabad 382445, Gujarat', null]
+      ],
+      offers: [
+        { img: ILL + 'packaging.svg', name: 'Mailer Boxes', desc: 'Custom-printed corrugated mailers, 100–50,000 units. Ships in 5 days.', cta: 'Enquire', href: wa('919825012345', "Hi, I'm interested in Mailer Boxes") },
+        { img: ILL + 'stickers.svg', name: 'Labels & Stickers', desc: 'Food-grade, waterproof label rolls for jars, pouches and bottles.', cta: 'Enquire', href: wa('919825012345', "Hi, I'm interested in Labels & Stickers") },
+        { img: ILL + 'marketing-materials.svg', name: 'Brand Inserts', desc: 'Thank-you cards and unboxing inserts that turn buyers into repeat customers.', cta: 'Enquire', href: wa('919825012345', "Hi, I'm interested in Brand Inserts") }
+      ],
+      quote: '"Sharma Packaging turned our unboxing into our best marketing channel. Proofs in 2 days, delivery in 5 — every single time."',
+      quoteBy: 'Kavya Iyer, Founder — Terra Foods',
+      resources: [
+        { label: 'Company Profile 2026', value: 'PDF · 3.1 MB', download: true },
+        { label: 'Price List — Mailer Boxes', value: 'PDF · 800 KB', download: true },
+        { icon: I.star, label: 'Google Reviews', value: '4.8 — 214 reviews', action: 'Rate Us', newTab: true }
+      ],
+      payments: [[I.upi, 'UPI ID', 'sharmapack@icici', 'sharmapack@icici', null]],
+      vcf: { last: 'Sharma', first: 'Priya', org: 'Sharma Packaging Solutions', title: 'Founder & CEO', tel: '+919825012345', email: 'priya@sharmapack.in', url: 'https://sharmapack.in', adr: ';;214 GIDC Estate, Vatva;Ahmedabad;Gujarat;382445;India' }
+    },
+    individual: {
+      title: 'Arjun Mehta — Digital Card — PrintVana',
+      views: '862', initials: 'AM', name: 'Arjun Mehta', firstName: 'Arjun',
+      role: 'Independent Product Design Consultant',
+      location: 'Bengaluru, Karnataka', tagline: 'Design systems & B2B SaaS',
+      offerTitle: 'How I Can Help', payTitle: 'Book & Pay', payHidden: false,
+      tel: 'tel:+919900112233',
+      whatsapp: wa('919900112233', 'Hi Arjun, we just met — great connecting!'),
+      email: 'mailto:arjun@arjunmehta.design?subject=Following%20up%20%E2%80%94%20Arjun%20Mehta',
+      website: 'https://arjunmehta.design',
+      maps: 'https://maps.app.goo.gl/example2',
+      about: '<p>I help B2B SaaS teams ship cleaner products — design audits, design systems and hands-on product design. Previously led design at two funded startups.</p><p>Ten years, forty products, one rule: clarity beats decoration.</p>',
+      tags: ['Product Design', 'Design Systems', 'UX Audits', 'B2B SaaS'],
+      socials: [[I.linkedin, 'LinkedIn'], [I.dribbble, 'Dribbble'], [I.instagram, 'Instagram']],
+      details: [
+        [I.phone, 'Phone', '+91 99001 12233', '+919900112233', 'tel:+919900112233'],
+        [I.mail, 'Email', 'arjun@arjunmehta.design', 'arjun@arjunmehta.design', 'mailto:arjun@arjunmehta.design'],
+        [I.link, 'Portfolio', 'arjunmehta.design', null, 'https://arjunmehta.design'],
+        [I.pin, 'Based in', 'Indiranagar, Bengaluru — works remote', null, null]
+      ],
+      offers: [
+        { img: ILL + 'business-cards.svg', name: 'Design Audit', desc: 'A two-week teardown of your product with a prioritized fix list.', cta: 'Enquire', href: wa('919900112233', "Hi Arjun, I'd like a Design Audit") },
+        { img: ILL + 'brochures.svg', name: 'Design Systems', desc: 'Tokens, components and docs your engineers will actually use.', cta: 'Enquire', href: wa('919900112233', 'Hi Arjun, we need a Design System') },
+        { img: ILL + 'posters.svg', name: 'Product Sprints', desc: 'Embedded design partner for a feature cycle — research to handoff.', cta: 'Enquire', href: wa('919900112233', "Hi Arjun, let's talk about a Product Sprint") }
+      ],
+      quote: '"Arjun rebuilt our design foundation in six weeks. Our shipping speed doubled — and the product finally feels coherent."',
+      quoteBy: 'Sneha Rao, VP Product — Fintlio',
+      resources: [
+        { label: 'Portfolio Deck', value: 'PDF · 6.4 MB', download: true },
+        { icon: I.cal, label: 'Intro Call', value: '30 minutes, free', action: 'Book', newTab: true },
+        { icon: I.star, label: 'LinkedIn Recommendations', value: '28 recommendations', action: 'Read', newTab: true }
+      ],
+      payments: [[I.upi, 'UPI ID', 'arjunmehta@okhdfc', 'arjunmehta@okhdfc', null]],
+      vcf: { last: 'Mehta', first: 'Arjun', org: 'Independent Consultant', title: 'Product Design Consultant', tel: '+919900112233', email: 'arjun@arjunmehta.design', url: 'https://arjunmehta.design', adr: ';;Indiranagar;Bengaluru;Karnataka;560038;India' }
+    }
+  };
+
+  var active = 'business';
+
+  /* ---------- Render ---------- */
+  function render(key) {
+    active = key;
+    var p = PERSONAS[key];
+    document.title = p.title;
+    document.querySelectorAll('[data-bind]').forEach(function (el) {
+      var k = el.getAttribute('data-bind');
+      if (p[k] != null) el.textContent = p[k];
+    });
+    document.querySelectorAll('[data-bind-href]').forEach(function (el) {
+      var k = el.getAttribute('data-bind-href');
+      if (p[k]) el.setAttribute('href', p[k]);
+    });
+    var binds = {
+      about: p.about,
+      tags: p.tags.map(function (t) { return '<span class="tag">' + t + '</span>'; }).join(''),
+      socials: p.socials.map(function (s) { return social(s[0], s[1]); }).join(''),
+      details: p.details.map(function (d) { return detailRow(d[0], d[1], d[2], d[3], d[4]); }).join(''),
+      offers: p.offers.map(offerRow).join(''),
+      resources: p.resources.map(resourceRow).join(''),
+      payments: p.payments.map(function (d) { return detailRow(d[0], d[1], d[2], d[3], d[4]); }).join('')
+    };
+    document.querySelectorAll('[data-bind-html]').forEach(function (el) {
+      var k = el.getAttribute('data-bind-html');
+      if (binds[k] != null) el.innerHTML = binds[k];
+    });
+    document.getElementById('paySection').hidden = !!p.payHidden;
+    bindCopyButtons();
+    document.querySelectorAll('.persona button').forEach(function (b) {
+      b.setAttribute('data-active', String(b.getAttribute('data-persona') === key));
+    });
+  }
+
+  /* ---------- Toast ---------- */
+  var toastEl = document.getElementById('toast'), toastTimer;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.setAttribute('data-show', 'true');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.removeAttribute('data-show'); }, 2200);
+  }
+
+  /* ---------- Copy ---------- */
+  function bindCopyButtons() {
+    document.querySelectorAll('.ghost-btn[data-copy]').forEach(function (btn) {
+      btn.onclick = function () {
+        var text = btn.getAttribute('data-copy');
+        (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject())
+          .then(function () {
+            btn.setAttribute('data-copied', 'true');
+            toast('Copied to clipboard');
+            setTimeout(function () { btn.removeAttribute('data-copied'); }, 1600);
+          })
+          .catch(function () { toast('Press and hold to copy'); });
+      };
+    });
+  }
+
+  /* ---------- Save Contact ---------- */
+  document.getElementById('saveContact').addEventListener('click', function () {
+    var v = PERSONAS[active].vcf;
+    var vcf = ['BEGIN:VCARD', 'VERSION:3.0',
+      'N:' + v.last + ';' + v.first + ';;;', 'FN:' + v.first + ' ' + v.last,
+      'ORG:' + v.org, 'TITLE:' + v.title,
+      'TEL;TYPE=CELL:' + v.tel, 'EMAIL;TYPE=WORK:' + v.email,
+      'URL:' + v.url, 'ADR;TYPE=WORK:' + v.adr, 'END:VCARD'].join('\r\n');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([vcf], { type: 'text/vcard' }));
+    a.download = v.first + '-' + v.last + '.vcf';
+    document.body.appendChild(a); a.click(); a.remove();
+    toast('Contact downloaded — open it to save');
+  });
+
+  /* ---------- Share ---------- */
+  document.getElementById('shareCard').addEventListener('click', function () {
+    var p = PERSONAS[active];
+    if (navigator.share) {
+      navigator.share({ title: p.name + "'s card", text: 'This is my digital business card:', url: location.href }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(location.href);
+      toast('Link copied — paste it anywhere');
+    }
+  });
+
+  /* ---------- Theme ---------- */
+  var themeBtn = document.getElementById('themeToggle');
+  themeBtn.addEventListener('click', function () {
+    var root = document.documentElement;
+    var dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme', 'dark');
+    document.getElementById('iconMoon').hidden = !dark;
+    document.getElementById('iconSun').hidden = dark;
+  });
+
+  /* ---------- QR ---------- */
+  var qrPanel = document.getElementById('qrPanel');
+  document.getElementById('showQr').addEventListener('click', function () { qrPanel.setAttribute('data-open', 'true'); });
+  document.getElementById('closeQr').addEventListener('click', function () { qrPanel.removeAttribute('data-open'); });
+
+  /* ---------- Lead capture ---------- */
+  var leadBar = document.getElementById('leadBar');
+  var dismissed = false, shown = false;
+  function showLeadBar() { if (!dismissed && !shown) { shown = true; leadBar.setAttribute('data-show', 'true'); } }
+  setTimeout(showLeadBar, 8000);
+  window.addEventListener('scroll', function () {
+    var h = document.documentElement;
+    if (h.scrollHeight > h.clientHeight && h.scrollTop / (h.scrollHeight - h.clientHeight) > 0.4) showLeadBar();
+  }, { passive: true });
+  document.getElementById('closeLeadBar').addEventListener('click', function () { dismissed = true; leadBar.removeAttribute('data-show'); });
+
+  var sheet = document.getElementById('leadSheet'), scrim = document.getElementById('scrim');
+  function openSheet() { sheet.removeAttribute('data-state'); sheet.setAttribute('data-open', 'true'); scrim.setAttribute('data-open', 'true'); }
+  function closeSheet() { sheet.removeAttribute('data-open'); scrim.removeAttribute('data-open'); }
+  document.getElementById('openLead').addEventListener('click', function () { leadBar.removeAttribute('data-show'); openSheet(); });
+  document.getElementById('openLead2').addEventListener('click', openSheet);
+  scrim.addEventListener('click', closeSheet);
+  document.getElementById('leadForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    sheet.setAttribute('data-state', 'success');
+    setTimeout(closeSheet, 3200);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { closeSheet(); qrPanel.removeAttribute('data-open'); }
+  });
+
+  /* ---------- Persona switch ---------- */
+  document.querySelectorAll('.persona button').forEach(function (b) {
+    b.addEventListener('click', function () { render(b.getAttribute('data-persona')); });
+  });
+
+  /* Embed mode (?embed=1) — hide demo chrome for Studio live preview */
+  if (/[?&]embed=1/.test(location.search)) {
+    document.querySelector('.persona').style.display = 'none';
+    dismissed = true;
+  }
+
+  render('business');
+})();
+</script>
+</body>
+</html>
