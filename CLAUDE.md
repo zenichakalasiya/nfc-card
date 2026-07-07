@@ -13,5 +13,5 @@ Card Studio dashboard, and the PrintEve Design System they're built on.
 Run locally: serve the repo root with any static server and open `index.html`.
 
 ## Deployment
-Repo: (none yet)
-Live URL: (none yet)
+Repo: https://github.com/zenichakalasiya/nfc-card
+Live URL: https://zenichakalasiya.github.io/nfc-card/
