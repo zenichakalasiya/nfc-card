@@ -5,27 +5,30 @@ Do not copy their copy, logo, or brand name. Copy the **system**: the spacing, t
 ## Canvas & palette
 
 - Canvas `#ffffff`, primary text `#000000`
-- Single accent `#50ccbd` — used on only 5 elements page-wide. Spend it sparingly.
-- Full ranked palette: `#ffffff`, `#50ccbd`, `#b9cad3`, `#000000`, `#9ea5af`, `#96e0d7`
+- **1 accent hue.** Primary accent `#50ccbd`, with tints `#96e0d7`, `#3d9d92` for hover/depth. Spend it only where it earns attention — the primary CTA and icon fills. Everything else is neutral.
+- Neutrals: `#ffffff`, `#b9cad3`, `#000000`, `#9ea5af`, `#192734`
 
 ## Typography
 
 - Family: Open Sans (system-ui fallback)
-- Exactly **6 steps**, largest to smallest:
+- Exactly **8 steps**, largest to smallest:
   - **20px / 800** — e.g. "Sam Woods"
-  - **16px / 600 / -0.16px** — e.g. "I review tech"
-  - **16px / 700 / -0.7px** — e.g. "Exchange Contact"
   - **16px / 700 / -0.16px** — e.g. "Call"
   - **14px / 700 / 0.42px** — e.g. "Claim dot.profile/you"
-  - **13px / 600** — e.g. "Sam Woods tech"
+  - **13px / 600 / -0.2px** — e.g. "+44 07734409927"
+  - **12px / 700** — e.g. "Join Sam and create your profile"
+  - **11px / 400** — e.g. "Creative"
+  - **10px / 400** / uppercase — e.g. "Networking made simple"
+  - **9px / 600 / -0.1px** — e.g. "Cookie Preferences"
 - Never introduce a size outside this ladder.
 
 ## Shape & depth
 
-- Radii: `50%`, `9px`, `10px`, `15px`, `72px`, `46px`
+- Box radii: `9px`, `10px`, `15px`
+- Fully rounded (pills, avatars, icon medallions): `50%`, `72px`, `46px`
 - Elevation, not borders. Signature shadow: `rgba(110, 135, 171, 0.15) 0px 0px 20px 0px`
-- Primary CTA: **328×60px**, radius `10px`, fill `rgb(255, 255, 255)`, shadow `rgba(110, 135, 171, 0.15) 0px 0px 20px 0px`
-- Repeating rows: **60px tall**, radius `10px`, border `3px rgba(0, 0, 0, 0)`
+- **Primary CTA:** 256×50px, radius `9px`, fill `rgb(80, 204, 189)`, shadow `rgb(61, 157, 146) 0px 2px 0px 0px`
+- **Repeating rows:** 60px tall, radius `10px`, fill `rgb(255, 255, 255)`, **no border** — separation comes from the ambient shadow alone
 
 ## Layout
 
@@ -42,6 +45,6 @@ Do not copy their copy, logo, or brand name. Copy the **system**: the spacing, t
 
 - Every tap target ≥ 44px (this design runs a 50px median)
 - Inline SVG icons only, 2px stroke. No emoji.
-- WCAG AA contrast in every state (their CTA runs 21:1)
+- WCAG AA contrast in every state (their CTA runs 1.96:1)
 - Light mode only, matching the source
 - Real placeholder content, no lorem ipsum

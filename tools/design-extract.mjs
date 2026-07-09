@@ -64,6 +64,10 @@ const parseRgb = (str) => {
 const toHex = (c) =>
   '#' + [c.r, c.g, c.b].map((n) => Math.round(n).toString(16).padStart(2, '0')).join('');
 
+// chroma (max-min channel) separates real color from near-grey far better than
+// HSL saturation, which reports #192734 as 35% "saturated" when it is plainly ink.
+const chroma = (c) => Math.max(c.r, c.g, c.b) - Math.min(c.r, c.g, c.b);
+
 const toHsl = (c) => {
   const r = c.r / 255, g = c.g / 255, b = c.b / 255;
   const max = Math.max(r, g, b), min = Math.min(r, g, b);
@@ -94,8 +98,9 @@ const contrast = (a, b) => {
 // ---------------------------------------------------------------- in-page extraction
 
 /* eslint-disable no-undef */
-const EXTRACT = () => {
+const EXTRACT = (opts) => {
   const MAX = 8000;
+  const scopeEl = (opts.scope && document.querySelector(opts.scope)) || document.body;
   const vis = (el, cs, r) =>
     r.width > 0 && r.height > 0 &&
     cs.visibility !== 'hidden' && cs.display !== 'none' && cs.opacity !== '0';
@@ -111,7 +116,7 @@ const EXTRACT = () => {
     bag[key].area += area;
   };
 
-  const all = [...document.querySelectorAll('body *')].slice(0, MAX);
+  const all = [...scopeEl.querySelectorAll('*')].slice(0, MAX);
 
   for (const el of all) {
     const r = el.getBoundingClientRect();
@@ -160,22 +165,29 @@ const EXTRACT = () => {
       text: (el.innerText || el.value || '').trim().slice(0, 28),
       w: Math.round(r.width), h: Math.round(r.height),
       radius: cs.borderRadius, bg: cs.backgroundColor, color: cs.color,
-      border: cs.borderTopWidth === '0px' ? 'none' : `${cs.borderTopWidth} ${cs.borderTopColor}`,
+      // a fully transparent border is not a border
+      border: cs.borderTopWidth === '0px' || /,\s*0\)$/.test(cs.borderTopColor)
+        ? 'none'
+        : `${cs.borderTopWidth} ${cs.borderTopColor}`,
       shadow: cs.boxShadow === 'none' ? 'none' : cs.boxShadow,
       fontSize: cs.fontSize, fontWeight: cs.fontWeight,
     });
   });
 
-  // content root = element whose direct children look like page sections
-  let root = document.body, best = -1;
+  // Content root = element whose direct children look like page sections.
+  // Child width is measured against the PARENT, not the viewport — otherwise a
+  // narrow centered column inside a wide desktop page matches nothing.
+  let root = document.body, best = -1, bestW = -1;
   for (const el of all) {
     const r = el.getBoundingClientRect();
-    if (r.width < innerWidth * 0.5) continue;
+    if (r.width < 200) continue;
     const kids = [...el.children].filter((c) => {
       const cr = c.getBoundingClientRect();
-      return cr.height > 40 && cr.width > innerWidth * 0.3;
+      return cr.height > 40 && cr.width > r.width * 0.3;
     });
-    if (kids.length > best) { best = kids.length; root = el; }
+    if (kids.length > best || (kids.length === best && r.width > bestW)) {
+      best = kids.length; bestW = r.width; root = el;
+    }
   }
 
   const sections = [...root.children]
@@ -184,12 +196,14 @@ const EXTRACT = () => {
       const cs = getComputedStyle(el);
       if (r.height < 40) return null;
       const heading = el.querySelector('h1,h2,h3,h4,h5,h6');
+      // innerText is undefined on SVG elements — fall back to textContent
+      const txt = (n) => (n.innerText ?? n.textContent ?? '').trim();
       return {
         tag: el.tagName.toLowerCase(),
         cls: (typeof el.className === 'string' ? el.className : '').slice(0, 60),
         top: Math.round(r.top + scrollY), height: Math.round(r.height),
-        heading: heading ? heading.innerText.trim().slice(0, 60) : null,
-        text: el.innerText.trim().replace(/\s+/g, ' ').slice(0, 110),
+        heading: heading ? txt(heading).slice(0, 60) : null,
+        text: txt(el).replace(/\s+/g, ' ').slice(0, 110),
         imgs: el.querySelectorAll('img,picture,video').length,
         svgs: el.querySelectorAll('svg').length,
         buttons: el.querySelectorAll('a,button').length,
@@ -283,17 +297,26 @@ const palette = Object.entries(data.colors)
     const role = m.text >= m.bg && m.text >= m.border ? 'text' : m.bg >= m.border ? 'background' : 'border';
     return {
       hex: toHex(c), alpha: +c.a.toFixed(2), rgb, role, area: Math.round(m.area),
-      uses: m.text + m.bg + m.border, sat: +hsl.s.toFixed(2), light: +hsl.l.toFixed(2), lum: relLum(c),
+      uses: m.text + m.bg + m.border, chroma: chroma(c), hue: Math.round(hsl.h),
+      sat: +hsl.s.toFixed(2), light: +hsl.l.toFixed(2), lum: relLum(c),
     };
   })
   .filter(Boolean)
   .sort((a, b) => b.area - a.area);
 
-const neutral = (c) => c.sat < 0.18 || c.light > 0.96 || c.light < 0.05;
+const neutral = (c) => c.chroma < 30 || c.light > 0.97 || c.light < 0.04;
 const canvas = palette.find((c) => c.role === 'background') || palette[0];
 const textColor = palette.find((c) => c.role === 'text');
-const accents = palette.filter((c) => !neutral(c)).slice(0, 5);
+const accents = palette.filter((c) => !neutral(c));
 const accent = accents[0];
+
+// Tints/shades of one brand color are not separate accents. Cluster by hue.
+const hueGroups = [];
+for (const c of accents) {
+  const g = hueGroups.find((g) => Math.min(Math.abs(g.hue - c.hue), 360 - Math.abs(g.hue - c.hue)) <= 20);
+  if (g) g.members.push(c);
+  else hueGroups.push({ hue: c.hue, members: [c] });
+}
 
 const typeScale = Object.values(data.type)
   .sort((a, b) => parseFloat(b.fontSize) - parseFloat(a.fontSize))
@@ -307,6 +330,15 @@ const buttons = data.targets
   .filter((t) => t.h >= 28 && (t.bg !== 'rgba(0, 0, 0, 0)' || t.border !== 'none'))
   .sort((a, b) => b.w * b.h - a.w * a.h)
   .slice(0, 8);
+
+// The primary CTA is the one wearing the accent fill. Sorting by area finds the
+// widest neutral row instead — on a card layout that is a contact row, not the CTA.
+const accentFilled = (b) => {
+  const c = parseRgb(b.bg);
+  return c && chroma(c) >= 30;
+};
+const ctaBtn = buttons.find(accentFilled) || buttons[0];
+const rowBtns = buttons.filter((b) => b !== ctaBtn && !accentFilled(b) && b.w > 200 && b.h >= 40 && b.h <= 84);
 
 const heights = data.targets.map((t) => t.h).sort((a, b) => a - b);
 const median = heights.length ? heights[Math.floor(heights.length / 2)] : 0;
@@ -323,8 +355,8 @@ const gapMode = (() => {
 
 // contrast sanity on the primary CTA
 let ctaContrast = null;
-if (buttons[0]) {
-  const bg = parseRgb(buttons[0].bg), fg = parseRgb(buttons[0].color);
+if (ctaBtn) {
+  const bg = parseRgb(ctaBtn.bg), fg = parseRgb(ctaBtn.color);
   if (bg && fg) ctaContrast = +contrast(bg, fg).toFixed(2);
 }
 
@@ -338,6 +370,10 @@ const hasDarkMode =
 const fmt = (n) => `\`${n}\``;
 const px = (v) => parseFloat(v);
 
+// markdown table cells must not contain newlines or unescaped pipes
+const cell = (s) => String(s ?? '').replace(/\s+/g, ' ').replace(/\|/g, '\\|').trim();
+const uniqueSizes = new Set(typeScale.map((t) => t.fontSize)).size;
+
 const report = `# Design audit — ${hostname}
 
 **Source:** ${url}
@@ -349,16 +385,16 @@ const report = `# Design audit — ${hostname}
 
 Ranked by painted area. Role is inferred from how the color is used.
 
-| Hex | Role | Sat | Light | Area | Uses |
-| --- | --- | --- | --- | --- | --- |
-${palette.slice(0, 12).map((c) => `| \`${c.hex}\`${c.alpha < 1 ? ` @${c.alpha}` : ''} | ${c.role} | ${c.sat} | ${c.light} | ${c.area.toLocaleString()} | ${c.uses} |`).join('\n')}
+| Hex | Role | Chroma | Light | Neutral? | Area | Uses |
+| --- | --- | --- | --- | --- | --- | --- |
+${palette.slice(0, 12).map((c) => `| \`${c.hex}\`${c.alpha < 1 ? ` @${c.alpha}` : ''} | ${c.role} | ${c.chroma} | ${c.light} | ${neutral(c) ? 'yes' : '—'} | ${c.area.toLocaleString()} | ${c.uses} |`).join('\n')}
 
 - **Canvas:** \`${canvas?.hex ?? '—'}\`
 - **Text:** \`${textColor?.hex ?? '—'}\`
-- **Accent:** ${accent ? `\`${accent.hex}\`` : '— (no saturated color found — this is a fully neutral design)'}
-${accents.length > 1 ? `- **Other saturated colors:** ${accents.slice(1).map((c) => `\`${c.hex}\``).join(', ')}` : ''}
+- **Accent:** ${accent ? `\`${accent.hex}\`` : '— none. This is a fully neutral design; hierarchy comes from weight and space.'}
+${hueGroups.length ? hueGroups.map((g) => `- Hue ~${g.hue}°: ${g.members.map((c) => `\`${c.hex}\``).join(', ')}${g.members.length > 1 ? ` — one brand color in ${g.members.length} tints` : ''}`).join('\n') : ''}
 
-Accent restraint: **${accents.length}** saturated color${accents.length === 1 ? '' : 's'} across the whole page.
+Accent restraint: **${hueGroups.length}** accent hue${hueGroups.length === 1 ? '' : 's'} (${accents.length} tint${accents.length === 1 ? '' : 's'}) against ${palette.length - accents.length} neutrals.
 
 ## Type scale
 
@@ -366,9 +402,9 @@ Body font: ${fmt(data.bodyFont)}
 
 | Size | Weight | Tracking | Line height | Transform | Uses | Sample |
 | --- | --- | --- | --- | --- | --- | --- |
-${typeScale.slice(0, 12).map((t) => `| ${t.fontSize} | ${t.fontWeight} | ${t.letterSpacing} | ${t.lineHeight} | ${t.textTransform} | ${t.count} | ${(t.samples[0] || '').replace(/\|/g, '\\|')} |`).join('\n')}
+${typeScale.slice(0, 12).map((t) => `| ${t.fontSize} | ${t.fontWeight} | ${t.letterSpacing} | ${t.lineHeight} | ${t.textTransform} | ${t.count} | ${cell(t.samples[0])} |`).join('\n')}
 
-Distinct steps: **${typeScale.length}**. Largest: **${typeScale[0]?.fontSize ?? '—'}**.
+**${uniqueSizes} distinct sizes** across ${typeScale.length} size/weight variants. Largest: **${typeScale[0]?.fontSize ?? '—'}**.
 
 ## Shape & depth
 
@@ -384,7 +420,7 @@ ${ctaContrast ? `Primary CTA contrast: **${ctaContrast}:1** ${ctaContrast >= 4.5
 
 | Element | Size | Radius | Fill | Border | Shadow |
 | --- | --- | --- | --- | --- | --- |
-${buttons.map((b) => `| ${b.text || `\`<${b.tag}>\``} | ${b.w}×${b.h} | ${b.radius} | ${b.bg} | ${b.border} | ${b.shadow.slice(0, 44)} |`).join('\n')}
+${buttons.map((b) => `| ${cell(b.text) || `\`<${b.tag}>\``} | ${b.w}×${b.h} | ${b.radius} | ${b.bg} | ${b.border} | ${cell(b.shadow).slice(0, 44)} |`).join('\n')}
 
 ## Section order
 
@@ -392,7 +428,7 @@ Vertical rhythm — most common gap: ${gapMode.map(([g, n]) => `${g}px ×${n}`).
 
 | # | Section | Height | Media | Actions |
 | --- | --- | --- | --- | --- |
-${data.sections.map((s, i) => `| ${i + 1} | ${s.heading || s.text.slice(0, 44) || `\`<${s.tag}>\``} | ${s.height}px | ${s.imgs} img / ${s.svgs} svg | ${s.buttons} |`).join('\n')}
+${data.sections.map((s, i) => `| ${i + 1} | ${cell(s.heading || s.text.slice(0, 44)) || `\`<${s.tag}>\``} | ${s.height}px | ${s.imgs} img / ${s.svgs} svg | ${s.buttons} |`).join('\n')}
 
 ## Signals
 
@@ -409,10 +445,24 @@ ${Object.keys(captures).map((k) => `- \`screens/${k}.png\``).join('\n')}
 // ---------------------------------------------------------------- rebuild prompt
 
 const step = (t) => `${px(t.fontSize)}px / ${t.fontWeight}${t.letterSpacing !== 'normal' ? ` / ${t.letterSpacing}` : ''}`;
-const ladder = typeScale.slice(0, 6).map((t) => `  - **${step(t)}** — ${t.samples[0] ? `e.g. "${t.samples[0]}"` : 'body'}`).join('\n');
 
-const cta = buttons[0];
-const rows = buttons.filter((b) => b.w > 200 && b.h >= 44 && b.h <= 80);
+// One rung per size — 16/600 and 16/700 are weights of the same step, not two steps.
+const bySize = new Map();
+for (const t of typeScale) {
+  const cur = bySize.get(t.fontSize);
+  if (!cur || t.count > cur.count) bySize.set(t.fontSize, t);
+}
+const ladderSteps = [...bySize.values()].sort((a, b) => px(b.fontSize) - px(a.fontSize));
+const ladder = ladderSteps
+  .map((t) => `  - **${step(t)}**${t.textTransform === 'uppercase' ? ' / uppercase' : ''} — ${t.samples[0] ? `e.g. "${cell(t.samples[0])}"` : 'body'}`)
+  .join('\n');
+
+// 50% / large px radii are pills and avatars, not the box language.
+const boxRadii = topRadii.filter(([r]) => !r.includes('%') && px(r) < 32);
+const pillRadii = topRadii.filter(([r]) => r.includes('%') || px(r) >= 32);
+
+const cta = ctaBtn;
+const rows = rowBtns;
 
 const prompt = `Rebuild the design language of **${hostname}** as a single self-contained HTML file with inline CSS. No external fonts, no CDN, no image assets — draw placeholders in CSS/SVG.
 
@@ -421,22 +471,25 @@ Do not copy their copy, logo, or brand name. Copy the **system**: the spacing, t
 ## Canvas & palette
 
 - Canvas \`${canvas?.hex ?? '#FFFFFF'}\`, primary text \`${textColor?.hex ?? '#000000'}\`
-${accent ? `- Single accent \`${accent.hex}\` — used on ${accents.length === 1 ? 'the primary CTA and nothing else' : `only ${accents.length} elements page-wide`}. Spend it sparingly.` : '- Fully neutral palette — no accent color. Hierarchy comes from weight and space alone.'}
-- Full ranked palette: ${palette.slice(0, 6).map((c) => `\`${c.hex}\``).join(', ')}
+${accent
+  ? `- **${hueGroups.length} accent hue${hueGroups.length === 1 ? '' : 's'}.** Primary accent \`${accent.hex}\`${hueGroups[0]?.members.length > 1 ? `, with tints ${hueGroups[0].members.slice(1).map((c) => `\`${c.hex}\``).join(', ')} for hover/depth` : ''}. Spend it only where it earns attention — the primary CTA and icon fills. Everything else is neutral.`
+  : '- Fully neutral palette — no accent color. Hierarchy comes from weight and space alone.'}
+- Neutrals: ${palette.filter(neutral).slice(0, 5).map((c) => `\`${c.hex}\``).join(', ')}
 
 ## Typography
 
 - Family: ${data.bodyFont.split(',')[0].replace(/["']/g, '')} (system-ui fallback)
-- Exactly **${Math.min(typeScale.length, 6)} steps**, largest to smallest:
+- Exactly **${ladderSteps.length} steps**, largest to smallest:
 ${ladder}
 - Never introduce a size outside this ladder.
 
 ## Shape & depth
 
-- Radii: ${topRadii.map(([r]) => `\`${r}\``).join(', ') || 'square — 0 radius'}
+- Box radii: ${boxRadii.map(([r]) => `\`${r}\``).join(', ') || 'square — 0 radius'}
+${pillRadii.length ? `- Fully rounded (pills, avatars, icon medallions): ${pillRadii.map(([r]) => `\`${r}\``).join(', ')}` : ''}
 ${topShadows.length ? `- Elevation, not borders. Signature shadow: \`${topShadows[0][0]}\`` : '- No shadows anywhere. Depth comes from hairline borders only.'}
-${cta ? `- Primary CTA: **${cta.w}×${cta.h}px**, radius \`${cta.radius}\`, fill \`${cta.bg}\`${cta.shadow !== 'none' ? `, shadow \`${cta.shadow}\`` : ''}` : ''}
-${rows.length ? `- Repeating rows: **${rows[0].h}px tall**, radius \`${rows[0].radius}\`, ${rows[0].border === 'none' ? 'no border' : `border \`${rows[0].border}\``}` : ''}
+${cta ? `- **Primary CTA:** ${cta.w}×${cta.h}px, radius \`${cta.radius}\`, fill \`${cta.bg}\`${cta.shadow !== 'none' ? `, shadow \`${cta.shadow}\`${/ 0px 0px/.test(cta.shadow) ? '' : ' — note the hard, unblurred offset. It reads as a physical, pressable key.'}` : ''}` : ''}
+${rows.length ? `- **Repeating rows:** ${rows[0].h}px tall, radius \`${rows[0].radius}\`, fill \`${rows[0].bg}\`, ${rows[0].border === 'none' ? '**no border** — separation comes from the ambient shadow alone' : `border \`${rows[0].border}\``}` : ''}
 
 ## Layout
 
@@ -449,7 +502,11 @@ ${data.sections.map((s, i) => `  ${i + 1}. ${s.heading || s.text.slice(0, 50) ||
 
 - Every tap target ≥ 44px (this design runs a ${median}px median)
 - ${data.iconCounts.svg > data.iconCounts.img ? 'Inline SVG icons only, 2px stroke. No emoji.' : 'Icons as inline SVG. No emoji.'}
-- WCAG AA contrast in every state${ctaContrast ? ` (their CTA runs ${ctaContrast}:1)` : ''}
+- WCAG AA contrast in every state.${ctaContrast
+  ? ctaContrast >= 4.5
+    ? ` The source CTA runs ${ctaContrast}:1 — match it.`
+    : ` **Do not copy the source's CTA contrast — it runs ${ctaContrast}:1 and fails AA.** Darken the accent until label-on-accent clears 4.5:1.`
+  : ''}
 ${hasDarkMode ? `- Ship \`prefers-color-scheme: dark\`: canvas becomes \`${toHex(parseRgb(captures[darkKey].pageBg))}\`` : '- Light mode only, matching the source'}
 - Real placeholder content, no lorem ipsum
 `;

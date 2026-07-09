@@ -9,27 +9,27 @@
 
 Ranked by painted area. Role is inferred from how the color is used.
 
-| Hex | Role | Sat | Light | Area | Uses |
-| --- | --- | --- | --- | --- | --- |
-| `#ffffff` | background | 0 | 1 | 141,856 | 7 |
-| `#50ccbd` | background | 0.55 | 0.56 | 81,040 | 4 |
-| `#b9cad3` @0.2 | border | 0.23 | 0.78 | 50,310 | 2 |
-| `#000000` | text | 0 | 0 | 32,111 | 7 |
-| `#9ea5af` | text | 0.1 | 0.65 | 22,137 | 5 |
-| `#96e0d7` | background | 0.54 | 0.73 | 14,400 | 1 |
-| `#3d9d92` | background | 0.44 | 0.43 | 10,000 | 4 |
-| `#192734` | text | 0.35 | 0.15 | 6,720 | 1 |
-| `#0a0b0c` | text | 0.09 | 0.04 | 2,520 | 1 |
-| `#b8bfca` @0.3 | background | 0.15 | 0.76 | 2,049 | 1 |
-| `#f6f7f8` | background | 0.12 | 0.97 | 1,600 | 1 |
-| `#3d4145` | text | 0.06 | 0.25 | 1,378 | 1 |
+| Hex | Role | Chroma | Light | Neutral? | Area | Uses |
+| --- | --- | --- | --- | --- | --- | --- |
+| `#ffffff` | background | 0 | 1 | yes | 141,856 | 7 |
+| `#50ccbd` | background | 124 | 0.56 | — | 81,040 | 4 |
+| `#b9cad3` @0.2 | border | 26 | 0.78 | yes | 50,310 | 2 |
+| `#000000` | text | 0 | 0 | yes | 32,111 | 7 |
+| `#9ea5af` | text | 17 | 0.65 | yes | 22,137 | 5 |
+| `#96e0d7` | background | 74 | 0.73 | — | 14,400 | 1 |
+| `#3d9d92` | background | 96 | 0.43 | — | 10,000 | 4 |
+| `#192734` | text | 27 | 0.15 | yes | 6,720 | 1 |
+| `#0a0b0c` | text | 2 | 0.04 | yes | 2,520 | 1 |
+| `#b8bfca` @0.3 | background | 18 | 0.76 | yes | 2,049 | 1 |
+| `#3d4145` | text | 8 | 0.25 | yes | 1,940 | 1 |
+| `#f6f7f8` | background | 2 | 0.97 | yes | 1,600 | 1 |
 
 - **Canvas:** `#ffffff`
 - **Text:** `#000000`
 - **Accent:** `#50ccbd`
-- **Other saturated colors:** `#b9cad3`, `#96e0d7`, `#3d9d92`, `#192734`
+- Hue ~173°: `#50ccbd`, `#96e0d7`, `#3d9d92` — one brand color in 3 tints
 
-Accent restraint: **5** saturated colors across the whole page.
+Accent restraint: **1** accent hue (3 tints) against 10 neutrals.
 
 ## Type scale
 
@@ -49,7 +49,7 @@ Body font: `"Open Sans", Arial`
 | 10px | 400 | normal | 10px | uppercase | 1 | Networking made simple |
 | 9px | 600 | -0.1px | 12px | none | 1 | Cookie Preferences |
 
-Distinct steps: **11**. Largest: **20px**.
+**8 distinct sizes** across 11 size/weight variants. Largest: **20px**.
 
 ## Shape & depth
 
@@ -63,24 +63,15 @@ Distinct steps: **11**. Largest: **20px**.
 ## Interactive elements
 
 Median tap-target height: **50px** · below 44px: **3 of 9**
-Primary CTA contrast: **21:1** (passes AA)
+Primary CTA contrast: **1.96:1** (FAILS AA)
 
 | Element | Size | Radius | Fill | Border | Shadow |
 | --- | --- | --- | --- | --- | --- |
-| Call
-
-+44 07734409927 | 328×60 | 10px | rgb(255, 255, 255) | 3px rgba(0, 0, 0, 0) | rgba(110, 135, 171, 0.15) 0px 0px 20px 0px |
-| Email
-
-samwoodstech@tech.co. | 328×60 | 10px | rgb(255, 255, 255) | 3px rgba(0, 0, 0, 0) | rgba(110, 135, 171, 0.15) 0px 0px 20px 0px |
-| Website
-
-samwoodstech.co.uk | 328×60 | 10px | rgb(255, 255, 255) | 3px rgba(0, 0, 0, 0) | rgba(110, 135, 171, 0.15) 0px 0px 20px 0px |
-| Calendly
-
-calendly.com/samwo | 328×60 | 10px | rgb(255, 255, 255) | 3px rgba(0, 0, 0, 0) | rgba(110, 135, 171, 0.15) 0px 0px 20px 0px |
-| Edit Profile
-Exchange Contac | 256×50 | 9px | rgb(80, 204, 189) | none | rgb(61, 157, 146) 0px 2px 0px 0px |
+| Call +44 07734409927 | 328×60 | 10px | rgb(255, 255, 255) | none | rgba(110, 135, 171, 0.15) 0px 0px 20px 0px |
+| Email samwoodstech@tech.co. | 328×60 | 10px | rgb(255, 255, 255) | none | rgba(110, 135, 171, 0.15) 0px 0px 20px 0px |
+| Website samwoodstech.co.uk | 328×60 | 10px | rgb(255, 255, 255) | none | rgba(110, 135, 171, 0.15) 0px 0px 20px 0px |
+| Calendly calendly.com/samwo | 328×60 | 10px | rgb(255, 255, 255) | none | rgba(110, 135, 171, 0.15) 0px 0px 20px 0px |
+| Edit Profile Exchange Contac | 256×50 | 9px | rgb(80, 204, 189) | none | rgb(61, 157, 146) 0px 2px 0px 0px |
 | `<button>` | 56×50 | 9px | rgb(80, 204, 189) | none | rgb(61, 157, 146) 0px 2px 0px 0px |
 | `<button>` | 40×40 | 45px | rgb(246, 247, 248) | none | none |
 
