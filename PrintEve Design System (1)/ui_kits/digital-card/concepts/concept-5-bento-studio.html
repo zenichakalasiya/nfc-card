@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept 5 · Bento Studio — PrintEve Digital Card</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; }
+  :root {
+    --bg: #EFEEE9; --tile: #FFFFFF; --ink: #17190F; --muted: #6E7164; --line: #E2E1D8;
+    --lime: #4ADE80; --lime-deep: #16A34A; --forest: #14532D; --peach: #FFD9A0;
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 430px; margin: 0 auto; padding: 18px 14px 52px; }
+  @media (min-width: 760px) { .page { max-width: 720px; } }
+
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  @media (min-width: 760px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  .tile { background: var(--tile); border: 1px solid var(--line); border-radius: 22px; padding: 18px; position: relative; overflow: hidden; }
+
+  /* Identity tile */
+  .t-id { grid-column: 1 / -1; background: var(--forest); color: #F2F7EE; border: 0; padding: 24px 20px; }
+  .t-id .top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .avatar { width: 74px; height: 74px; border-radius: 24px; background: var(--lime); color: var(--forest); display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; transform: rotate(-4deg); }
+  .badge { font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; background: rgb(198 244 50 / 0.16); color: var(--lime); border: 1px solid rgb(198 244 50 / 0.4); padding: 5px 11px; border-radius: 999px; }
+  .t-id h1 { font-size: 27px; font-weight: 900; letter-spacing: -0.03em; margin-top: 16px; }
+  .t-id .role { font-size: 13px; color: #B9C7B2; margin-top: 4px; }
+  .t-id .cta { display: flex; gap: 9px; margin-top: 18px; }
+  .save { flex: 1; height: 48px; border-radius: 999px; background: var(--lime); color: var(--forest); border: 0; font-family: inherit; font-size: 13.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .save:hover { background: #D4FA55; }
+  .rnd { width: 48px; height: 48px; border-radius: 50%; background: rgb(255 255 255 / 0.1); border: 1px solid rgb(255 255 255 / 0.2); color: #F2F7EE; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; flex-shrink: 0; }
+  .rnd:hover { background: rgb(255 255 255 / 0.2); }
+
+  .h { font-size: 10.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+
+  /* Video tile — spans full width */
+  .t-video { grid-column: 1 / -1; padding: 0; border: 0; cursor: pointer; }
+  .vwrap { position: relative; aspect-ratio: 16/8; background:
+    radial-gradient(80% 110% at 85% 0%, #3E6B33 0%, transparent 60%),
+    linear-gradient(150deg, #2A4A24 0%, #16290F 100%); }
+  .vwrap::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(100deg, transparent 0 38px, rgb(198 244 50 / 0.05) 38px 39px); }
+  .vwrap .tag { position: absolute; top: 14px; left: 14px; font-size: 10px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; background: var(--lime); color: var(--forest); padding: 5px 11px; border-radius: 999px; }
+  .vwrap .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 14px 34px -10px rgb(0 0 0 / 0.5); transition: transform .18s; }
+  .t-video:hover .play { transform: translate(-50%, -50%) scale(1.08); }
+  .vwrap .play::after { content: ""; margin-left: 4px; border-style: solid; border-width: 10px 0 10px 16px; border-color: transparent transparent transparent var(--forest); }
+  .vwrap .cap { position: absolute; left: 16px; bottom: 13px; color: #E9F5DF; }
+  .vwrap .cap strong { display: block; font-size: 14.5px; font-weight: 800; letter-spacing: -0.01em; }
+  .vwrap .cap span { font-size: 11px; color: #A9BD9C; }
+  .vwrap .dur { position: absolute; right: 14px; bottom: 13px; font-size: 11px; font-weight: 800; color: var(--lime); border: 1px solid rgb(198 244 50 / 0.4); padding: 3px 9px; border-radius: 999px; }
+  .vwrap[data-playing="true"] .play, .vwrap[data-playing="true"] .dur { display: none; }
+  .vwrap .bars { display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); gap: 5px; }
+  .vwrap[data-playing="true"] .bars { display: flex; }
+  .bars i { width: 4px; border-radius: 2px; background: var(--lime); animation: eq 1s ease-in-out infinite; }
+  .bars i:nth-child(1) { height: 16px; } .bars i:nth-child(2) { height: 30px; animation-delay: .15s; }
+  .bars i:nth-child(3) { height: 20px; animation-delay: .3s; } .bars i:nth-child(4) { height: 34px; animation-delay: .45s; }
+  @keyframes eq { 0%, 100% { transform: scaleY(.55); } 50% { transform: scaleY(1.1); } }
+
+  /* Contact tiles */
+  .t-act { display: flex; flex-direction: column; justify-content: space-between; min-height: 118px; text-decoration: none; color: var(--ink); transition: transform .15s; }
+  .t-act:hover { transform: translateY(-3px); }
+  .t-act .ic { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+  .t-act b { font-size: 14.5px; font-weight: 800; letter-spacing: -0.01em; }
+  .t-act span { font-size: 11.5px; color: var(--muted); display: block; margin-top: 2px; }
+  .t-call .ic { background: #E8F5D8; color: #4A7A1E; }
+  .t-wa .ic { background: #DEF7E3; color: #128C4B; }
+  .t-mail .ic { background: var(--peach); color: #8A5A12; }
+  .t-map .ic { background: #E3ECFA; color: #2456A8; }
+
+  /* About tile */
+  .t-about { grid-column: 1 / -1; }
+  .t-about p { color: #494C3F; line-height: 1.7; font-size: 13.5px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+  .tag { font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); }
+
+  /* Stats tile + QR tile */
+  .t-stats { background: var(--lime); border: 0; }
+  .t-stats .h { color: #5C7A0E; }
+  .t-stats .big { font-size: 30px; font-weight: 900; letter-spacing: -0.04em; color: var(--forest); }
+  .t-stats .row2 { display: flex; justify-content: space-between; margin-top: 12px; font-size: 11.5px; font-weight: 700; color: #3E5411; }
+  .t-qr { text-align: center; }
+  .t-qr svg { width: 84px; height: 84px; margin: 2px auto 8px; display: block; }
+  .t-qr span { font-size: 11px; color: var(--muted); font-weight: 600; }
+
+  /* Services tile */
+  .t-svc { grid-column: 1 / -1; }
+  .srow { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px dashed var(--line); }
+  .srow:last-child { border-bottom: 0; padding-bottom: 0; }
+  .srow .n { width: 30px; height: 30px; border-radius: 10px; background: var(--bg); border: 1px solid var(--line); font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .srow b { font-size: 13.5px; font-weight: 800; display: block; }
+  .srow span { font-size: 11.5px; color: var(--muted); }
+  .srow a { margin-left: auto; font-size: 11.5px; font-weight: 800; color: var(--lime-deep); text-decoration: none; flex-shrink: 0; }
+
+  /* Details tile */
+  .t-det { grid-column: 1 / -1; }
+  .kv { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--line); }
+  .kv:last-child { border-bottom: 0; padding-bottom: 0; }
+  .kv:first-of-type { padding-top: 0; }
+  .kv b { font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); display: block; }
+  .kv .v { font-size: 13px; font-weight: 600; margin-top: 2px; }
+  .cp { border: 1px solid var(--line); background: var(--bg); color: var(--ink); font-family: inherit; font-size: 10.5px; font-weight: 800; padding: 6px 12px; border-radius: 999px; cursor: pointer; }
+  .cp:hover { border-color: var(--lime-deep); color: var(--lime-deep); }
+
+  /* Gallery tile */
+  .t-gal { grid-column: 1 / -1; }
+  .gal { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+  .gal figure { margin: 0; }
+  .gal .ph { aspect-ratio: 1; border-radius: 16px; }
+  .gal figure:nth-child(1) .ph { background: linear-gradient(140deg, #DDF3C4, #9CCB6A); }
+  .gal figure:nth-child(2) .ph { background: linear-gradient(140deg, #FFE8C2, #F3BE6E); }
+  .gal figure:nth-child(3) .ph { background: linear-gradient(140deg, #D3F3DE, #6FCF97); }
+  .gal figcaption { font-size: 10.5px; font-weight: 700; color: var(--muted); margin-top: 6px; text-align: center; }
+  /* Files tile */
+  .frow { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--line); }
+  .frow:last-child { border-bottom: 0; padding-bottom: 0; }
+  .frow b { font-size: 13px; font-weight: 800; display: block; }
+  .frow span.m { font-size: 11px; color: var(--muted); font-weight: 600; }
+  .frow a { font-size: 11.5px; font-weight: 800; color: var(--lime-deep); text-decoration: none; flex-shrink: 0; }
+  /* Quote tile */
+  .t-quote { grid-column: 1 / -1; background: var(--peach); border: 0; }
+  .t-quote .h { color: #8A5A12; }
+  .t-quote p.q { font-size: 13.5px; line-height: 1.65; font-weight: 600; color: #4A3208; font-style: italic; }
+  .t-quote .by { margin-top: 10px; font-size: 10.5px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; color: #8A5A12; }
+  /* Pay tile — improved */
+  .t-pay { grid-column: 1 / -1; background: var(--forest); border: 0; color: #F2F7EE; }
+  .t-pay .h { color: #9DB88F; }
+  .payline { display: flex; align-items: center; gap: 12px; }
+  .payline .qrbox { width: 86px; background: #fff; border-radius: 12px; padding: 7px; flex-shrink: 0; }
+  .payline .qrbox svg { display: block; width: 100%; height: auto; }
+  .upi { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: rgb(255 255 255 / 0.09); border: 1px solid rgb(255 255 255 / 0.16); border-radius: 12px; padding: 10px 12px; }
+  .upi code { font-size: 12.5px; color: var(--lime); font-weight: 700; }
+  .upi button { background: var(--lime); color: var(--forest); border: 0; font-family: inherit; font-size: 10.5px; font-weight: 900; padding: 6px 12px; border-radius: 999px; cursor: pointer; }
+  .apps { display: flex; gap: 7px; margin-top: 9px; }
+  .apps a { flex: 1; text-align: center; font-size: 11px; font-weight: 800; color: #E9F5DF; text-decoration: none; border: 1px solid rgb(255 255 255 / 0.2); border-radius: 999px; padding: 8px 0; }
+  .apps a:hover { border-color: var(--lime); color: var(--lime); }
+
+  footer { text-align: center; margin-top: 22px; font-size: 11.5px; color: var(--muted); font-weight: 600; }
+  footer b { color: var(--ink); }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--forest); color: var(--lime); font-size: 12.5px; font-weight: 800; padding: 9px 18px; border-radius: 999px; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 9; }
+  .toast[data-show="true"] { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="grid">
+
+    <header class="tile t-id">
+      <div class="top">
+        <div class="avatar">TS</div>
+        <span class="badge">Tap Verified</span>
+      </div>
+      <h1>Tarang Sachaniya</h1>
+      <p class="role">CEO &amp; Founder · PrintEve · Ahmedabad</p>
+      <div class="cta">
+        <button class="save" id="save">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Save Contact
+        </button>
+        <button class="rnd" data-share aria-label="Share">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98m-.01-10.98-6.82 3.98"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="tile t-video" id="videoTile" role="button" aria-label="Play intro video">
+      <div class="vwrap" id="video" data-playing="false">
+        <span class="tag">▶ Business Intro</span>
+        <span class="play"></span>
+        <span class="bars"><i></i><i></i><i></i><i></i></span>
+        <span class="cap"><strong>Inside a PrintEve partner press</strong><span>From upload to doorstep in 72 hours</span></span>
+        <span class="dur">1:42</span>
+      </div>
+    </div>
+
+    <a class="tile t-act t-call" href="#">
+      <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.58 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+      <span><b>Call</b><span>+91 98250 12345</span></span>
+    </a>
+    <a class="tile t-act t-wa" href="#">
+      <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
+      <span><b>WhatsApp</b><span>Fastest reply</span></span>
+    </a>
+    <a class="tile t-act t-mail" href="#">
+      <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+      <span><b>Email</b><span>tarang@printeve.in</span></span>
+    </a>
+    <a class="tile t-act t-map" href="#">
+      <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+      <span><b>Directions</b><span>Vatva, Ahmedabad</span></span>
+    </a>
+
+    <section class="tile t-about">
+      <p class="h">About</p>
+      <p>Professional printing for growing brands across India — business cards, flyers, brochures and packaging, every order with a free design proofing.</p>
+      <div class="tags"><span class="tag">Business Cards</span><span class="tag">D2C</span><span class="tag">Packaging</span><span class="tag">Bulk</span></div>
+    </section>
+
+    <div class="tile t-stats">
+      <p class="h">Track record</p>
+      <p class="big">400+</p>
+      <div class="row2"><span>brands served</span><span>12 yrs · 4.8★</span></div>
+    </div>
+    <div class="tile t-qr">
+      <p class="h">Scan me</p>
+      <svg viewBox="0 0 29 29" shape-rendering="crispEdges"><g fill="#17190F"><rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="#fff"/><rect x="2" y="2" width="3" height="3"/><rect x="22" y="0" width="7" height="7"/><rect x="23" y="1" width="5" height="5" fill="#fff"/><rect x="24" y="2" width="3" height="3"/><rect x="0" y="22" width="7" height="7"/><rect x="1" y="23" width="5" height="5" fill="#fff"/><rect x="2" y="24" width="3" height="3"/><rect x="9" y="2" width="2" height="2"/><rect x="13" y="1" width="1" height="3"/><rect x="16" y="2" width="3" height="1"/><rect x="10" y="6" width="1" height="2"/><rect x="14" y="5" width="2" height="2"/><rect x="18" y="6" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="5" y="9" width="1" height="3"/><rect x="1" y="14" width="2" height="2"/><rect x="4" y="13" width="2" height="1"/><rect x="2" y="18" width="1" height="2"/><rect x="5" y="17" width="2" height="2"/><rect x="9" y="9" width="3" height="1"/><rect x="13" y="10" width="1" height="2"/><rect x="15" y="9" width="2" height="2"/><rect x="19" y="10" width="1" height="1"/><rect x="9" y="13" width="1" height="2"/><rect x="12" y="12" width="2" height="2"/><rect x="16" y="13" width="2" height="1"/><rect x="19" y="12" width="2" height="2"/><rect x="10" y="17" width="2" height="1"/><rect x="13" y="16" width="1" height="3"/><rect x="16" y="17" width="2" height="2"/><rect x="9" y="21" width="1" height="1"/><rect x="12" y="20" width="2" height="2"/><rect x="15" y="21" width="3" height="1"/><rect x="19" y="20" width="1" height="2"/><rect x="10" y="24" width="2" height="2"/><rect x="14" y="25" width="2" height="1"/><rect x="17" y="24" width="1" height="2"/><rect x="22" y="9" width="1" height="2"/><rect x="25" y="10" width="2" height="1"/><rect x="23" y="13" width="2" height="2"/><rect x="26" y="14" width="1" height="1"/><rect x="22" y="17" width="2" height="1"/><rect x="25" y="16" width="1" height="3"/><rect x="23" y="21" width="1" height="1"/><rect x="25" y="20" width="2" height="2"/><rect x="22" y="24" width="2" height="2"/><rect x="25" y="25" width="2" height="1"/></g></svg>
+      <span>Opens this card</span>
+    </div>
+
+    <section class="tile t-svc">
+      <p class="h">What we make</p>
+      <div class="srow"><span class="n">01</span><span><b>Business Cards</b><span>100–50,000 units · ships in 5 days</span></span><a href="#">Enquire</a></div>
+      <div class="srow"><span class="n">02</span><span><b>Flyers &amp; Brochures</b><span>Offset marketing prints</span></span><a href="#">Enquire</a></div>
+      <div class="srow"><span class="n">03</span><span><b>Custom Packaging</b><span>Packaging that sells</span></span><a href="#">Enquire</a></div>
+    </section>
+
+    <section class="tile t-gal">
+      <p class="h">Recent work</p>
+      <div class="gal">
+        <figure><div class="ph"></div><figcaption>Cards</figcaption></figure>
+        <figure><div class="ph"></div><figcaption>Brochures</figcaption></figure>
+        <figure><div class="ph"></div><figcaption>Packaging</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="tile t-gal">
+      <p class="h">Files</p>
+      <div class="frow"><span><b>Company Profile 2026</b><span class="m">PDF · 3.1 MB</span></span><a href="#">Get</a></div>
+      <div class="frow"><span><b>Price List — Business Cards</b><span class="m">PDF · 800 KB</span></span><a href="#">Get</a></div>
+    </section>
+
+    <section class="tile t-quote">
+      <p class="h">Kind words</p>
+      <p class="q">"PrintEve turned a week of printer phone calls into a ten-minute order. Proofs in a day, delivery in three."</p>
+      <p class="by">Kavya Iyer · Terra Foods</p>
+    </section>
+
+    <section class="tile t-det">
+      <p class="h">Details</p>
+      <div class="kv"><span><b>GSTIN</b><span class="v">24ABCDE1234F1Z5</span></span><button class="cp" data-copy="24ABCDE1234F1Z5">Copy</button></div>
+      <div class="kv"><span><b>Studio</b><span class="v">214 GIDC Estate, Vatva, Ahmedabad 382445</span></span><button class="cp" data-copy="214 GIDC Estate, Vatva, Ahmedabad 382445">Copy</button></div>
+      <div class="kv"><span><b>Hours</b><span class="v">Mon–Sat · 9 am – 7 pm</span></span></div>
+    </section>
+
+    <section class="tile t-pay">
+      <p class="h">Pay Tarang · UPI</p>
+      <div class="payline">
+        <div class="qrbox">
+          <svg viewBox="0 0 29 29" shape-rendering="crispEdges"><rect width="29" height="29" fill="#fff"/><g fill="#14532D"><rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="#fff"/><rect x="2" y="2" width="3" height="3"/><rect x="22" y="0" width="7" height="7"/><rect x="23" y="1" width="5" height="5" fill="#fff"/><rect x="24" y="2" width="3" height="3"/><rect x="0" y="22" width="7" height="7"/><rect x="1" y="23" width="5" height="5" fill="#fff"/><rect x="2" y="24" width="3" height="3"/><rect x="9" y="2" width="2" height="2"/><rect x="13" y="1" width="1" height="3"/><rect x="16" y="2" width="3" height="1"/><rect x="10" y="6" width="1" height="2"/><rect x="14" y="5" width="2" height="2"/><rect x="18" y="6" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="5" y="9" width="1" height="3"/><rect x="1" y="14" width="2" height="2"/><rect x="4" y="13" width="2" height="1"/><rect x="2" y="18" width="1" height="2"/><rect x="5" y="17" width="2" height="2"/><rect x="9" y="9" width="3" height="1"/><rect x="13" y="10" width="1" height="2"/><rect x="15" y="9" width="2" height="2"/><rect x="19" y="10" width="1" height="1"/><rect x="9" y="13" width="1" height="2"/><rect x="12" y="12" width="2" height="2"/><rect x="16" y="13" width="2" height="1"/><rect x="19" y="12" width="2" height="2"/><rect x="10" y="17" width="2" height="1"/><rect x="13" y="16" width="1" height="3"/><rect x="16" y="17" width="2" height="2"/><rect x="9" y="21" width="1" height="1"/><rect x="12" y="20" width="2" height="2"/><rect x="15" y="21" width="3" height="1"/><rect x="19" y="20" width="1" height="2"/><rect x="10" y="24" width="2" height="2"/><rect x="14" y="25" width="2" height="1"/><rect x="17" y="24" width="1" height="2"/><rect x="22" y="9" width="1" height="2"/><rect x="25" y="10" width="2" height="1"/><rect x="23" y="13" width="2" height="2"/><rect x="26" y="14" width="1" height="1"/><rect x="22" y="17" width="2" height="1"/><rect x="25" y="16" width="1" height="3"/><rect x="23" y="21" width="1" height="1"/><rect x="25" y="20" width="2" height="2"/><rect x="22" y="24" width="2" height="2"/><rect x="25" y="25" width="2" height="1"/></g></svg>
+        </div>
+        <div style="flex: 1; min-width: 0;">
+          <div class="upi"><code>printeve@icici</code><button data-copy="printeve@icici">COPY</button></div>
+          <div class="apps"><a href="#">GPay</a><a href="#">PhonePe</a><a href="#">Paytm</a></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+  <footer>Made with <b>PrintEve</b> Digital Cards<br /><span style="font-size: 10.5px; font-weight: 600;"><a href="#" style="color: inherit; text-decoration: none;">Privacy</a> · <a href="#" style="color: inherit; text-decoration: none;">Terms</a> · <a href="#" style="color: inherit; text-decoration: none;">Support</a></span></footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+  var t = document.getElementById('toast'), tm;
+  function toast(m) { t.textContent = m; t.setAttribute('data-show', 'true'); clearTimeout(tm); tm = setTimeout(function () { t.removeAttribute('data-show'); }, 2000); }
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { navigator.clipboard && navigator.clipboard.writeText(b.getAttribute('data-copy')); toast('Copied'); });
+  });
+  document.getElementById('save').addEventListener('click', function () {
+    var v = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Sachaniya;Tarang;;;\r\nFN:Tarang Sachaniya\r\nORG:PrintEve\r\nTITLE:CEO & Founder\r\nTEL;TYPE=CELL:+919825012345\r\nEMAIL:tarang@printeve.in\r\nEND:VCARD';
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([v], {type:'text/vcard'})); a.download = 'Tarang-Sachaniya.vcf'; a.click();
+    toast('Contact downloaded');
+  });
+  var vid = document.getElementById('video');
+  document.getElementById('videoTile').addEventListener('click', function () {
+    var p = vid.getAttribute('data-playing') === 'true';
+    vid.setAttribute('data-playing', String(!p));
+    toast(p ? 'Paused' : 'Playing intro');
+  });
+  document.querySelector('[data-share]').addEventListener('click', function (e) {
+    e.preventDefault();
+    if (navigator.share) navigator.share({ title: "Tarang Sachaniya's card", url: location.href }).catch(function(){});
+    else { navigator.clipboard && navigator.clipboard.writeText(location.href); toast('Link copied'); }
+  });
+</script>
+</body>
+</html>

@@ -97,6 +97,34 @@
   .offer__cta { flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--color-primary); text-decoration: none; white-space: nowrap; }
   .offer__cta:hover { text-decoration: underline; }
 
+  /* Video intro */
+  .video { position: relative; border-radius: var(--radius-lg); overflow: hidden; aspect-ratio: 16/9; cursor: pointer; background:
+    radial-gradient(80% 110% at 85% 0%, color-mix(in srgb, var(--color-primary) 26%, transparent) 0%, transparent 60%),
+    linear-gradient(150deg, #1E293B 0%, #0F172A 100%); }
+  .video .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 56px; height: 56px; border-radius: var(--radius-full); background: var(--color-background); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); transition: transform .15s; }
+  .video:hover .play { transform: translate(-50%, -50%) scale(1.07); }
+  .video .play::after { content: ""; margin-left: 4px; border-style: solid; border-width: 9px 0 9px 15px; border-color: transparent transparent transparent var(--color-primary); }
+  .video .cap { position: absolute; left: 14px; bottom: 12px; color: #F8FAFC; }
+  .video .cap strong { display: block; font-size: 13.5px; font-weight: 700; }
+  .video .cap span { font-size: 11px; color: #94A3B8; }
+  .video .dur { position: absolute; right: 12px; bottom: 12px; font-size: 11px; font-weight: 600; color: #fff; background: rgb(15 23 42 / 0.6); padding: 3px 9px; border-radius: var(--radius-full); }
+  .video[data-playing="true"] .play, .video[data-playing="true"] .dur { display: none; }
+  .video .vbars { display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); gap: 5px; }
+  .video[data-playing="true"] .vbars { display: flex; }
+  .vbars i { width: 4px; border-radius: 2px; background: var(--color-primary); animation: eq 1s ease-in-out infinite; }
+  .vbars i:nth-child(1) { height: 16px; } .vbars i:nth-child(2) { height: 30px; animation-delay: .15s; }
+  .vbars i:nth-child(3) { height: 20px; animation-delay: .3s; } .vbars i:nth-child(4) { height: 34px; animation-delay: .45s; }
+  @keyframes eq { 0%, 100% { transform: scaleY(.55); } 50% { transform: scaleY(1.1); } }
+
+  /* Gallery */
+  .gal { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .gal figure { margin: 0; }
+  .gal .ph { aspect-ratio: 1; border-radius: var(--radius-lg); border: 1px solid var(--color-border); }
+  .gal figure:nth-child(1) .ph { background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 14%, var(--color-surface)), color-mix(in srgb, var(--color-primary) 38%, var(--color-surface-2))); }
+  .gal figure:nth-child(2) .ph { background: linear-gradient(160deg, color-mix(in srgb, var(--color-primary) 30%, var(--color-surface-2)), color-mix(in srgb, var(--color-primary) 8%, var(--color-surface))); }
+  .gal figure:nth-child(3) .ph { background: linear-gradient(115deg, color-mix(in srgb, var(--color-primary) 20%, var(--color-surface)), color-mix(in srgb, var(--color-primary) 52%, var(--color-surface-2))); }
+  .gal figcaption { font-size: 11px; color: var(--color-text-muted); margin-top: 6px; text-align: center; }
+
   /* Quote — minimal */
   .quote { border-left: 2px solid var(--color-primary); padding: 2px 0 2px 16px; margin: 0; }
   .quote p { font-size: 14px; line-height: 1.6; color: var(--color-text); font-style: italic; margin: 0 0 8px; }
@@ -266,6 +294,17 @@
       <div class="socials" data-bind-html="socials" aria-label="Profiles"></div>
     </section>
 
+    <!-- Video intro -->
+    <section class="card sec" aria-labelledby="t-video">
+      <h2 class="sec__title" id="t-video"><span data-bind="videoTitle">Meet the business</span></h2>
+      <div class="video" id="videoBlock" data-playing="false" role="button" aria-label="Play intro video">
+        <span class="play"></span>
+        <span class="vbars"><i></i><i></i><i></i><i></i></span>
+        <span class="cap"><strong data-bind="videoCap">Inside our Ahmedabad workshop</strong><span data-bind="videoSub">Why unboxing is your first impression</span></span>
+        <span class="dur" data-bind="videoDur">1:42</span>
+      </div>
+    </section>
+
     <!-- P2 · Details -->
     <section class="card sec" aria-labelledby="t-details">
       <h2 class="sec__title" id="t-details">Details</h2>
@@ -276,6 +315,12 @@
     <section class="card sec" aria-labelledby="t-offer">
       <h2 class="sec__title" id="t-offer"><span data-bind="offerTitle">Services</span></h2>
       <div data-bind-html="offers"></div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="card sec" aria-labelledby="t-gal">
+      <h2 class="sec__title" id="t-gal">Gallery</h2>
+      <div class="gal" data-bind-html="gallery"></div>
     </section>
 
     <!-- P4 · Highlights -->
@@ -491,6 +536,8 @@
       role: 'Founder & CEO, Sharma Packaging Solutions',
       location: 'Ahmedabad, Gujarat', tagline: 'Sustainable packaging for D2C brands',
       offerTitle: 'Services', payTitle: 'Payments', payHidden: false,
+      videoTitle: 'Meet the business', videoCap: 'Inside our Ahmedabad workshop', videoSub: 'Why unboxing is your first impression', videoDur: '1:42',
+      gallery: ['Mailer boxes', 'Food-grade pouches', 'Brand inserts'],
       tel: 'tel:+919825012345',
       whatsapp: wa('919825012345', 'Hi Priya, we just met — great connecting!'),
       email: 'mailto:priya@sharmapack.in?subject=Following%20up%20%E2%80%94%20Priya%20Sharma',
@@ -526,6 +573,8 @@
       role: 'Independent Product Design Consultant',
       location: 'Bengaluru, Karnataka', tagline: 'Design systems & B2B SaaS',
       offerTitle: 'How I Can Help', payTitle: 'Book & Pay', payHidden: false,
+      videoTitle: 'A 90-second showreel', videoCap: 'Recent product work', videoSub: 'Design systems, dashboards and mobile', videoDur: '1:30',
+      gallery: ['Design systems', 'SaaS dashboards', 'Mobile apps'],
       tel: 'tel:+919900112233',
       whatsapp: wa('919900112233', 'Hi Arjun, we just met — great connecting!'),
       email: 'mailto:arjun@arjunmehta.design?subject=Following%20up%20%E2%80%94%20Arjun%20Mehta',
@@ -578,6 +627,7 @@
       socials: p.socials.map(function (s) { return social(s[0], s[1]); }).join(''),
       details: p.details.map(function (d) { return detailRow(d[0], d[1], d[2], d[3], d[4]); }).join(''),
       offers: p.offers.map(offerRow).join(''),
+      gallery: p.gallery.map(function (g) { return '<figure><div class="ph"></div><figcaption>' + g + '</figcaption></figure>'; }).join(''),
       resources: p.resources.map(resourceRow).join(''),
       payments: p.payments.map(function (d) { return detailRow(d[0], d[1], d[2], d[3], d[4]); }).join('')
     };
@@ -651,6 +701,14 @@
     if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme', 'dark');
     document.getElementById('iconMoon').hidden = !dark;
     document.getElementById('iconSun').hidden = dark;
+  });
+
+  /* ---------- Video intro ---------- */
+  var videoBlock = document.getElementById('videoBlock');
+  videoBlock.addEventListener('click', function () {
+    var playing = videoBlock.getAttribute('data-playing') === 'true';
+    videoBlock.setAttribute('data-playing', String(!playing));
+    toast(playing ? 'Paused' : 'Playing intro');
   });
 
   /* ---------- QR ---------- */

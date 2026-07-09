@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept 9 · Emerald Wave — PrintEve Digital Card</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; }
+  :root {
+    --canvas: #FFFFFF; --tint: #F1F8F3; --ink: #16231B; --muted: #68806F; --line: #E3F0E7;
+    --violet: #15803D; --purple: #16A34A; --pink: #65A30D;
+    --grad: linear-gradient(90deg, var(--violet), var(--pink));
+    --lav: #ECFDF3; --mint: #DFF7EC; --rose: #F0FADF; --sun: #FFF3DC;
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  body { background: var(--canvas); color: var(--ink); font-family: var(--sans); font-size: 14px; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  .page { max-width: 470px; margin: 0 auto; position: relative; }
+
+  /* Floating deco dots */
+  .dots { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+  .dots i { position: absolute; border-radius: 50%; }
+  .dots i:nth-child(1) { width: 10px; height: 10px; background: #86EFAC; top: 130px; left: 6%; }
+  .dots i:nth-child(2) { width: 6px; height: 6px; background: var(--pink); top: 210px; right: 8%; }
+  .dots i:nth-child(3) { width: 8px; height: 8px; background: #FCD34D; top: 700px; left: 8%; }
+  .dots i:nth-child(4) { width: 7px; height: 7px; background: #6EE7B7; top: 1000px; right: 6%; }
+  .dots i:nth-child(5) { width: 9px; height: 9px; background: #86EFAC; top: 1500px; right: 10%; }
+  .dots i:nth-child(6) { width: 6px; height: 6px; background: var(--pink); top: 1900px; left: 7%; }
+
+  .z { position: relative; z-index: 1; }
+
+  /* ===== Hero — blob avatar + gradient name ===== */
+  .hero { text-align: center; padding: 52px 24px 0; }
+  .brand { font-size: 11px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--violet); }
+  .blob-wrap { position: relative; width: 150px; height: 150px; margin: 26px auto 0; }
+  .blob-wrap::before { content: ""; position: absolute; inset: -16px; background: var(--grad); opacity: .16; border-radius: 58% 42% 55% 45% / 48% 55% 45% 52%; animation: blob 9s ease-in-out infinite; }
+  .blob { position: absolute; inset: 0; background: linear-gradient(140deg, #22C55E, #14532D); border-radius: 58% 42% 55% 45% / 48% 55% 45% 52%; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 900; color: #DCFCE7; animation: blob 9s ease-in-out infinite; }
+  @keyframes blob { 0%, 100% { border-radius: 58% 42% 55% 45% / 48% 55% 45% 52%; } 50% { border-radius: 45% 55% 44% 56% / 55% 46% 54% 45%; } }
+  .badge { position: absolute; right: -8px; bottom: 6px; background: #fff; border-radius: 999px; padding: 5px 11px; font-size: 10.5px; font-weight: 800; color: var(--violet); box-shadow: 0 8px 24px -8px rgb(22 163 74 / 0.45); display: inline-flex; align-items: center; gap: 4px; }
+  .badge svg { color: #22C55E; }
+  h1 { font-size: 32px; font-weight: 900; letter-spacing: -0.03em; margin-top: 22px; line-height: 1.08; }
+  h1 span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .role { margin-top: 9px; font-size: 13.5px; color: var(--muted); line-height: 1.6; max-width: 34ch; margin-inline: auto; }
+  .cta { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+  .pill { height: 46px; padding: 0 22px; border-radius: 999px; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+  .pill--grad { background: var(--grad); color: #fff; border: 0; box-shadow: 0 14px 30px -12px rgb(22 163 74 / 0.7); }
+  .pill--grad:hover { filter: brightness(1.07); }
+  .pill--line { background: #fff; color: var(--violet); border: 1.5px solid #BBE5C8; }
+  .pill--line:hover { border-color: var(--violet); }
+  .quick { display: flex; justify-content: center; gap: 22px; margin-top: 22px; }
+  .q { display: flex; flex-direction: column; align-items: center; gap: 6px; background: none; border: 0; font-family: inherit; font-size: 10px; font-weight: 700; color: var(--muted); cursor: pointer; text-decoration: none; text-transform: uppercase; letter-spacing: .06em; }
+  .q .ic { width: 44px; height: 44px; border-radius: 50%; background: var(--lav); color: var(--violet); display: flex; align-items: center; justify-content: center; transition: transform .15s, background .15s; }
+  .q:nth-child(2) .ic { background: var(--mint); color: #0E9F6E; }
+  .q:nth-child(3) .ic { background: var(--rose); color: var(--pink); }
+  .q:nth-child(4) .ic { background: var(--sun); color: #D97706; }
+  .q:hover .ic { transform: translateY(-3px); }
+
+  /* Wavy divider */
+  .wave { display: block; width: 100%; height: 44px; margin-top: 30px; }
+
+  /* ===== Tinted band sections ===== */
+  .band { background: var(--tint); padding: 8px 24px 34px; }
+  .band--white { background: var(--canvas); padding: 34px 24px; }
+  .sec-h { text-align: center; font-size: 20px; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .sec-h span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sec-sub { text-align: center; font-size: 12px; color: var(--muted); margin-bottom: 18px; }
+  .band p.txt { color: #4A4661; line-height: 1.75; font-size: 13.5px; text-align: center; max-width: 42ch; margin-inline: auto; }
+  .tags { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-top: 14px; }
+  .tag { font-size: 11px; font-weight: 700; padding: 6px 13px; border-radius: 999px; background: #fff; color: var(--violet); box-shadow: 0 4px 14px -6px rgb(22 163 74 / 0.25); }
+
+  /* Video — phone-ish rounded frame */
+  .video { position: relative; border-radius: 22px; overflow: hidden; aspect-ratio: 16/9; cursor: pointer; background:
+    radial-gradient(80% 100% at 80% 0%, rgb(132 204 22 / 0.35) 0%, transparent 55%),
+    linear-gradient(140deg, #14532D 0%, #052E16 100%); box-shadow: 0 22px 50px -22px rgb(20 83 45 / 0.55); }
+  .video .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 62px; height: 62px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; transition: transform .15s; }
+  .video:hover .play { transform: translate(-50%, -50%) scale(1.08); }
+  .video .play::after { content: ""; margin-left: 4px; border-style: solid; border-width: 10px 0 10px 16px; border-color: transparent transparent transparent var(--violet); }
+  .video .cap { position: absolute; left: 16px; bottom: 13px; color: #DCFCE7; text-align: left; }
+  .video .cap strong { display: block; font-size: 14px; font-weight: 800; }
+  .video .cap span { font-size: 11px; color: #86EFAC; }
+  .video .dur { position: absolute; right: 13px; bottom: 13px; font-size: 11px; font-weight: 800; color: #fff; background: rgb(255 255 255 / 0.18); backdrop-filter: blur(4px); padding: 4px 10px; border-radius: 999px; }
+  .video[data-playing="true"] .play, .video[data-playing="true"] .dur { display: none; }
+  .video .bars { display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); gap: 5px; }
+  .video[data-playing="true"] .bars { display: flex; }
+  .bars i { width: 4px; border-radius: 2px; background: var(--pink); animation: eq 1s ease-in-out infinite; }
+  .bars i:nth-child(1) { height: 16px; } .bars i:nth-child(2) { height: 30px; animation-delay: .15s; }
+  .bars i:nth-child(3) { height: 20px; animation-delay: .3s; } .bars i:nth-child(4) { height: 34px; animation-delay: .45s; }
+  @keyframes eq { 0%, 100% { transform: scaleY(.55); } 50% { transform: scaleY(1.1); } }
+
+  /* Services — pastel cards (their services carousel) */
+  .svcs { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .svc { border-radius: 18px; padding: 18px; display: flex; align-items: center; gap: 14px; background: #fff; box-shadow: 0 12px 34px -18px rgb(22 35 27 / 0.25); }
+  .svc .tile { width: 54px; height: 54px; border-radius: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .svc:nth-child(1) .tile { background: var(--mint); color: #0E9F6E; }
+  .svc:nth-child(2) .tile { background: var(--rose); color: var(--pink); }
+  .svc:nth-child(3) .tile { background: var(--sun); color: #D97706; }
+  .svc b { font-size: 14.5px; font-weight: 800; display: block; letter-spacing: -0.01em; }
+  .svc span.d { font-size: 12px; color: var(--muted); margin-top: 3px; display: block; line-height: 1.5; }
+  .svc a { margin-left: auto; flex-shrink: 0; font-size: 12px; font-weight: 800; color: var(--violet); text-decoration: none; white-space: nowrap; }
+  .svc a:hover { color: var(--pink); }
+
+  /* Gallery — pastel-framed tiles */
+  .gal { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11px; }
+  .gal figure { margin: 0; background: #fff; border-radius: 16px; padding: 7px 7px 9px; box-shadow: 0 12px 30px -18px rgb(22 35 27 / 0.3); }
+  .gal .ph { aspect-ratio: 1; border-radius: 11px; }
+  .gal figure:nth-child(1) .ph { background: linear-gradient(140deg, #86EFAC, #15803D); }
+  .gal figure:nth-child(2) .ph { background: linear-gradient(140deg, #D9F99D, #65A30D); }
+  .gal figure:nth-child(3) .ph { background: linear-gradient(140deg, #FDE68A, #F59E0B); }
+  .gal figcaption { font-size: 10.5px; font-weight: 700; color: var(--muted); margin-top: 7px; text-align: center; }
+
+  /* Details — soft list */
+  .kv { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: #fff; border-radius: 14px; padding: 13px 15px; margin-bottom: 9px; box-shadow: 0 10px 26px -18px rgb(22 35 27 / 0.28); }
+  .kv:last-child { margin-bottom: 0; }
+  .kv b { font-size: 9.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #9AB3A2; display: block; }
+  .kv .v { font-size: 13.5px; font-weight: 600; margin-top: 2px; }
+  .cp { border: 0; background: var(--lav); color: var(--violet); font-family: inherit; font-size: 11px; font-weight: 800; padding: 8px 14px; border-radius: 999px; cursor: pointer; flex-shrink: 0; }
+  .cp:hover { background: #D3F3DE; }
+
+  /* Payments — two-tone pricing-card style */
+  .pay { border-radius: 20px; overflow: hidden; box-shadow: 0 20px 50px -24px rgb(20 83 45 / 0.45); }
+  .pay-top { background: linear-gradient(120deg, #EFFDF4, #F7FEE7); padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; }
+  .pay-top .t b { font-size: 15px; font-weight: 900; display: block; }
+  .pay-top .t span { font-size: 11px; color: var(--muted); }
+  .pay-top .qrw { width: 74px; background: #fff; border-radius: 12px; padding: 6px; box-shadow: 0 8px 22px -10px rgb(22 163 74 / 0.4); }
+  .pay-top .qrw svg { display: block; width: 100%; height: auto; }
+  .pay-body { background: #fff; padding: 16px 20px 18px; }
+  .upi { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: var(--tint); border-radius: 999px; padding: 7px 7px 7px 16px; }
+  .upi code { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+  .upi button { background: var(--grad); color: #fff; border: 0; font-family: inherit; font-size: 11px; font-weight: 800; padding: 8px 15px; border-radius: 999px; cursor: pointer; }
+  .apps { display: flex; gap: 8px; margin-top: 10px; }
+  .apps a { flex: 1; text-align: center; font-size: 11.5px; font-weight: 700; color: var(--ink); text-decoration: none; border: 1.5px solid var(--line); border-radius: 999px; padding: 9px 0; }
+  .apps a:hover { border-color: var(--purple); color: var(--violet); }
+  .paynote { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 11px; color: var(--muted); }
+  .paynote svg { color: #22C55E; flex-shrink: 0; }
+
+  /* Files */
+  .frow { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fff; border-radius: 14px; padding: 12px 15px; margin-bottom: 9px; box-shadow: 0 10px 26px -18px rgb(22 35 27 / 0.28); }
+  .frow b { font-size: 13px; font-weight: 800; display: block; }
+  .frow span.m { font-size: 11px; color: var(--muted); }
+  .frow a { font-size: 12px; font-weight: 800; color: var(--violet); text-decoration: none; flex-shrink: 0; }
+  .frow a:hover { color: var(--pink); }
+
+  /* Quote */
+  .tq { background: #fff; border-radius: 18px; padding: 20px; text-align: center; box-shadow: 0 12px 34px -18px rgb(22 35 27 / 0.25); margin: 0; }
+  .tq .qm { font-size: 30px; font-weight: 900; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1; }
+  .tq p { font-size: 13.5px; line-height: 1.7; color: #4A4661; font-style: italic; margin-top: 6px; }
+  .tq footer { margin-top: 12px; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--violet); }
+
+  /* Scan */
+  .scan { display: flex; align-items: center; gap: 14px; background: #fff; border-radius: 18px; padding: 15px 17px; box-shadow: 0 12px 34px -18px rgb(22 35 27 / 0.25); }
+  .scan .ic { width: 48px; height: 48px; border-radius: 14px; background: var(--lav); color: var(--violet); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .scan b { font-size: 13.5px; font-weight: 800; display: block; }
+  .scan span.s { font-size: 12px; color: var(--muted); }
+
+  /* Footer — dark band like reference */
+  .foot { background: #0C1510; color: #AEC3B2; text-align: center; padding: 30px 24px 26px; margin-top: 36px; border-radius: 34px 34px 0 0; }
+  .foot b { color: #fff; }
+  .foot .gw { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 800; }
+  .foot .links { margin-top: 10px; font-size: 11px; }
+  .foot .links a { color: #7E937F; text-decoration: none; margin: 0 6px; }
+  .foot .links a:hover { color: #fff; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; font-size: 12.5px; font-weight: 600; padding: 9px 18px; border-radius: 999px; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 9; }
+  .toast[data-show="true"] { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="dots"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+  <!-- Hero -->
+  <header class="hero z">
+    <p class="brand">PrintEve · Digital Card</p>
+    <div class="blob-wrap">
+      <div class="blob">TS</div>
+      <span class="badge">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        Verified
+      </span>
+    </div>
+    <h1>Tarang <span>Sachaniya</span></h1>
+    <p class="role">CEO &amp; Founder, PrintEve — professional printing for growing brands, Ahmedabad.</p>
+    <div class="cta">
+      <button class="pill pill--grad" id="save">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Save Contact
+      </button>
+      <a class="pill pill--line" href="#">WhatsApp</a>
+    </div>
+    <nav class="quick" aria-label="Quick actions">
+      <a class="q" href="#"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.58 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>Call</a>
+      <a class="q" href="#"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>Email</a>
+      <a class="q" href="#"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg></span>Website</a>
+      <button class="q" data-share><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98m-.01-10.98-6.82 3.98"/></svg></span>Share</button>
+    </nav>
+    <svg class="wave" viewBox="0 0 470 44" preserveAspectRatio="none" aria-hidden="true"><path d="M0 22 C 80 44, 160 0, 235 18 C 310 36, 390 8, 470 24 L 470 44 L 0 44 Z" fill="#F1F8F3"/></svg>
+  </header>
+
+  <!-- About band -->
+  <section class="band z">
+    <h2 class="sec-h">Freedom From <span>Boring Printing</span></h2>
+    <p class="sec-sub">About PrintEve</p>
+    <p class="txt">Business cards, flyers, brochures and packaging from vetted local printing partners across India — every order includes free design proofing and doorstep delivery. 10,000+ orders, 500+ printing partners, 99% satisfaction.</p>
+    <div class="tags"><span class="tag">Business Cards</span><span class="tag">Marketing Prints</span><span class="tag">Packaging</span><span class="tag">Bulk Orders</span></div>
+  </section>
+  <svg class="wave" style="margin: 0; transform: scaleY(-1);" viewBox="0 0 470 44" preserveAspectRatio="none" aria-hidden="true"><path d="M0 22 C 80 44, 160 0, 235 18 C 310 36, 390 8, 470 24 L 470 44 L 0 44 Z" fill="#F1F8F3"/></svg>
+
+  <!-- Video -->
+  <section class="band--white z">
+    <h2 class="sec-h">Our <span>Virtual Intro</span></h2>
+    <p class="sec-sub">90 seconds inside the business</p>
+    <div class="video" id="video" data-playing="false" role="button" aria-label="Play intro video">
+      <span class="play"></span>
+      <span class="bars"><i></i><i></i><i></i><i></i></span>
+      <span class="cap"><strong>Inside a PrintEve partner press</strong><span>From upload to doorstep in 72 hours</span></span>
+      <span class="dur">1:42</span>
+    </div>
+  </section>
+
+  <!-- Services band -->
+  <section class="band z" style="padding-top: 30px; border-radius: 34px 34px 0 0;">
+    <h2 class="sec-h">Our <span>Services</span></h2>
+    <p class="sec-sub">Three things, done extremely well</p>
+    <div class="svcs">
+      <div class="svc">
+        <span class="tile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg></span>
+        <span><b>Business Cards</b><span class="d">Premium 350gsm, matte or gloss · 24–72 hrs</span></span>
+        <a href="#">Enquire →</a>
+      </div>
+      <div class="svc">
+        <span class="tile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg></span>
+        <span><b>Flyers &amp; Brochures</b><span class="d">Offset marketing prints, folded or flat</span></span>
+        <a href="#">Enquire →</a>
+      </div>
+      <div class="svc">
+        <span class="tile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></span>
+        <span><b>Custom Packaging</b><span class="d">Boxes and stickers that sell your brand</span></span>
+        <a href="#">Enquire →</a>
+      </div>
+    </div>
+
+    <h2 class="sec-h" style="margin-top: 32px;">Recent <span>Work</span></h2>
+    <p class="sec-sub">A peek at what leaves the workshop</p>
+    <div class="gal">
+      <figure><div class="ph"></div><figcaption>Cards</figcaption></figure>
+      <figure><div class="ph"></div><figcaption>Brochures</figcaption></figure>
+      <figure><div class="ph"></div><figcaption>Packaging</figcaption></figure>
+    </div>
+  </section>
+  <svg class="wave" style="margin: 0; transform: scaleY(-1);" viewBox="0 0 470 44" preserveAspectRatio="none" aria-hidden="true"><path d="M0 22 C 80 44, 160 0, 235 18 C 310 36, 390 8, 470 24 L 470 44 L 0 44 Z" fill="#F1F8F3"/></svg>
+
+  <!-- Details -->
+  <section class="band--white z">
+    <h2 class="sec-h">Contact <span>Details</span></h2>
+    <p class="sec-sub">Tap to copy, tap to reach</p>
+    <div class="kv"><span><b>Phone</b><span class="v">+91 98250 12345</span></span><button class="cp" data-copy="+919825012345">Copy</button></div>
+    <div class="kv"><span><b>Email</b><span class="v">tarang@printeve.in</span></span><button class="cp" data-copy="tarang@printeve.in">Copy</button></div>
+    <div class="kv"><span><b>GSTIN</b><span class="v">24ABCDE1234F1Z5</span></span><button class="cp" data-copy="24ABCDE1234F1Z5">Copy</button></div>
+    <div class="kv"><span><b>Studio</b><span class="v">214 GIDC Estate, Vatva, Ahmedabad</span></span><button class="cp" data-copy="214 GIDC Estate, Vatva, Ahmedabad 382445">Copy</button></div>
+  </section>
+
+  <!-- Payments -->
+  <section class="band--white z" style="padding-top: 0;">
+    <h2 class="sec-h">Start With <span>A Payment</span></h2>
+    <p class="sec-sub">UPI · instant · verified merchant</p>
+    <div class="pay">
+      <div class="pay-top">
+        <span class="t"><b>Pay Tarang</b><span>PrintEve · ICICI Bank</span></span>
+        <span class="qrw">
+          <svg viewBox="0 0 29 29" shape-rendering="crispEdges"><rect width="29" height="29" fill="#fff"/><g fill="#16231B"><rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="#fff"/><rect x="2" y="2" width="3" height="3"/><rect x="22" y="0" width="7" height="7"/><rect x="23" y="1" width="5" height="5" fill="#fff"/><rect x="24" y="2" width="3" height="3"/><rect x="0" y="22" width="7" height="7"/><rect x="1" y="23" width="5" height="5" fill="#fff"/><rect x="2" y="24" width="3" height="3"/><rect x="9" y="2" width="2" height="2"/><rect x="13" y="1" width="1" height="3"/><rect x="16" y="2" width="3" height="1"/><rect x="10" y="6" width="1" height="2"/><rect x="14" y="5" width="2" height="2"/><rect x="18" y="6" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="5" y="9" width="1" height="3"/><rect x="1" y="14" width="2" height="2"/><rect x="4" y="13" width="2" height="1"/><rect x="2" y="18" width="1" height="2"/><rect x="5" y="17" width="2" height="2"/><rect x="9" y="9" width="3" height="1"/><rect x="13" y="10" width="1" height="2"/><rect x="15" y="9" width="2" height="2"/><rect x="19" y="10" width="1" height="1"/><rect x="9" y="13" width="1" height="2"/><rect x="12" y="12" width="2" height="2"/><rect x="16" y="13" width="2" height="1"/><rect x="19" y="12" width="2" height="2"/><rect x="10" y="17" width="2" height="1"/><rect x="13" y="16" width="1" height="3"/><rect x="16" y="17" width="2" height="2"/><rect x="9" y="21" width="1" height="1"/><rect x="12" y="20" width="2" height="2"/><rect x="15" y="21" width="3" height="1"/><rect x="19" y="20" width="1" height="2"/><rect x="10" y="24" width="2" height="2"/><rect x="14" y="25" width="2" height="1"/><rect x="17" y="24" width="1" height="2"/><rect x="22" y="9" width="1" height="2"/><rect x="25" y="10" width="2" height="1"/><rect x="23" y="13" width="2" height="2"/><rect x="26" y="14" width="1" height="1"/><rect x="22" y="17" width="2" height="1"/><rect x="25" y="16" width="1" height="3"/><rect x="23" y="21" width="1" height="1"/><rect x="25" y="20" width="2" height="2"/><rect x="22" y="24" width="2" height="2"/><rect x="25" y="25" width="2" height="1"/></g></svg>
+        </span>
+      </div>
+      <div class="pay-body">
+        <div class="upi"><code>printeve@icici</code><button data-copy="printeve@icici">Copy</button></div>
+        <div class="apps"><a href="#">GPay</a><a href="#">PhonePe</a><a href="#">Paytm</a></div>
+        <p class="paynote">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+          Payments go directly to PrintEve
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Files + quote + scan band -->
+  <section class="band z" style="padding-top: 30px; border-radius: 34px 34px 0 0;">
+    <h2 class="sec-h">Need <span>More?</span></h2>
+    <p class="sec-sub">Files, kind words and instant access</p>
+    <div class="frow"><span><b>Company Profile 2026</b><span class="m">PDF · 3.1 MB</span></span><a href="#">Get →</a></div>
+    <div class="frow"><span><b>Price List — Business Cards</b><span class="m">PDF · 800 KB</span></span><a href="#">Get →</a></div>
+    <blockquote class="tq" style="margin-top: 16px;">
+      <div class="qm">"</div>
+      <p>PrintEve turned a week of printer phone calls into a ten-minute order. Proofs in a day, delivery in three — every single time.</p>
+      <footer>Kavya Iyer · Terra Foods</footer>
+    </blockquote>
+    <div class="scan" style="margin-top: 16px;">
+      <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3m5-1v.01M12 7v3a2 2 0 0 1-2 2H7m-4 0h.01M12 3h.01M12 16v.01M16 12h1m4 0v.01M12 21v-1"/></svg></span>
+      <span><b>Scan to open this card</b><span class="s">Point any camera here — instant access, no app.</span></span>
+    </div>
+  </section>
+
+  <footer class="foot z">
+    <p>Made with <b>Print</b><span class="gw">Eve</span> Digital Cards</p>
+    <p class="links"><a href="#">Privacy</a>·<a href="#">Terms</a>·<a href="#">Support</a></p>
+  </footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+  var t = document.getElementById('toast'), tm;
+  function toast(m) { t.textContent = m; t.setAttribute('data-show', 'true'); clearTimeout(tm); tm = setTimeout(function () { t.removeAttribute('data-show'); }, 2000); }
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { navigator.clipboard && navigator.clipboard.writeText(b.getAttribute('data-copy')); toast('Copied'); });
+  });
+  document.getElementById('save').addEventListener('click', function () {
+    var v = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Sachaniya;Tarang;;;\r\nFN:Tarang Sachaniya\r\nORG:PrintEve\r\nTITLE:CEO & Founder\r\nTEL;TYPE=CELL:+919825012345\r\nEMAIL:tarang@printeve.in\r\nEND:VCARD';
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([v], {type:'text/vcard'})); a.download = 'Tarang-Sachaniya.vcf'; a.click();
+    toast('Contact downloaded');
+  });
+  var vid = document.getElementById('video');
+  vid.addEventListener('click', function () {
+    var p = vid.getAttribute('data-playing') === 'true';
+    vid.setAttribute('data-playing', String(!p));
+    toast(p ? 'Paused' : 'Playing intro');
+  });
+  document.querySelector('[data-share]').addEventListener('click', function () {
+    if (navigator.share) navigator.share({ title: "Tarang Sachaniya's card", url: location.href }).catch(function(){});
+    else { navigator.clipboard && navigator.clipboard.writeText(location.href); toast('Link copied'); }
+  });
+</script>
+</body>
+</html>

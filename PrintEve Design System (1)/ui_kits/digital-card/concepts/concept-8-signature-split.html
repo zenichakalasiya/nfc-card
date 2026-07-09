@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept 8 · Signature Split — PrintEve Digital Card</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; }
+  :root {
+    --cream: #F4F0E6; --card: #FFFDF8; --ink: #23251F; --muted: #8A8B80; --line: #EAE6DA;
+    --green: #16A34A; --green-deep: #15803D; --green-band: #3ECF6E; --green-soft: #E8F8EE;
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  body { background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 14px; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 560px; margin: 0 auto; padding: 26px 16px 56px; }
+  @media (min-width: 640px) { .page { padding-top: 44px; } }
+
+  .greet { font-size: 14px; color: var(--muted); line-height: 1.5; margin: 0 6px 14px; }
+
+  /* ONE continuous card, sections separated by hairlines */
+  .sig { background: var(--card); border-radius: 26px; box-shadow: 0 24px 60px -30px rgb(35 37 31 / 0.35); overflow: hidden; }
+  .blk { padding: 24px 24px; }
+  .blk + .blk { border-top: 1px solid var(--line); }
+
+  /* Header — photo left / identity right (signature layout) */
+  .head { display: flex; gap: 20px; align-items: flex-start; }
+  .head .photo-col { flex-shrink: 0; text-align: center; }
+  .photo { width: 104px; height: 104px; border-radius: 50%; background:
+    radial-gradient(80% 80% at 30% 25%, #B9EACB 0%, transparent 55%),
+    linear-gradient(160deg, #2FA45C 0%, #14532D 100%); position: relative; overflow: hidden; }
+  .photo::after { content: "TS"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; color: #EAFBF0; letter-spacing: -0.02em; }
+  .wordmark { margin-top: 12px; font-size: 12px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+  .wordmark i { font-style: normal; color: var(--green); }
+  .idcol { flex: 1; min-width: 0; padding-top: 4px; }
+  h1 { font-size: 27px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.05; }
+  h1 em { font-style: italic; font-weight: 800; color: var(--green); }
+  .role { margin-top: 7px; font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .role b { color: var(--ink); font-weight: 600; }
+  .hello { display: inline-flex; align-items: center; gap: 7px; margin-top: 11px; font-size: 11px; font-weight: 700; color: var(--green-deep); background: var(--green-soft); padding: 5px 12px; border-radius: 999px; }
+  .hello::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+  @media (max-width: 470px) {
+    .head { gap: 16px; }
+    .photo { width: 84px; height: 84px; } .photo::after { font-size: 26px; }
+    h1 { font-size: 23px; }
+  }
+
+  /* Contact fields — two-column icon+value grid (signature layout verbatim) */
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 18px; }
+  @media (max-width: 470px) { .fields { grid-template-columns: 1fr; } }
+  .field { display: flex; align-items: center; gap: 11px; padding: 9px 0; text-decoration: none; color: var(--ink); border-radius: 8px; }
+  .field .ic { width: 30px; height: 30px; border-radius: 50%; background: var(--green); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .field .ic svg { width: 13px; height: 13px; }
+  .field b { display: block; font-size: 9.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .field span.v { display: block; font-size: 13px; font-weight: 600; margin-top: 1px; word-break: break-all; }
+  .field:hover span.v { color: var(--green-deep); }
+
+  /* Socials left / Save contact right (the signature move) */
+  .actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .socials { display: flex; gap: 8px; }
+  .socials a { width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--ink); color: var(--card); transition: background .15s; }
+  .socials a:hover { background: var(--green); }
+  .save { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 22px; border-radius: 10px; background: var(--green); color: #fff; border: 0; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: background .15s; }
+  .save:hover { background: var(--green-deep); }
+
+  /* Section titles — bold + italic accent (dribbble pattern) */
+  .st { font-size: 16px; font-weight: 900; letter-spacing: .02em; text-transform: uppercase; margin-bottom: 14px; }
+  .st em { font-style: italic; font-weight: 800; color: var(--green); }
+
+  /* About — full-width green band inside the card */
+  .about-band { background: var(--green-band); padding: 24px; color: #0B2A14; }
+  .about-band .st { color: #0B2A14; margin-bottom: 10px; }
+  .about-band .st em { color: #FFFDF8; }
+  .about-band p { font-size: 13.5px; line-height: 1.7; font-weight: 500; }
+  .about-band .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 13px; }
+  .about-band .tag { font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 999px; background: rgb(255 253 248 / 0.35); border: 1px solid rgb(11 42 20 / 0.2); }
+
+  /* Video */
+  .video { position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 16/9; cursor: pointer; background:
+    radial-gradient(90% 110% at 15% 10%, #2FA45C33 0%, transparent 55%),
+    linear-gradient(150deg, #1D3A26 0%, #0F2416 100%); }
+  .video .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border-radius: 50%; background: var(--card); display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 30px -8px rgb(0 0 0 / 0.5); transition: transform .15s; }
+  .video:hover .play { transform: translate(-50%, -50%) scale(1.07); }
+  .video .play::after { content: ""; margin-left: 4px; border-style: solid; border-width: 9px 0 9px 15px; border-color: transparent transparent transparent var(--green); }
+  .video .cap { position: absolute; left: 14px; bottom: 12px; color: #F0FAF3; }
+  .video .cap strong { display: block; font-size: 14px; font-weight: 800; }
+  .video .cap span { font-size: 11px; color: #A6C4B0; }
+  .video .dur { position: absolute; right: 12px; bottom: 12px; font-size: 11px; font-weight: 800; color: #fff; background: rgb(0 0 0 / 0.45); padding: 3px 10px; border-radius: 999px; }
+  .video[data-playing="true"] .play, .video[data-playing="true"] .dur { display: none; }
+  .video .bars { display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); gap: 5px; }
+  .video[data-playing="true"] .bars { display: flex; }
+  .bars i { width: 4px; border-radius: 2px; background: var(--green-band); animation: eq 1s ease-in-out infinite; }
+  .bars i:nth-child(1) { height: 16px; } .bars i:nth-child(2) { height: 30px; animation-delay: .15s; }
+  .bars i:nth-child(3) { height: 20px; animation-delay: .3s; } .bars i:nth-child(4) { height: 34px; animation-delay: .45s; }
+  @keyframes eq { 0%, 100% { transform: scaleY(.55); } 50% { transform: scaleY(1.1); } }
+
+  /* Services — label left, value right (dribbble project-count rows) */
+  .srow { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+  .srow:last-of-type { border-bottom: 0; padding-bottom: 0; }
+  .srow:first-of-type { padding-top: 0; }
+  .srow .nm { font-size: 13px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+  .srow .nm span { display: block; font-size: 11.5px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--muted); margin-top: 3px; }
+  .srow .val { font-size: 12px; font-weight: 700; color: var(--green-deep); white-space: nowrap; flex-shrink: 0; }
+  .srow:hover .nm { color: var(--green-deep); }
+
+  /* Gallery */
+  .gal { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .gal figure { margin: 0; }
+  .gal .ph { aspect-ratio: 1; border-radius: 14px; }
+  .gal figure:nth-child(1) .ph { background: linear-gradient(145deg, #B9EACB, #2FA45C); }
+  .gal figure:nth-child(2) .ph { background: linear-gradient(145deg, #EDE7D6, #C9BC9A); }
+  .gal figure:nth-child(3) .ph { background: linear-gradient(145deg, #2FA45C, #14532D); }
+  .gal figcaption { font-size: 11px; font-weight: 600; color: var(--muted); margin-top: 6px; text-align: center; }
+  /* Files — field language */
+  .frow { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .frow:last-child { border-bottom: 0; padding-bottom: 0; }
+  .frow:first-of-type { padding-top: 0; }
+  .frow .fi { width: 30px; height: 30px; border-radius: 50%; background: var(--green); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .frow .fi svg { width: 13px; height: 13px; }
+  .frow b { font-size: 13px; font-weight: 700; display: block; }
+  .frow span.m { font-size: 11px; color: var(--muted); }
+  .frow > span:first-child { display: flex; align-items: center; gap: 11px; }
+  .frow a { font-size: 12px; font-weight: 800; color: var(--green-deep); text-decoration: none; flex-shrink: 0; }
+  /* Quote */
+  .tq { margin: 0; }
+  .tq p { font-size: 13.5px; line-height: 1.7; color: var(--ink); font-style: italic; }
+  .tq footer { margin-top: 9px; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--green-deep); }
+  /* Payments — same two-column field language + QR right */
+  .payrow { display: flex; gap: 18px; align-items: center; }
+  .payrow .l { flex: 1; min-width: 0; }
+  .upi { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: var(--green-soft); border: 1px solid #CDECDA; border-radius: 12px; padding: 11px 13px; }
+  .upi code { font-size: 12.5px; font-weight: 700; color: var(--green-deep); }
+  .upi button { background: var(--ink); color: var(--card); border: 0; font-family: inherit; font-size: 10.5px; font-weight: 800; padding: 7px 13px; border-radius: 999px; cursor: pointer; }
+  .apps { display: flex; gap: 7px; margin-top: 9px; }
+  .apps a { flex: 1; text-align: center; font-size: 11px; font-weight: 700; color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 8px 0; }
+  .apps a:hover { border-color: var(--green); color: var(--green-deep); }
+  .payqr { width: 92px; flex-shrink: 0; border: 1px solid var(--line); border-radius: 12px; padding: 7px; background: #fff; }
+  .payqr svg { display: block; width: 100%; height: auto; }
+  .paynote { margin-top: 12px; font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  .paynote svg { color: var(--green); flex-shrink: 0; }
+  @media (max-width: 470px) { .payrow { flex-direction: column-reverse; align-items: stretch; } .payqr { margin: 0 auto; } }
+
+  footer { text-align: center; margin-top: 22px; font-size: 12px; color: var(--muted); }
+  footer b { color: var(--ink); }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--card); font-size: 12.5px; font-weight: 600; padding: 9px 18px; border-radius: 999px; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 9; }
+  .toast[data-show="true"] { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="page">
+  <p class="greet">Much appreciated,<br />Tarang</p>
+
+  <main class="sig">
+
+    <!-- Header: photo left / identity right -->
+    <section class="blk head">
+      <div class="photo-col">
+        <div class="photo" role="img" aria-label="Tarang Sachaniya"></div>
+        <p class="wordmark">PRINT<i>EVE</i></p>
+      </div>
+      <div class="idcol">
+        <h1>Tarang <em>Sachaniya</em></h1>
+        <p class="role"><b>CEO &amp; Founder, Chief Everything Officer</b><br />PrintEve&nbsp;&nbsp;|&nbsp;&nbsp;Professional Printing</p>
+        <span class="hello">Available for new brands</span>
+      </div>
+    </section>
+
+    <!-- Contact fields: 2-col icon+value grid -->
+    <section class="blk">
+      <div class="fields">
+        <a class="field" href="#">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.58 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+          <span><b>Phone</b><span class="v">+91 98250 12345</span></span>
+        </a>
+        <a class="field" href="#">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg></span>
+          <span><b>Website</b><span class="v">printeve.in</span></span>
+        </a>
+        <a class="field" href="#">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+          <span><b>Email</b><span class="v">tarang@printeve.in</span></span>
+        </a>
+        <a class="field" href="#">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+          <span><b>Studio</b><span class="v">Vatva GIDC, Ahmedabad</span></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Socials left / Save right -->
+    <section class="blk actions">
+      <div class="socials">
+        <a href="#" aria-label="LinkedIn"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
+        <a href="#" aria-label="WhatsApp"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg></a>
+      </div>
+      <button class="save" id="save">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Save contact
+      </button>
+    </section>
+
+    <!-- About: full-width green band -->
+    <section class="about-band">
+      <p class="st">About <em>Me</em></p>
+      <p>I've spent twelve years making professional printing effortless for growing brands — business cards, flyers, brochures and packaging, each with free design proofing. 10,000+ orders delivered, Ahmedabad to Bengaluru.</p>
+      <div class="tags"><span class="tag">Business Cards</span><span class="tag">Marketing Prints</span><span class="tag">Packaging</span><span class="tag">Bulk Orders</span></div>
+    </section>
+
+    <!-- Video -->
+    <section class="blk">
+      <p class="st">My <em>Business</em></p>
+      <div class="video" id="video" data-playing="false" role="button" aria-label="Play intro video">
+        <span class="play"></span>
+        <span class="bars"><i></i><i></i><i></i><i></i></span>
+        <span class="cap"><strong>Inside a PrintEve partner press</strong><span>From upload to doorstep in 72 hours</span></span>
+        <span class="dur">1:42</span>
+      </div>
+    </section>
+
+    <!-- Services: label left / value right -->
+    <section class="blk">
+      <p class="st">My <em>Services</em></p>
+      <a class="srow" href="#"><span class="nm">Business Cards<span>350gsm premium · 24–72 hrs</span></span><span class="val">from ₹199 →</span></a>
+      <a class="srow" href="#"><span class="nm">Flyers &amp; Brochures<span>Offset marketing prints</span></span><span class="val">from ₹2/pc →</span></a>
+      <a class="srow" href="#"><span class="nm">Custom Packaging<span>Packaging that sells</span></span><span class="val">from ₹2/pc →</span></a>
+      <a class="srow" href="#"><span class="nm">GSTIN<span>24ABCDE1234F1Z5</span></span><span class="val" data-copy="24ABCDE1234F1Z5">Copy</span></a>
+    </section>
+
+    <!-- Gallery -->
+    <section class="blk">
+      <p class="st">My <em>Work</em></p>
+      <div class="gal">
+        <figure><div class="ph"></div><figcaption>Business cards</figcaption></figure>
+        <figure><div class="ph"></div><figcaption>Brochures</figcaption></figure>
+        <figure><div class="ph"></div><figcaption>Packaging</figcaption></figure>
+      </div>
+    </section>
+
+    <!-- Files -->
+    <section class="blk">
+      <p class="st">My <em>Files</em></p>
+      <div class="frow">
+        <span><span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></span><span><b>Company Profile 2026</b><span class="m">PDF · 3.1 MB</span></span></span>
+        <a href="#">Get →</a>
+      </div>
+      <div class="frow">
+        <span><span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></span><span><b>Price List — Business Cards</b><span class="m">PDF · 800 KB</span></span></span>
+        <a href="#">Get →</a>
+      </div>
+    </section>
+
+    <!-- Kind words -->
+    <section class="blk">
+      <p class="st">Kind <em>Words</em></p>
+      <blockquote class="tq">
+        <p>"PrintEve turned a week of printer phone calls into a ten-minute order. Proofs in a day, delivery in three — every single time."</p>
+        <footer>Kavya Iyer · Terra Foods</footer>
+      </blockquote>
+    </section>
+
+    <!-- Payments -->
+    <section class="blk">
+      <p class="st">Pay <em>Me</em></p>
+      <div class="payrow">
+        <div class="l">
+          <div class="upi"><code>printeve@icici</code><button data-copy="printeve@icici">COPY</button></div>
+          <div class="apps"><a href="#">GPay</a><a href="#">PhonePe</a><a href="#">Paytm</a></div>
+        </div>
+        <div class="payqr">
+          <svg viewBox="0 0 29 29" shape-rendering="crispEdges"><rect width="29" height="29" fill="#fff"/><g fill="#23251F"><rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="#fff"/><rect x="2" y="2" width="3" height="3"/><rect x="22" y="0" width="7" height="7"/><rect x="23" y="1" width="5" height="5" fill="#fff"/><rect x="24" y="2" width="3" height="3"/><rect x="0" y="22" width="7" height="7"/><rect x="1" y="23" width="5" height="5" fill="#fff"/><rect x="2" y="24" width="3" height="3"/><rect x="9" y="2" width="2" height="2"/><rect x="13" y="1" width="1" height="3"/><rect x="16" y="2" width="3" height="1"/><rect x="10" y="6" width="1" height="2"/><rect x="14" y="5" width="2" height="2"/><rect x="18" y="6" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="5" y="9" width="1" height="3"/><rect x="1" y="14" width="2" height="2"/><rect x="4" y="13" width="2" height="1"/><rect x="2" y="18" width="1" height="2"/><rect x="5" y="17" width="2" height="2"/><rect x="9" y="9" width="3" height="1"/><rect x="13" y="10" width="1" height="2"/><rect x="15" y="9" width="2" height="2"/><rect x="19" y="10" width="1" height="1"/><rect x="9" y="13" width="1" height="2"/><rect x="12" y="12" width="2" height="2"/><rect x="16" y="13" width="2" height="1"/><rect x="19" y="12" width="2" height="2"/><rect x="10" y="17" width="2" height="1"/><rect x="13" y="16" width="1" height="3"/><rect x="16" y="17" width="2" height="2"/><rect x="9" y="21" width="1" height="1"/><rect x="12" y="20" width="2" height="2"/><rect x="15" y="21" width="3" height="1"/><rect x="19" y="20" width="1" height="2"/><rect x="10" y="24" width="2" height="2"/><rect x="14" y="25" width="2" height="1"/><rect x="17" y="24" width="1" height="2"/><rect x="22" y="9" width="1" height="2"/><rect x="25" y="10" width="2" height="1"/><rect x="23" y="13" width="2" height="2"/><rect x="26" y="14" width="1" height="1"/><rect x="22" y="17" width="2" height="1"/><rect x="25" y="16" width="1" height="3"/><rect x="23" y="21" width="1" height="1"/><rect x="25" y="20" width="2" height="2"/><rect x="22" y="24" width="2" height="2"/><rect x="25" y="25" width="2" height="1"/></g></svg>
+        </div>
+      </div>
+      <p class="paynote">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+        Verified merchant · ICICI Bank
+      </p>
+    </section>
+
+    <!-- Scan -->
+    <section class="blk" style="display: flex; align-items: center; gap: 14px;">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3m5-1v.01M12 7v3a2 2 0 0 1-2 2H7m-4 0h.01M12 3h.01M12 16v.01M16 12h1m4 0v.01M12 21v-1"/></svg>
+      <span><b style="font-size: 13.5px; font-weight: 800; display: block;">Scan to open this card</b><span style="font-size: 12px; color: var(--muted);">Point any camera here — instant access, no app.</span></span>
+    </section>
+  </main>
+
+  <footer>Made with <b>PrintEve</b> Digital Cards<br /><span style="font-size: 10.5px;"><a href="#" style="color: inherit; text-decoration: none;">Privacy</a> · <a href="#" style="color: inherit; text-decoration: none;">Terms</a> · <a href="#" style="color: inherit; text-decoration: none;">Support</a></span></footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+  var t = document.getElementById('toast'), tm;
+  function toast(m) { t.textContent = m; t.setAttribute('data-show', 'true'); clearTimeout(tm); tm = setTimeout(function () { t.removeAttribute('data-show'); }, 2000); }
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function (e) { e.preventDefault(); navigator.clipboard && navigator.clipboard.writeText(b.getAttribute('data-copy')); toast('Copied'); });
+  });
+  document.getElementById('save').addEventListener('click', function () {
+    var v = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Sachaniya;Tarang;;;\r\nFN:Tarang Sachaniya\r\nORG:PrintEve\r\nTITLE:CEO & Founder\r\nTEL;TYPE=CELL:+919825012345\r\nEMAIL:tarang@printeve.in\r\nEND:VCARD';
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([v], {type:'text/vcard'})); a.download = 'Tarang-Sachaniya.vcf'; a.click();
+    toast('Contact downloaded');
+  });
+  var vid = document.getElementById('video');
+  vid.addEventListener('click', function () {
+    var p = vid.getAttribute('data-playing') === 'true';
+    vid.setAttribute('data-playing', String(!p));
+    toast(p ? 'Paused' : 'Playing intro');
+  });
+</script>
+</body>
+</html>

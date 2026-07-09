@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept 7 · Ink &amp; Script — PrintEve Digital Card</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; }
+  :root {
+    --ink: #0C0F0D; --panel: #121613; --line: #232A25; --line-soft: #1A201C;
+    --txt: #F2F5F1; --muted: #98A29A; --subtle: #5E6862;
+    --green: #22C55E; --green-soft: rgb(34 197 94 / 0.14); --green-hi: rgb(34 197 94 / 0.28);
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --script: "Segoe Script", "Bradley Hand", "Comic Sans MS", cursive;
+  }
+  body { color: var(--txt); font-family: var(--sans); font-size: 14px; -webkit-font-smoothing: antialiased; background:
+    linear-gradient(rgb(255 255 255 / 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.025) 1px, transparent 1px),
+    var(--ink);
+    background-size: 30px 30px, 30px 30px, auto; }
+  .page { max-width: 430px; margin: 0 auto; padding: 30px 18px 56px; }
+  @media (min-width: 640px) { .page { padding-top: 48px; } }
+
+  .eyebrow { display: flex; align-items: center; gap: 10px; font-size: 10px; font-weight: 700; letter-spacing: .24em; text-transform: uppercase; color: var(--subtle); margin-bottom: 14px; }
+  .eyebrow::before { content: ""; width: 24px; height: 1px; background: var(--subtle); }
+
+  /* Hero — giant typography, script surname */
+  .hero { position: relative; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+  .note { position: absolute; top: -6px; right: 0; font-family: var(--script); font-size: 13px; color: #052E16; background: var(--green); padding: 6px 14px 8px; transform: rotate(3deg); box-shadow: 4px 5px 0 rgb(34 197 94 / 0.25); }
+  h1 { font-size: 44px; font-weight: 900; letter-spacing: -0.045em; line-height: .96; }
+  h1 .last { display: block; font-family: var(--script); font-weight: 400; font-size: 42px; letter-spacing: 0; color: var(--green); margin: 8px 0 0 2px; position: relative; width: fit-content; }
+  h1 .last::after { content: ""; position: absolute; left: -2px; right: -8px; bottom: 4px; height: 11px; background: var(--green-hi); z-index: -1; transform: skewX(-8deg); }
+  .role { margin-top: 16px; font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+  .role b { color: var(--txt); font-weight: 700; }
+  .trustline { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 14px; font-size: 11px; font-weight: 600; color: var(--muted); }
+  .trustline span { display: inline-flex; align-items: center; gap: 6px; }
+  .trustline svg { color: var(--green); }
+
+  .cta { display: flex; gap: 10px; margin-top: 20px; }
+  .btn { flex: 1; height: 52px; font-family: inherit; font-size: 13.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 9px; text-decoration: none; border-radius: 2px; }
+  .btn--green { background: var(--green); color: #052E16; border: 0; }
+  .btn--green:hover { background: #4ADE80; }
+  .btn--ghost { background: transparent; color: var(--txt); border: 1px solid var(--line); }
+  .btn--ghost:hover { border-color: var(--green); color: var(--green); }
+  .quick { display: flex; gap: 18px; margin-top: 18px; justify-content: space-between; padding: 0 4px; }
+  .q { display: flex; flex-direction: column; align-items: center; gap: 7px; background: none; border: 0; color: var(--muted); font-family: inherit; font-size: 9.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; text-decoration: none; }
+  .q svg { width: 19px; height: 19px; color: var(--txt); }
+  .q:hover { color: var(--green); } .q:hover svg { color: var(--green); }
+
+  .sec { margin-top: 36px; }
+  .sec-h { font-size: 24px; font-weight: 900; letter-spacing: -0.035em; line-height: 1.15; }
+  .sec-h em { font-family: var(--script); font-style: normal; font-weight: 400; font-size: 20px; color: var(--green); position: relative; white-space: nowrap; }
+  .sec-h em::after { content: ""; position: absolute; left: 0; right: -4px; bottom: 1px; height: 8px; background: var(--green-hi); z-index: -1; transform: skewX(-8deg); }
+  .sec p.txt { margin-top: 12px; color: var(--muted); line-height: 1.75; font-size: 13.5px; }
+
+  /* Video — bordered panel with green top rule (like their numbered cards) */
+  .vcard { margin-top: 16px; border: 1px solid var(--line); border-top: 2px solid var(--green); background: var(--panel); }
+  .video { position: relative; aspect-ratio: 16/9; cursor: pointer; overflow: hidden; background:
+    radial-gradient(85% 110% at 82% 0%, rgb(34 197 94 / 0.14) 0%, transparent 55%),
+    linear-gradient(150deg, #17211A 0%, #0D120E 100%); }
+  .video::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 30px, rgb(255 255 255 / 0.02) 30px 31px); }
+  .video .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border-radius: 50%; border: 1px solid var(--green); background: var(--green-soft); display: flex; align-items: center; justify-content: center; transition: transform .15s, background .15s; }
+  .video:hover .play { transform: translate(-50%, -50%) scale(1.07); background: var(--green-hi); }
+  .video .play::after { content: ""; margin-left: 4px; border-style: solid; border-width: 9px 0 9px 15px; border-color: transparent transparent transparent var(--green); }
+  .video .dur { position: absolute; right: 12px; top: 12px; font-size: 10.5px; font-weight: 800; color: var(--green); border: 1px solid rgb(34 197 94 / .4); padding: 3px 9px; border-radius: 2px; }
+  .video[data-playing="true"] .play, .video[data-playing="true"] .dur { display: none; }
+  .video .bars { display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); gap: 5px; }
+  .video[data-playing="true"] .bars { display: flex; }
+  .bars i { width: 4px; background: var(--green); animation: eq 1s ease-in-out infinite; }
+  .bars i:nth-child(1) { height: 16px; } .bars i:nth-child(2) { height: 30px; animation-delay: .15s; }
+  .bars i:nth-child(3) { height: 20px; animation-delay: .3s; } .bars i:nth-child(4) { height: 34px; animation-delay: .45s; }
+  @keyframes eq { 0%, 100% { transform: scaleY(.55); } 50% { transform: scaleY(1.1); } }
+  .vmeta { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 13px 15px; border-top: 1px solid var(--line-soft); }
+  .vmeta strong { font-size: 13.5px; font-weight: 800; display: block; }
+  .vmeta span.s { font-size: 11.5px; color: var(--muted); }
+  .vmeta .scribble { font-family: var(--script); font-size: 13px; color: var(--green); white-space: nowrap; flex-shrink: 0; }
+
+  /* Services — numbered cards, script numerals, green top border */
+  .svc { border: 1px solid var(--line); border-top: 2px solid var(--green); background: var(--panel); padding: 16px; margin-bottom: 10px; }
+  .svc .no { font-family: var(--script); font-size: 26px; color: var(--green); line-height: 1; }
+  .svc b { display: block; font-size: 15px; font-weight: 800; margin-top: 10px; letter-spacing: -0.01em; }
+  .svc span.d { display: block; font-size: 12.5px; color: var(--muted); margin-top: 4px; line-height: 1.55; }
+  .svc a { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 12px; font-weight: 800; color: var(--green); text-decoration: none; }
+  .svc a::after { content: "→"; transition: transform .15s; }
+  .svc a:hover::after { transform: translateX(3px); }
+
+  /* Details — minimal rows */
+  .kv { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line-soft); }
+  .kv:last-child { border-bottom: 0; }
+  .kv b { font-size: 10px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--subtle); display: block; }
+  .kv .v { font-size: 13.5px; font-weight: 500; margin-top: 3px; }
+  .cp { border: 1px solid var(--line); background: none; color: var(--muted); font-family: inherit; font-size: 10px; font-weight: 800; letter-spacing: .08em; padding: 6px 12px; border-radius: 2px; cursor: pointer; flex-shrink: 0; }
+  .cp:hover { border-color: var(--green); color: var(--green); }
+
+  /* Gallery */
+  .gal { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+  .gal figure { margin: 0; }
+  .gal .ph { aspect-ratio: 4/5; border: 1px solid var(--line); border-top: 2px solid var(--green); }
+  .gal figure:nth-child(1) .ph { background: linear-gradient(155deg, #17211A, #0D120E); }
+  .gal figure:nth-child(2) .ph { background: linear-gradient(155deg, #1E2B22, #121913); }
+  .gal figure:nth-child(3) .ph { background: linear-gradient(155deg, #14211A, #0A0F0C); }
+  .gal figcaption { font-family: var(--script); font-size: 12.5px; color: var(--muted); margin-top: 7px; text-align: center; }
+  /* Files */
+  .frow { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line-soft); }
+  .frow:last-child { border-bottom: 0; }
+  .frow:first-of-type { padding-top: 0; }
+  .frow b { font-size: 13.5px; font-weight: 700; display: block; }
+  .frow span.m { font-size: 11px; color: var(--subtle); }
+  .frow a { font-size: 11px; font-weight: 800; letter-spacing: .08em; color: var(--green); text-decoration: none; border: 1px solid var(--line); border-radius: 2px; padding: 6px 12px; flex-shrink: 0; }
+  .frow a:hover { border-color: var(--green); }
+  /* Quote */
+  .tq { border: 1px solid var(--line); border-top: 2px solid var(--green); background: var(--panel); padding: 18px 16px; margin: 0; }
+  .tq p { font-size: 14px; line-height: 1.7; color: var(--txt); font-style: italic; }
+  .tq footer { margin-top: 10px; font-family: var(--script); font-size: 14px; color: var(--green); }
+  /* Payments — panel with big script "pay me" */
+  .pay { border: 1px solid var(--line); border-top: 2px solid var(--green); background: var(--panel); padding: 18px 16px; }
+  .pay-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .pay-head b { font-size: 16px; font-weight: 900; letter-spacing: -0.02em; }
+  .pay-head span { font-family: var(--script); font-size: 15px; color: var(--green); }
+  .pay-row { display: flex; gap: 14px; align-items: center; margin-top: 14px; }
+  .pay-qr { width: 88px; flex-shrink: 0; background: #fff; padding: 6px; border-radius: 2px; }
+  .pay-qr svg { display: block; width: 100%; height: auto; }
+  .upi { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: var(--ink); border: 1px solid var(--line); border-radius: 2px; padding: 10px 12px; }
+  .upi code { font-size: 12.5px; font-weight: 700; color: var(--green); }
+  .upi button { background: var(--green); color: #052E16; border: 0; font-family: inherit; font-size: 10.5px; font-weight: 900; padding: 7px 12px; border-radius: 2px; cursor: pointer; }
+  .apps { display: flex; gap: 8px; margin-top: 9px; }
+  .apps a { flex: 1; text-align: center; font-size: 11px; font-weight: 800; color: var(--txt); text-decoration: none; border: 1px solid var(--line); border-radius: 2px; padding: 8px 0; }
+  .apps a:hover { border-color: var(--green); color: var(--green); }
+  .pay-note { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); font-size: 11px; color: var(--subtle); display: flex; align-items: center; gap: 6px; }
+  .pay-note svg { color: var(--green); flex-shrink: 0; }
+
+  footer { margin-top: 44px; text-align: center; }
+  footer .sig { font-family: var(--script); font-size: 16px; color: var(--muted); }
+  footer .sig b { color: var(--green); font-weight: 400; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--green); color: #052E16; font-size: 12.5px; font-weight: 800; padding: 9px 18px; border-radius: 2px; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 9; }
+  .toast[data-show="true"] { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="hero">
+    <span class="note">nice to meet you ✳</span>
+    <p class="eyebrow">Digital Business Card</p>
+    <h1>TARANG<span class="last">Sachaniya</span></h1>
+    <p class="role"><b>CEO &amp; Founder, PrintEve.</b><br />Professional printing for growing brands — Ahmedabad, Gujarat.</p>
+    <div class="trustline">
+      <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Tap Verified</span>
+      <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>GSTIN Registered</span>
+      <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>4.8★ · 10,000+ orders</span>
+    </div>
+    <div class="cta">
+      <button class="btn btn--green" id="save">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Save Contact
+      </button>
+      <a class="btn btn--ghost" href="#">WhatsApp</a>
+    </div>
+    <nav class="quick" aria-label="Quick actions">
+      <a class="q" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.58 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call</a>
+      <a class="q" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>Email</a>
+      <a class="q" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>Website</a>
+      <a class="q" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Directions</a>
+      <button class="q" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98m-.01-10.98-6.82 3.98"/></svg>Share</button>
+    </nav>
+  </header>
+
+  <section class="sec">
+    <p class="eyebrow">About</p>
+    <h2 class="sec-h">Printing that works <em>as hard as you do.</em></h2>
+    <p class="txt">Business cards, flyers, brochures and packaging from vetted local printing partners across India. Every order includes free design proofing and doorstep delivery — 10,000+ orders, 500+ printing partners and counting.</p>
+  </section>
+
+  <section class="sec">
+    <p class="eyebrow">Business Intro</p>
+    <div class="vcard">
+      <div class="video" id="video" data-playing="false" role="button" aria-label="Play intro video">
+        <span class="play"></span>
+        <span class="bars"><i></i><i></i><i></i><i></i></span>
+        <span class="dur">1:42</span>
+      </div>
+      <div class="vmeta">
+        <span><strong>Inside a PrintEve partner press</strong><span class="s">From upload to doorstep in 72 hours</span></span>
+        <span class="scribble">press play ↗</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <p class="eyebrow">Services</p>
+    <h2 class="sec-h">Three steps to <em>better printing.</em></h2>
+    <div style="margin-top: 16px;">
+      <div class="svc"><span class="no">01</span><b>Business Cards</b><span class="d">Premium 350gsm cards with free proofing. Produced in 24–72 hours.</span><a href="#">Enquire on WhatsApp</a></div>
+      <div class="svc"><span class="no">02</span><b>Flyers &amp; Brochures</b><span class="d">Food-grade, waterproof rolls for jars, pouches and bottles.</span><a href="#">Enquire on WhatsApp</a></div>
+      <div class="svc"><span class="no">03</span><b>Custom Packaging</b><span class="d">Business cards, cartons and stickers that make your brand unforgettable.</span><a href="#">Enquire on WhatsApp</a></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <p class="eyebrow">Recent Work</p>
+    <div class="gal">
+      <figure><div class="ph"></div><figcaption>cards</figcaption></figure>
+      <figure><div class="ph"></div><figcaption>flyers</figcaption></figure>
+      <figure><div class="ph"></div><figcaption>boxes</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="sec">
+    <p class="eyebrow">Files</p>
+    <div class="frow"><span><b>Company Profile 2026</b><span class="m">PDF · 3.1 MB</span></span><a href="#">GET</a></div>
+    <div class="frow"><span><b>Price List — Business Cards</b><span class="m">PDF · 800 KB</span></span><a href="#">GET</a></div>
+  </section>
+
+  <section class="sec">
+    <p class="eyebrow">Kind Words</p>
+    <blockquote class="tq">
+      <p>"PrintEve turned a week of printer phone calls into a ten-minute order. Proofs in a day, delivery in three — every single time."</p>
+      <footer>— Kavya Iyer, Terra Foods</footer>
+    </blockquote>
+  </section>
+
+  <section class="sec">
+    <p class="eyebrow">Details</p>
+    <div class="kv"><span><b>Phone</b><span class="v">+91 98250 12345</span></span><button class="cp" data-copy="+919825012345">COPY</button></div>
+    <div class="kv"><span><b>Email</b><span class="v">tarang@printeve.in</span></span><button class="cp" data-copy="tarang@printeve.in">COPY</button></div>
+    <div class="kv"><span><b>GSTIN</b><span class="v">24ABCDE1234F1Z5</span></span><button class="cp" data-copy="24ABCDE1234F1Z5">COPY</button></div>
+    <div class="kv"><span><b>Studio</b><span class="v">214 GIDC Estate, Vatva, Ahmedabad 382445</span></span><button class="cp" data-copy="214 GIDC Estate, Vatva, Ahmedabad 382445">COPY</button></div>
+  </section>
+
+  <section class="sec">
+    <p class="eyebrow">Payments</p>
+    <div class="pay">
+      <div class="pay-head"><b>Pay Tarang</b><span>scan or copy ↓</span></div>
+      <div class="pay-row">
+        <div class="pay-qr">
+          <svg viewBox="0 0 29 29" shape-rendering="crispEdges"><rect width="29" height="29" fill="#fff"/><g fill="#0C0F0D"><rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="#fff"/><rect x="2" y="2" width="3" height="3"/><rect x="22" y="0" width="7" height="7"/><rect x="23" y="1" width="5" height="5" fill="#fff"/><rect x="24" y="2" width="3" height="3"/><rect x="0" y="22" width="7" height="7"/><rect x="1" y="23" width="5" height="5" fill="#fff"/><rect x="2" y="24" width="3" height="3"/><rect x="9" y="2" width="2" height="2"/><rect x="13" y="1" width="1" height="3"/><rect x="16" y="2" width="3" height="1"/><rect x="10" y="6" width="1" height="2"/><rect x="14" y="5" width="2" height="2"/><rect x="18" y="6" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="5" y="9" width="1" height="3"/><rect x="1" y="14" width="2" height="2"/><rect x="4" y="13" width="2" height="1"/><rect x="2" y="18" width="1" height="2"/><rect x="5" y="17" width="2" height="2"/><rect x="9" y="9" width="3" height="1"/><rect x="13" y="10" width="1" height="2"/><rect x="15" y="9" width="2" height="2"/><rect x="19" y="10" width="1" height="1"/><rect x="9" y="13" width="1" height="2"/><rect x="12" y="12" width="2" height="2"/><rect x="16" y="13" width="2" height="1"/><rect x="19" y="12" width="2" height="2"/><rect x="10" y="17" width="2" height="1"/><rect x="13" y="16" width="1" height="3"/><rect x="16" y="17" width="2" height="2"/><rect x="9" y="21" width="1" height="1"/><rect x="12" y="20" width="2" height="2"/><rect x="15" y="21" width="3" height="1"/><rect x="19" y="20" width="1" height="2"/><rect x="10" y="24" width="2" height="2"/><rect x="14" y="25" width="2" height="1"/><rect x="17" y="24" width="1" height="2"/><rect x="22" y="9" width="1" height="2"/><rect x="25" y="10" width="2" height="1"/><rect x="23" y="13" width="2" height="2"/><rect x="26" y="14" width="1" height="1"/><rect x="22" y="17" width="2" height="1"/><rect x="25" y="16" width="1" height="3"/><rect x="23" y="21" width="1" height="1"/><rect x="25" y="20" width="2" height="2"/><rect x="22" y="24" width="2" height="2"/><rect x="25" y="25" width="2" height="1"/></g></svg>
+        </div>
+        <div style="flex: 1; min-width: 0;">
+          <div class="upi"><code>printeve@icici</code><button data-copy="printeve@icici">COPY</button></div>
+          <div class="apps"><a href="#">GPay</a><a href="#">PhonePe</a><a href="#">Paytm</a></div>
+        </div>
+      </div>
+      <p class="pay-note">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+        Verified merchant · ICICI Bank · payments go directly to PrintEve
+      </p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div style="display: flex; align-items: center; gap: 14px; border: 1px solid var(--line); border-top: 2px solid var(--green); background: var(--panel); padding: 14px 16px;">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><rect width="5" height="5" x="3" y="3" rx="0.5"/><rect width="5" height="5" x="16" y="3" rx="0.5"/><rect width="5" height="5" x="3" y="16" rx="0.5"/><path d="M21 16h-3a2 2 0 0 0-2 2v3m5-1v.01M12 7v3a2 2 0 0 1-2 2H7m-4 0h.01M12 3h.01M12 16v.01M16 12h1m4 0v.01M12 21v-1"/></svg>
+      <span><b style="font-size: 13.5px; font-weight: 800; display: block;">Scan to open this card</b><span style="font-size: 12px; color: var(--muted);">Point any camera here — instant, no app.</span></span>
+    </div>
+  </section>
+
+  <footer>
+    <p class="sig">made with <b>PrintEve</b> — tap. connect. done.</p>
+    <p style="margin-top: 12px; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--subtle);"><a href="#" style="color: inherit; text-decoration: none;">Privacy</a> · <a href="#" style="color: inherit; text-decoration: none;">Terms</a> · <a href="#" style="color: inherit; text-decoration: none;">Support</a></p>
+  </footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+  var t = document.getElementById('toast'), tm;
+  function toast(m) { t.textContent = m; t.setAttribute('data-show', 'true'); clearTimeout(tm); tm = setTimeout(function () { t.removeAttribute('data-show'); }, 2000); }
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { navigator.clipboard && navigator.clipboard.writeText(b.getAttribute('data-copy')); toast('Copied'); });
+  });
+  document.getElementById('save').addEventListener('click', function () {
+    var v = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Sachaniya;Tarang;;;\r\nFN:Tarang Sachaniya\r\nORG:PrintEve\r\nTITLE:CEO & Founder\r\nTEL;TYPE=CELL:+919825012345\r\nEMAIL:tarang@printeve.in\r\nEND:VCARD';
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([v], {type:'text/vcard'})); a.download = 'Tarang-Sachaniya.vcf'; a.click();
+    toast('Contact downloaded');
+  });
+  var vid = document.getElementById('video');
+  vid.addEventListener('click', function () {
+    var p = vid.getAttribute('data-playing') === 'true';
+    vid.setAttribute('data-playing', String(!p));
+    toast(p ? 'Paused' : 'Playing intro');
+  });
+  document.querySelector('[data-share]').addEventListener('click', function () {
+    if (navigator.share) navigator.share({ title: "Tarang Sachaniya's card", url: location.href }).catch(function(){});
+    else { navigator.clipboard && navigator.clipboard.writeText(location.href); toast('Link copied'); }
+  });
+</script>
+</body>
+</html>
