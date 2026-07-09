@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept 09 · V2 — Emerald Minimal — PrintEve Digital Card</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; }
+  :root {
+    --canvas: #FAFCFA; --card: #FFFFFF; --ink: #0F1B14; --muted: #5F7367; --subtle: #93A79B;
+    --line: #E4EEE7; --green: #16A34A; --green-deep: #15803D; --lime: #65A30D;
+    --grad: linear-gradient(92deg, var(--green), var(--lime));
+    --soft: #E8F7EE; --glow: rgb(22 163 74 / 0.5);
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  [data-theme="dark"] {
+    --canvas: #0A100C; --card: #10180F12; --card: #121A14; --ink: #E9F5EC; --muted: #8FA697; --subtle: #5C6E62;
+    --line: #1F2C24; --green: #22C55E; --green-deep: #4ADE80; --lime: #84CC16;
+    --soft: rgb(34 197 94 / 0.12); --glow: rgb(34 197 94 / 0.35);
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--canvas); color: var(--ink); font-family: var(--sans); font-size: 14px; -webkit-font-smoothing: antialiased; transition: background .25s, color .25s; }
+  .page { max-width: 460px; margin: 0 auto; padding: 0 22px 120px; }
+  @media (min-width: 1100px) { .page { max-width: 520px; } }
+
+  /* ===== Top bar ===== */
+  .top { display: flex; justify-content: space-between; align-items: center; padding: 22px 0 0; }
+  .brand { font-size: 10.5px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; color: var(--green); }
+  .mode { width: 36px; height: 36px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--muted); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: color .15s, border-color .15s; }
+  .mode:hover { color: var(--green); border-color: var(--green); }
+  .mode .sun { display: none; }
+  [data-theme="dark"] .mode .moon { display: none; }
+  [data-theme="dark"] .mode .sun { display: block; }
+
+  /* ===== Hero ===== */
+  .hero { text-align: center; padding-top: 34px; }
+  .blob-w { position: relative; width: 116px; height: 116px; margin: 0 auto; }
+  .blob-w::before { content: ""; position: absolute; inset: -3px; border-radius: 50% 50% 48% 52% / 52% 48% 52% 48%; background: conic-gradient(from 200deg, var(--green), var(--lime), transparent 65%, var(--green)); animation: morph 14s ease-in-out infinite; opacity: .9; }
+  .blob { position: absolute; inset: 3px; border-radius: 52% 48% 50% 50% / 50% 52% 48% 50%; background: linear-gradient(145deg, #16A34A, #0B3D22); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 900; letter-spacing: -0.02em; color: #EAFBF0; animation: morph 14s ease-in-out infinite; }
+  @keyframes morph {
+    0%, 100% { border-radius: 52% 48% 50% 50% / 50% 52% 48% 50%; }
+    50% { border-radius: 46% 54% 52% 48% / 54% 46% 52% 48%; }
+  }
+  .vchip { display: inline-flex; align-items: center; gap: 5px; margin-top: 16px; font-size: 10.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--green-deep); background: var(--soft); padding: 5px 13px; border-radius: 999px; }
+  .vchip svg { color: var(--green); }
+  h1 { font-size: 34px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.04; margin-top: 12px; }
+  h1 span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .role { margin-top: 10px; font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .role b { color: var(--ink); font-weight: 700; }
+  .loc { margin-top: 6px; font-size: 12px; color: var(--subtle); display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .loc i { width: 3px; height: 3px; border-radius: 50%; background: var(--subtle); font-style: normal; }
+
+  .cta { display: flex; gap: 10px; margin-top: 22px; }
+  .btn { flex: 1; height: 50px; border-radius: 999px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: transform .12s, box-shadow .2s, border-color .15s; }
+  .btn:active { transform: scale(.98); }
+  .btn--main { background: var(--grad); color: #fff; border: 0; box-shadow: 0 12px 28px -12px var(--glow); }
+  .btn--main:hover { box-shadow: 0 16px 34px -12px var(--glow); }
+  .btn--ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .btn--ghost:hover { border-color: var(--green); color: var(--green-deep); }
+  .quick { display: flex; justify-content: space-between; margin: 20px 8px 0; }
+  .q { display: flex; flex-direction: column; align-items: center; gap: 7px; background: none; border: 0; font-family: inherit; font-size: 9.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--subtle); cursor: pointer; text-decoration: none; }
+  .q .ic { width: 46px; height: 46px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); display: flex; align-items: center; justify-content: center; transition: border-color .15s, color .15s, transform .15s; }
+  .q:hover .ic { border-color: var(--green); color: var(--green); transform: translateY(-3px); }
+  .q:hover { color: var(--green-deep); }
+
+  /* single wave */
+  .wave { display: block; width: 100vw; margin-left: calc(50% - 50vw); height: 40px; margin-top: 34px; color: var(--soft); }
+
+  /* ===== Sections — left-aligned, minimal ===== */
+  .sec { margin-top: 40px; }
+  .eyebrow { display: flex; align-items: center; gap: 10px; font-size: 10px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--subtle); }
+  .eyebrow::before { content: ""; width: 18px; height: 2px; border-radius: 2px; background: var(--grad); }
+  .sec h2 { font-size: 20px; font-weight: 900; letter-spacing: -0.03em; margin-top: 10px; }
+  .sec h2 span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sec p.txt { margin-top: 10px; color: var(--muted); line-height: 1.75; font-size: 13.5px; }
+
+  .stats { display: flex; gap: 8px; margin-top: 16px; }
+  .stat { flex: 1; text-align: center; border: 1px solid var(--line); border-radius: 16px; padding: 12px 4px; background: var(--card); }
+  .stat b { display: block; font-size: 17px; font-weight: 900; letter-spacing: -0.02em; }
+  .stat span { font-size: 9.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--subtle); }
+
+  /* Video */
+  .video { position: relative; margin-top: 16px; border-radius: 20px; overflow: hidden; aspect-ratio: 16/9; cursor: pointer; background:
+    radial-gradient(85% 110% at 82% 0%, rgb(132 204 22 / 0.25) 0%, transparent 55%),
+    linear-gradient(145deg, #123B23 0%, #071B0F 100%); }
+  .video .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 58px; height: 58px; border-radius: 999px; background: rgb(255 255 255 / 0.96); display: flex; align-items: center; justify-content: center; transition: transform .15s; }
+  .video:hover .play { transform: translate(-50%, -50%) scale(1.08); }
+  .video .play::after { content: ""; margin-left: 4px; border-style: solid; border-width: 9px 0 9px 15px; border-color: transparent transparent transparent #15803D; }
+  .video .cap { position: absolute; left: 15px; bottom: 12px; color: #EAF7EE; }
+  .video .cap strong { display: block; font-size: 13.5px; font-weight: 800; }
+  .video .cap span { font-size: 11px; color: #9FC3AC; }
+  .video .dur { position: absolute; right: 12px; top: 12px; font-size: 10.5px; font-weight: 800; color: #EAF7EE; border: 1px solid rgb(255 255 255 / 0.35); padding: 3px 10px; border-radius: 999px; }
+  .video[data-playing="true"] .play, .video[data-playing="true"] .dur { display: none; }
+  .video .bars { display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); gap: 5px; }
+  .video[data-playing="true"] .bars { display: flex; }
+  .bars i { width: 4px; border-radius: 2px; background: #84CC16; animation: eq 1s ease-in-out infinite; }
+  .bars i:nth-child(1) { height: 16px; } .bars i:nth-child(2) { height: 30px; animation-delay: .15s; }
+  .bars i:nth-child(3) { height: 20px; animation-delay: .3s; } .bars i:nth-child(4) { height: 34px; animation-delay: .45s; }
+  @keyframes eq { 0%, 100% { transform: scaleY(.55); } 50% { transform: scaleY(1.1); } }
+
+  /* Services — minimal rows */
+  .svc { display: flex; align-items: center; gap: 14px; padding: 15px 0; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+  .svc:last-of-type { border-bottom: 0; }
+  .svc .dot { width: 10px; height: 10px; border-radius: 999px; background: var(--grad); flex-shrink: 0; }
+  .svc b { font-size: 14.5px; font-weight: 800; letter-spacing: -0.01em; display: block; }
+  .svc span.d { font-size: 12px; color: var(--muted); margin-top: 2px; display: block; }
+  .svc .go { margin-left: auto; color: var(--subtle); flex-shrink: 0; transition: transform .15s, color .15s; }
+  .svc:hover .go { transform: translateX(3px); color: var(--green); }
+
+  /* Gallery */
+  .gal { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+  .gal figure { margin: 0; }
+  .gal .ph { aspect-ratio: 1; border-radius: 16px; border: 1px solid var(--line); }
+  .gal figure:nth-child(1) .ph { background: linear-gradient(145deg, #86EFAC, #16A34A); }
+  .gal figure:nth-child(2) .ph { background: linear-gradient(145deg, #D9F99D, #65A30D); }
+  .gal figure:nth-child(3) .ph { background: linear-gradient(145deg, #14532D, #052E16); }
+  .gal figcaption { font-size: 10.5px; font-weight: 700; color: var(--subtle); margin-top: 7px; text-align: center; letter-spacing: .04em; text-transform: uppercase; }
+
+  /* Details */
+  .kv { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .kv:last-of-type { border-bottom: 0; }
+  .kv b { font-size: 9.5px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--subtle); display: block; }
+  .kv .v { font-size: 13.5px; font-weight: 600; margin-top: 3px; }
+  .cp { border: 1px solid var(--line); background: none; color: var(--muted); font-family: inherit; font-size: 10.5px; font-weight: 800; letter-spacing: .06em; padding: 7px 14px; border-radius: 999px; cursor: pointer; flex-shrink: 0; transition: color .15s, border-color .15s; }
+  .cp:hover { color: var(--green); border-color: var(--green); }
+
+  /* Payments — flat two-tone */
+  .pay { margin-top: 16px; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--card); }
+  .pay-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 18px; background: var(--soft); }
+  .pay-top b { font-size: 14.5px; font-weight: 900; display: block; }
+  .pay-top span.s { font-size: 11px; color: var(--muted); }
+  .pay-top .qr { width: 64px; flex-shrink: 0; background: #fff; border-radius: 12px; padding: 5px; border: 1px solid var(--line); }
+  .pay-top .qr svg { display: block; width: 100%; height: auto; }
+  .pay-body { padding: 14px 18px 16px; }
+  .upi { display: flex; align-items: center; justify-content: space-between; gap: 8px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 6px 6px 15px; }
+  .upi code { font-size: 12.5px; font-weight: 700; }
+  .upi button { background: var(--grad); color: #fff; border: 0; font-family: inherit; font-size: 10.5px; font-weight: 800; padding: 8px 15px; border-radius: 999px; cursor: pointer; }
+  .apps { display: flex; gap: 8px; margin-top: 10px; }
+  .apps a { flex: 1; text-align: center; font-size: 11px; font-weight: 700; color: var(--muted); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 8px 0; transition: color .15s, border-color .15s; }
+  .apps a:hover { color: var(--green); border-color: var(--green); }
+
+  /* Files */
+  .frow { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .frow:last-of-type { border-bottom: 0; }
+  .frow b { font-size: 13.5px; font-weight: 800; display: block; }
+  .frow span.m { font-size: 11px; color: var(--subtle); }
+  .frow a { font-size: 12px; font-weight: 800; color: var(--green-deep); text-decoration: none; flex-shrink: 0; }
+
+  /* Quote */
+  .tq { margin-top: 14px; padding-left: 18px; border-left: 2px solid; border-image: linear-gradient(180deg, var(--green), var(--lime)) 1; }
+  .tq p { font-size: 14px; line-height: 1.7; font-style: italic; color: var(--ink); }
+  .tq footer { margin-top: 9px; font-size: 10.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--green-deep); }
+
+  /* Scan */
+  .scan { display: flex; align-items: center; gap: 14px; margin-top: 16px; border: 1px dashed var(--line); border-radius: 18px; padding: 14px 16px; }
+  .scan .ic { color: var(--green); flex-shrink: 0; }
+  .scan b { font-size: 13.5px; font-weight: 800; display: block; }
+  .scan span.s { font-size: 12px; color: var(--muted); }
+
+  footer.ft { margin-top: 48px; text-align: center; font-size: 12px; color: var(--subtle); }
+  footer.ft b { color: var(--ink); }
+  footer.ft b i { font-style: normal; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  footer.ft .links { margin-top: 8px; font-size: 11px; }
+  footer.ft .links a { color: var(--subtle); text-decoration: none; margin: 0 6px; }
+  footer.ft .links a:hover { color: var(--green); }
+
+  /* Sticky save bar */
+  .dock { position: fixed; left: 50%; transform: translate(-50%, 84px); bottom: 16px; width: min(calc(100% - 32px), 428px); display: flex; align-items: center; gap: 12px; background: color-mix(in srgb, var(--canvas) 82%, transparent); backdrop-filter: blur(14px); border: 1px solid var(--line); border-radius: 999px; padding: 8px 8px 8px 10px; box-shadow: 0 18px 44px -18px rgb(0 0 0 / 0.35); z-index: 40; transition: transform .3s cubic-bezier(.32,.72,0,1); }
+  .dock[data-show="true"] { transform: translate(-50%, 0); }
+  .dock .mini { width: 38px; height: 38px; border-radius: 999px; background: linear-gradient(145deg, #16A34A, #0B3D22); color: #EAFBF0; font-size: 13px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .dock .who { flex: 1; min-width: 0; }
+  .dock .who b { display: block; font-size: 13px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dock .who span { font-size: 10.5px; color: var(--subtle); }
+  .dock button { height: 40px; padding: 0 18px; border: 0; border-radius: 999px; background: var(--grad); color: #fff; font-family: inherit; font-size: 12.5px; font-weight: 800; cursor: pointer; flex-shrink: 0; box-shadow: 0 10px 22px -10px var(--glow); }
+
+  .toast { position: fixed; bottom: 78px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--canvas); font-size: 12.5px; font-weight: 700; padding: 9px 18px; border-radius: 999px; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 50; }
+  .toast[data-show="true"] { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="top">
+    <span class="brand">PrintEve · Digital Card</span>
+    <button class="mode" id="mode" aria-label="Toggle dark mode">
+      <svg class="moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      <svg class="sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+    </button>
+  </div>
+
+  <!-- Hero -->
+  <header class="hero" id="hero">
+    <div class="blob-w"><div class="blob">TS</div></div>
+    <div><span class="vchip">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      Tap Verified
+    </span></div>
+    <h1>Tarang <span>Sachaniya</span></h1>
+    <p class="role"><b>CEO &amp; Founder, PrintEve</b><br />Order any print, delivered by trusted local partners.</p>
+    <p class="loc">Ahmedabad, Gujarat <i></i> printeve.in</p>
+    <div class="cta" id="ctaRow">
+      <button class="btn btn--main" id="save">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Save Contact
+      </button>
+      <a class="btn btn--ghost" href="#">WhatsApp</a>
+    </div>
+    <nav class="quick" aria-label="Quick actions">
+      <a class="q" href="#"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.58 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>Call</a>
+      <a class="q" href="#"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>Email</a>
+      <a class="q" href="#"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg></span>Website</a>
+      <a class="q" href="#"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>Map</a>
+      <button class="q" data-share><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98m-.01-10.98-6.82 3.98"/></svg></span>Share</button>
+    </nav>
+    <svg class="wave" viewBox="0 0 460 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 C 90 40, 150 2, 230 16 C 310 30, 380 6, 460 22 L 460 40 L 0 40 Z" fill="currentColor"/></svg>
+  </header>
+
+  <!-- About -->
+  <section class="sec">
+    <p class="eyebrow">About</p>
+    <h2>Printing, made <span>effortless.</span></h2>
+    <p class="txt">PrintEve connects your business with vetted local printing partners across India — business cards, flyers, brochures, posters, stickers and packaging. Instant quotes, free design proofing, doorstep delivery.</p>
+    <div class="stats">
+      <div class="stat"><b>10k+</b><span>Orders</span></div>
+      <div class="stat"><b>500+</b><span>Partners</span></div>
+      <div class="stat"><b>99%</b><span>Happy</span></div>
+    </div>
+  </section>
+
+  <!-- Video -->
+  <section class="sec">
+    <p class="eyebrow">Business Intro</p>
+    <div class="video" id="video" data-playing="false" role="button" aria-label="Play intro video">
+      <span class="play"></span>
+      <span class="bars"><i></i><i></i><i></i><i></i></span>
+      <span class="cap"><strong>Inside a PrintEve partner press</strong><span>From upload to doorstep in 72 hours</span></span>
+      <span class="dur">1:42</span>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="sec">
+    <p class="eyebrow">Services</p>
+    <h2>Three things, done <span>extremely well.</span></h2>
+    <div style="margin-top: 8px;">
+      <a class="svc" href="#"><span class="dot"></span><span><b>Business Cards</b><span class="d">Premium 350gsm, matte or gloss · 24–72 hrs</span></span><span class="go">→</span></a>
+      <a class="svc" href="#"><span class="dot"></span><span><b>Flyers &amp; Brochures</b><span class="d">Sharp offset prints with 3mm bleed, folded or flat</span></span><span class="go">→</span></a>
+      <a class="svc" href="#"><span class="dot"></span><span><b>Custom Packaging</b><span class="d">Boxes and stickers that make your brand unforgettable</span></span><span class="go">→</span></a>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section class="sec">
+    <p class="eyebrow">Recent Work</p>
+    <div class="gal">
+      <figure><div class="ph"></div><figcaption>Cards</figcaption></figure>
+      <figure><div class="ph"></div><figcaption>Brochures</figcaption></figure>
+      <figure><div class="ph"></div><figcaption>Packaging</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- Details -->
+  <section class="sec">
+    <p class="eyebrow">Details</p>
+    <div class="kv"><span><b>Phone</b><span class="v">+91 98250 12345</span></span><button class="cp" data-copy="+919825012345">Copy</button></div>
+    <div class="kv"><span><b>Email</b><span class="v">tarang@printeve.in</span></span><button class="cp" data-copy="tarang@printeve.in">Copy</button></div>
+    <div class="kv"><span><b>GSTIN</b><span class="v">24ABCDE1234F1Z5</span></span><button class="cp" data-copy="24ABCDE1234F1Z5">Copy</button></div>
+    <div class="kv"><span><b>HQ</b><span class="v">Vatva GIDC, Ahmedabad 382445</span></span><button class="cp" data-copy="Vatva GIDC, Ahmedabad 382445">Copy</button></div>
+  </section>
+
+  <!-- Payments -->
+  <section class="sec">
+    <p class="eyebrow">Payments</p>
+    <div class="pay">
+      <div class="pay-top">
+        <span><b>Pay Tarang</b><span class="s">UPI · instant · ICICI Bank</span></span>
+        <span class="qr">
+          <svg viewBox="0 0 29 29" shape-rendering="crispEdges"><rect width="29" height="29" fill="#fff"/><g fill="#0F1B14"><rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="#fff"/><rect x="2" y="2" width="3" height="3"/><rect x="22" y="0" width="7" height="7"/><rect x="23" y="1" width="5" height="5" fill="#fff"/><rect x="24" y="2" width="3" height="3"/><rect x="0" y="22" width="7" height="7"/><rect x="1" y="23" width="5" height="5" fill="#fff"/><rect x="2" y="24" width="3" height="3"/><rect x="9" y="2" width="2" height="2"/><rect x="13" y="1" width="1" height="3"/><rect x="16" y="2" width="3" height="1"/><rect x="10" y="6" width="1" height="2"/><rect x="14" y="5" width="2" height="2"/><rect x="18" y="6" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="5" y="9" width="1" height="3"/><rect x="1" y="14" width="2" height="2"/><rect x="4" y="13" width="2" height="1"/><rect x="2" y="18" width="1" height="2"/><rect x="5" y="17" width="2" height="2"/><rect x="9" y="9" width="3" height="1"/><rect x="13" y="10" width="1" height="2"/><rect x="15" y="9" width="2" height="2"/><rect x="19" y="10" width="1" height="1"/><rect x="9" y="13" width="1" height="2"/><rect x="12" y="12" width="2" height="2"/><rect x="16" y="13" width="2" height="1"/><rect x="19" y="12" width="2" height="2"/><rect x="10" y="17" width="2" height="1"/><rect x="13" y="16" width="1" height="3"/><rect x="16" y="17" width="2" height="2"/><rect x="9" y="21" width="1" height="1"/><rect x="12" y="20" width="2" height="2"/><rect x="15" y="21" width="3" height="1"/><rect x="19" y="20" width="1" height="2"/><rect x="10" y="24" width="2" height="2"/><rect x="14" y="25" width="2" height="1"/><rect x="17" y="24" width="1" height="2"/><rect x="22" y="9" width="1" height="2"/><rect x="25" y="10" width="2" height="1"/><rect x="23" y="13" width="2" height="2"/><rect x="26" y="14" width="1" height="1"/><rect x="22" y="17" width="2" height="1"/><rect x="25" y="16" width="1" height="3"/><rect x="23" y="21" width="1" height="1"/><rect x="25" y="20" width="2" height="2"/><rect x="22" y="24" width="2" height="2"/><rect x="25" y="25" width="2" height="1"/></g></svg>
+        </span>
+      </div>
+      <div class="pay-body">
+        <div class="upi"><code>printeve@icici</code><button data-copy="printeve@icici">Copy</button></div>
+        <div class="apps"><a href="#">GPay</a><a href="#">PhonePe</a><a href="#">Paytm</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Files -->
+  <section class="sec">
+    <p class="eyebrow">Files</p>
+    <div class="frow"><span><b>Company Profile 2026</b><span class="m">PDF · 3.1 MB</span></span><a href="#">Get →</a></div>
+    <div class="frow"><span><b>Price List — Business Cards</b><span class="m">PDF · 800 KB</span></span><a href="#">Get →</a></div>
+  </section>
+
+  <!-- Quote -->
+  <section class="sec">
+    <p class="eyebrow">Kind Words</p>
+    <blockquote class="tq">
+      <p>"PrintEve turned a week of printer phone calls into a ten-minute order. Proofs in a day, delivery in three — every single time."</p>
+      <footer>Kavya Iyer · Terra Foods</footer>
+    </blockquote>
+  </section>
+
+  <!-- Scan -->
+  <section class="sec">
+    <div class="scan">
+      <span class="ic"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3m5-1v.01M12 7v3a2 2 0 0 1-2 2H7m-4 0h.01M12 3h.01M12 16v.01M16 12h1m4 0v.01M12 21v-1"/></svg></span>
+      <span><b>Scan to open this card</b><span class="s">Point any camera here — instant access, no app.</span></span>
+    </div>
+  </section>
+
+  <footer class="ft">
+    Made with <b>Print<i>Eve</i></b> Digital Cards
+    <p class="links"><a href="#">Privacy</a>·<a href="#">Terms</a>·<a href="#">Support</a></p>
+  </footer>
+</div>
+
+<!-- Sticky save dock -->
+<div class="dock" id="dock" data-show="false">
+  <span class="mini">TS</span>
+  <span class="who"><b>Tarang Sachaniya</b><span>CEO &amp; Founder, PrintEve</span></span>
+  <button id="save2">Save Contact</button>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<script>
+(function () {
+  'use strict';
+  var root = document.documentElement;
+
+  /* Theme: system default, toggle persists */
+  var saved = null;
+  try { saved = localStorage.getItem('pe-theme'); } catch (e) {}
+  var urlTheme = (location.search.match(/[?&]theme=(light|dark)/) || [])[1];
+  if (urlTheme) root.setAttribute('data-theme', urlTheme);
+  else if (saved) root.setAttribute('data-theme', saved);
+  else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) root.setAttribute('data-theme', 'dark');
+  document.getElementById('mode').addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('pe-theme', next); } catch (e) {}
+  });
+
+  var t = document.getElementById('toast'), tm;
+  function toast(m) { t.textContent = m; t.setAttribute('data-show', 'true'); clearTimeout(tm); tm = setTimeout(function () { t.removeAttribute('data-show'); }, 2000); }
+
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { navigator.clipboard && navigator.clipboard.writeText(b.getAttribute('data-copy')); toast('Copied'); });
+  });
+
+  function saveVcf() {
+    var v = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Sachaniya;Tarang;;;\r\nFN:Tarang Sachaniya\r\nORG:PrintEve\r\nTITLE:CEO & Founder\r\nTEL;TYPE=CELL:+919825012345\r\nEMAIL:tarang@printeve.in\r\nURL:https://printeve.in\r\nEND:VCARD';
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([v], {type: 'text/vcard'})); a.download = 'Tarang-Sachaniya.vcf'; a.click();
+    toast('Contact downloaded');
+  }
+  document.getElementById('save').addEventListener('click', saveVcf);
+  document.getElementById('save2').addEventListener('click', saveVcf);
+
+  var vid = document.getElementById('video');
+  vid.addEventListener('click', function () {
+    var p = vid.getAttribute('data-playing') === 'true';
+    vid.setAttribute('data-playing', String(!p));
+    toast(p ? 'Paused' : 'Playing intro');
+  });
+
+  document.querySelector('[data-share]').addEventListener('click', function () {
+    if (navigator.share) navigator.share({ title: "Tarang Sachaniya's card", url: location.href }).catch(function () {});
+    else { navigator.clipboard && navigator.clipboard.writeText(location.href); toast('Link copied'); }
+  });
+
+  /* Dock appears when hero CTA scrolls out */
+  var dock = document.getElementById('dock');
+  var cta = document.getElementById('ctaRow');
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (en) {
+      dock.setAttribute('data-show', String(!en[0].isIntersecting));
+    }, { threshold: 0 }).observe(cta);
+  }
+})();
+</script>
+</body>
+</html>

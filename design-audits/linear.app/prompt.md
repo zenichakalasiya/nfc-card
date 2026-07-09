@@ -4,7 +4,7 @@ Do not copy their copy, logo, or brand name. Copy the **system**: the spacing, t
 
 ## Canvas & palette
 
-- Canvas `#0f1011`, primary text `#08090a`
+- Canvas `#0f1011`, primary text `#f7f8f8`
 - **8 accent hues.** Primary accent `#e4f222`. Spend it only where it earns attention — the primary CTA and icon fills. Everything else is neutral.
 - Neutrals: `#08090a`, `#ffffff`, `#0f1011`, `#383b3f`, `#23252a`
 

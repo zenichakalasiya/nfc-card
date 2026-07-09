@@ -45,6 +45,6 @@ Do not copy their copy, logo, or brand name. Copy the **system**: the spacing, t
 
 - Every tap target ≥ 44px (this design runs a 50px median)
 - Inline SVG icons only, 2px stroke. No emoji.
-- WCAG AA contrast in every state (their CTA runs 1.96:1)
+- WCAG AA contrast in every state. **Do not copy the source's CTA contrast — it runs 1.96:1 and fails AA.** Darken the accent until label-on-accent clears 4.5:1.
 - Light mode only, matching the source
 - Real placeholder content, no lorem ipsum

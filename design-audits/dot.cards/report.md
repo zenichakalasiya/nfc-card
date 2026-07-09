@@ -31,6 +31,7 @@ Ranked by painted area. Role is inferred from how the color is used.
 
 Accent restraint: **1** accent hue (3 tints) against 10 neutrals.
 
+
 ## Type scale
 
 Body font: `"Open Sans", Arial`

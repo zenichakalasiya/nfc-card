@@ -1,4 +1,9 @@
 node_modules/
+
+# design-extract artifacts: keep report.md + prompt.md, drop the heavy captures
+design-audits/**/screens/
+design-audits/**/design.json
+
 .env
 .env.*
 .DS_Store

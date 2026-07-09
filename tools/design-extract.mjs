@@ -10,6 +10,9 @@
  *   --wait <ms>          settle delay after load (default: 1200)
  *   --hide <selectors>   comma-separated CSS to display:none before capture
  *                        (cookie banners, chat widgets, sticky promos)
+ *   --scope <selector>   restrict the census to one subtree, e.g. "main".
+ *                        Use on marketing pages so product screenshots and
+ *                        hero gradients don't get read as the design system.
  *
  * Writes into <out>:
  *   screens/*.png    full-page captures per viewport x theme
@@ -49,6 +52,10 @@ const hideSelectors = flag('hide', '')
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean);
+// Restrict the census to one subtree. On marketing pages full of product
+// screenshots, scoping to the real chrome (e.g. "main", "nav") is the
+// difference between reading a design system and reading a photo album.
+const scope = flag('scope', '') || null;
 
 // ---------------------------------------------------------------- color helpers (node side)
 
@@ -156,7 +163,7 @@ const EXTRACT = (opts) => {
 
   // tap targets
   const targets = [];
-  document.querySelectorAll('a,button,input,select,textarea,[role="button"]').forEach((el) => {
+  scopeEl.querySelectorAll('a,button,input,select,textarea,[role="button"]').forEach((el) => {
     const r = el.getBoundingClientRect();
     const cs = getComputedStyle(el);
     if (!vis(el, cs, r) || r.height < 8) return;
@@ -177,7 +184,7 @@ const EXTRACT = (opts) => {
   // Content root = element whose direct children look like page sections.
   // Child width is measured against the PARENT, not the viewport — otherwise a
   // narrow centered column inside a wide desktop page matches nothing.
-  let root = document.body, best = -1, bestW = -1;
+  let root = scopeEl, best = -1, bestW = -1;
   for (const el of all) {
     const r = el.getBoundingClientRect();
     if (r.width < 200) continue;
@@ -275,7 +282,7 @@ for (const theme of themes) {
     const shot = path.join(outDir, 'screens', `${theme}-${vp.label}.png`);
     await page.screenshot({ path: shot, fullPage: true }).catch(() => {});
 
-    const data = await page.evaluate(EXTRACT);
+    const data = await page.evaluate(EXTRACT, { scope });
     captures[`${theme}-${vp.label}`] = data;
     if (!primary) primary = { theme, vp, data };
 
@@ -306,8 +313,18 @@ const palette = Object.entries(data.colors)
 
 const neutral = (c) => c.chroma < 30 || c.light > 0.97 || c.light < 0.04;
 const canvas = palette.find((c) => c.role === 'background') || palette[0];
-const textColor = palette.find((c) => c.role === 'text');
-const accents = palette.filter((c) => !neutral(c));
+
+// The most-painted text color is often lifted from an embedded screenshot with
+// the opposite scheme. The real body color must actually be legible on canvas.
+const canvasRgb = canvas && parseRgb(canvas.rgb);
+const texts = palette.filter((c) => c.role === 'text');
+const textColor =
+  (canvasRgb && texts.find((c) => contrast(parseRgb(c.rgb), canvasRgb) >= 3)) || texts[0];
+// The canvas and the body text are not accents, however chromatic they are.
+// A navy canvas would otherwise nominate itself as the brand accent.
+const accents = palette.filter(
+  (c) => !neutral(c) && c.hex !== canvas?.hex && c.hex !== textColor?.hex,
+);
 const accent = accents[0];
 
 // Tints/shades of one brand color are not separate accents. Cluster by hue.
@@ -392,9 +409,16 @@ ${palette.slice(0, 12).map((c) => `| \`${c.hex}\`${c.alpha < 1 ? ` @${c.alpha}` 
 - **Canvas:** \`${canvas?.hex ?? '—'}\`
 - **Text:** \`${textColor?.hex ?? '—'}\`
 - **Accent:** ${accent ? `\`${accent.hex}\`` : '— none. This is a fully neutral design; hierarchy comes from weight and space.'}
-${hueGroups.length ? hueGroups.map((g) => `- Hue ~${g.hue}°: ${g.members.map((c) => `\`${c.hex}\``).join(', ')}${g.members.length > 1 ? ` — one brand color in ${g.members.length} tints` : ''}`).join('\n') : ''}
+${hueGroups.length ? hueGroups.slice(0, 6).map((g) => `- Hue ~${g.hue}°: ${g.members.slice(0, 4).map((c) => `\`${c.hex}\``).join(', ')}${g.members.length > 4 ? ` +${g.members.length - 4} more` : ''}${g.members.length > 1 ? ` — one brand color in ${g.members.length} tints` : ''}`).join('\n') : ''}
 
 Accent restraint: **${hueGroups.length}** accent hue${hueGroups.length === 1 ? '' : 's'} (${accents.length} tint${accents.length === 1 ? '' : 's'}) against ${palette.length - accents.length} neutrals.
+${hueGroups.length > 3 ? `
+> ⚠️  ${hueGroups.length} accent hues is high for a coherent design system. This page is likely
+> a marketing page whose product screenshots, illustrations, or gradients are being counted as
+> chrome. Re-run scoped to the real UI to get a clean read:
+>
+> \`node tools/design-extract.mjs ${url} --scope "main" --hide "img,video,canvas"\`
+` : ''}
 
 ## Type scale
 
@@ -452,7 +476,10 @@ for (const t of typeScale) {
   const cur = bySize.get(t.fontSize);
   if (!cur || t.count > cur.count) bySize.set(t.fontSize, t);
 }
-const ladderSteps = [...bySize.values()].sort((a, b) => px(b.fontSize) - px(a.fontSize));
+let ladderSteps = [...bySize.values()].sort((a, b) => px(b.fontSize) - px(a.fontSize));
+// A ladder this long isn't a ladder. Drop sizes used exactly once — they are
+// one-off strings inside embedded product mocks, not rungs of the system.
+if (ladderSteps.length > 8) ladderSteps = ladderSteps.filter((t) => t.count > 1);
 const ladder = ladderSteps
   .map((t) => `  - **${step(t)}**${t.textTransform === 'uppercase' ? ' / uppercase' : ''} — ${t.samples[0] ? `e.g. "${cell(t.samples[0])}"` : 'body'}`)
   .join('\n');
@@ -472,7 +499,7 @@ Do not copy their copy, logo, or brand name. Copy the **system**: the spacing, t
 
 - Canvas \`${canvas?.hex ?? '#FFFFFF'}\`, primary text \`${textColor?.hex ?? '#000000'}\`
 ${accent
-  ? `- **${hueGroups.length} accent hue${hueGroups.length === 1 ? '' : 's'}.** Primary accent \`${accent.hex}\`${hueGroups[0]?.members.length > 1 ? `, with tints ${hueGroups[0].members.slice(1).map((c) => `\`${c.hex}\``).join(', ')} for hover/depth` : ''}. Spend it only where it earns attention — the primary CTA and icon fills. Everything else is neutral.`
+  ? `- **${hueGroups.length} accent hue${hueGroups.length === 1 ? '' : 's'}.** Primary accent \`${accent.hex}\`${hueGroups[0]?.members.length > 1 ? `, with tints ${hueGroups[0].members.slice(1, 4).map((c) => `\`${c.hex}\``).join(', ')} for hover/depth` : ''}. Spend it only where it earns attention — the primary CTA and icon fills. Everything else is neutral.`
   : '- Fully neutral palette — no accent color. Hierarchy comes from weight and space alone.'}
 - Neutrals: ${palette.filter(neutral).slice(0, 5).map((c) => `\`${c.hex}\``).join(', ')}
 

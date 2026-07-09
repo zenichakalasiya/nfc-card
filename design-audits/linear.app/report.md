@@ -25,7 +25,7 @@ Ranked by painted area. Role is inferred from how the color is used.
 | `#d0d6e0` | text | 16 | 0.85 | yes | 634,493 | 104 |
 
 - **Canvas:** `#0f1011`
-- **Text:** `#08090a`
+- **Text:** `#f7f8f8`
 - **Accent:** `#e4f222`
 - Hue ~64°: `#e4f222`
 - Hue ~359°: `#f34e52`, `#ff0000`, `#eb5757`, `#422222`, `#f34f52` — one brand color in 5 tints
@@ -37,6 +37,13 @@ Ranked by painted area. Role is inferred from how the color is used.
 - Hue ~258°: `#8b5cf6`
 
 Accent restraint: **8** accent hues (23 tints) against 32 neutrals.
+
+> ⚠️  8 accent hues is high for a coherent design system. This page is likely
+> a marketing page whose product screenshots, illustrations, or gradients are being counted as
+> chrome. Re-run scoped to the real UI to get a clean read:
+>
+> `node tools/design-extract.mjs https://linear.app --scope "main" --hide "img,video,canvas"`
+
 
 ## Type scale
 
