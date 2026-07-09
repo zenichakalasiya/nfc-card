@@ -138,6 +138,11 @@
   footer b { color: var(--ink); }
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--forest); color: var(--lime); font-size: 12.5px; font-weight: 800; padding: 9px 18px; border-radius: 999px; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 9; }
   .toast[data-show="true"] { opacity: 1; }
+
+  /* Desktop — wider bento canvas */
+  @media (min-width: 1100px) {
+    .page { max-width: 980px; }
+  }
 </style>
 </head>
 <body>

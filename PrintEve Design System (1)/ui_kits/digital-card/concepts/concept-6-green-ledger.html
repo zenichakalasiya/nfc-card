@@ -131,6 +131,15 @@
   footer .stamp { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--green-dark); border: 1.5px solid var(--green); padding: 8px 18px; transform: rotate(-2deg); }
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; font-size: 12.5px; font-weight: 700; padding: 9px 18px; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 9; }
   .toast[data-show="true"] { opacity: 1; }
+
+  /* Desktop — two-column ledger flow */
+  @media (min-width: 1100px) {
+    .page { max-width: 940px; columns: 2; column-gap: 34px; }
+    header, footer { column-span: all; }
+    header { max-width: 620px; margin-left: auto; margin-right: auto; }
+    .sec { break-inside: avoid; }
+    footer { margin-top: 52px; }
+  }
 </style>
 </head>
 <body>
@@ -189,7 +198,7 @@
     <h2 class="sec-h">Three things.<em>done extremely well.</em></h2>
     <div style="margin-top: 6px;">
       <div class="svc"><span class="no">01</span><span><b>Business Cards</b><span class="d">Premium 350gsm cards, matte or gloss. Produced in 24–72 hours.</span><a href="#">Enquire on WhatsApp</a></span></div>
-      <div class="svc"><span class="no">02</span><span><b>Flyers &amp; Brochures</b><span class="d">Food-grade, waterproof rolls for jars, pouches and bottles.</span><a href="#">Enquire on WhatsApp</a></span></div>
+      <div class="svc"><span class="no">02</span><span><b>Flyers &amp; Brochures</b><span class="d">Sharp offset marketing prints with 3mm bleed, folded or flat.</span><a href="#">Enquire on WhatsApp</a></span></div>
       <div class="svc"><span class="no">03</span><span><b>Custom Packaging</b><span class="d">Boxes and stickers that make your brand unforgettable.</span><a href="#">Enquire on WhatsApp</a></span></div>
     </div>
   </section>

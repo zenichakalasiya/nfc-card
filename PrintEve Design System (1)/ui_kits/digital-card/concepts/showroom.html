@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Showroom — PrintEve Digital Card Concepts</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; }
+  :root {
+    --bg: #0E1512; --panel: #131C17; --line: #223028; --txt: #EDF4EF; --muted: #93A79A;
+    --green: #22C55E; --green-deep: #16A34A;
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  body { background:
+    radial-gradient(50% 34% at 50% 0%, rgb(34 197 94 / 0.08) 0%, transparent 70%),
+    var(--bg); color: var(--txt); font-family: var(--sans); font-size: 14px; -webkit-font-smoothing: antialiased; padding: 48px 24px 72px; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  .eyebrow { text-align: center; font-size: 11px; font-weight: 800; letter-spacing: .28em; text-transform: uppercase; color: var(--green); }
+  h1 { text-align: center; font-size: clamp(24px, 4vw, 34px); font-weight: 900; letter-spacing: -0.03em; margin-top: 12px; }
+  .sub { text-align: center; color: var(--muted); font-size: 14px; margin: 10px auto 0; max-width: 62ch; line-height: 1.65; }
+  .sub b { color: var(--txt); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 40px 28px; margin-top: 52px; justify-items: center; }
+
+  .slot { text-align: center; width: 100%; max-width: 360px; }
+
+  /* Phone mockup */
+  .phone { position: relative; width: 322px; margin: 0 auto; border-radius: 52px; padding: 11px; background: linear-gradient(160deg, #2E3A33, #101713 40%, #0A0F0C); box-shadow:
+    0 40px 80px -34px rgb(0 0 0 / 0.85),
+    0 0 0 1px rgb(255 255 255 / 0.07),
+    inset 0 1px 1px rgb(255 255 255 / 0.12); transition: transform .22s; }
+  .slot:hover .phone { transform: translateY(-6px); }
+  /* side buttons */
+  .phone::before { content: ""; position: absolute; left: -2.5px; top: 118px; width: 3px; height: 62px; border-radius: 2px; background: #2A342E; box-shadow: 0 84px 0 #2A342E; }
+  .phone::after { content: ""; position: absolute; right: -2.5px; top: 152px; width: 3px; height: 92px; border-radius: 2px; background: #2A342E; }
+  .screen { position: relative; border-radius: 41px; overflow: hidden; background: #fff; height: 613px; }
+  .island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 92px; height: 27px; border-radius: 999px; background: #000; z-index: 3; box-shadow: inset 0 0 2px rgb(255 255 255 / 0.15); }
+  .island::after { content: ""; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 9px; height: 9px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #1d2b46, #05070c 70%); }
+  .screen iframe { width: 390px; height: 799px; border: 0; transform: scale(0.7677); transform-origin: 0 0; background: #fff; }
+
+  .meta { margin-top: 20px; }
+  .meta .n { font-size: 10.5px; font-weight: 800; letter-spacing: .18em; color: var(--muted); }
+  .meta b { display: block; font-size: 17px; font-weight: 800; letter-spacing: -0.01em; margin-top: 4px; }
+  .meta p { font-size: 12px; color: var(--muted); margin-top: 5px; line-height: 1.55; max-width: 34ch; margin-inline: auto; }
+  .links { display: flex; gap: 8px; justify-content: center; margin-top: 12px; }
+  .links a { font-size: 11.5px; font-weight: 700; text-decoration: none; padding: 8px 15px; border-radius: 999px; transition: background .15s, color .15s, border-color .15s; }
+  .links .full { background: var(--green-deep); color: #05130A; }
+  .links .full:hover { background: var(--green); }
+  .links .web { color: var(--muted); border: 1px solid var(--line); }
+  .links .web:hover { color: var(--green); border-color: var(--green-deep); }
+
+  .hint { text-align: center; color: var(--muted); font-size: 12px; margin-top: 56px; }
+  .hint b { color: var(--green); }
+  @media (max-width: 420px) { body { padding: 36px 10px 56px; } .phone { width: 300px; } .screen { height: 570px; } .screen iframe { transform: scale(0.7128); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">PrintEve · Digital Card</p>
+  <h1>Concept Showroom</h1>
+  <p class="sub">All nine directions, live inside a phone — exactly how a receiver sees them after the tap. <b>Scroll inside any screen</b> to feel each design, then open it full-screen on mobile or as the responsive web layout.</p>
+
+  <div class="grid">
+    <div class="slot">
+      <div class="phone"><div class="screen"><span class="island"></span><iframe src="concept-1-ivory-luxe.html" loading="lazy" title="Ivory Luxe"></iframe></div></div>
+      <div class="meta"><span class="n">CONCEPT 01</span><b>Ivory Luxe</b><p>Deep forest + brass + serif — engraved-invitation energy.</p>
+        <div class="links"><a class="full" href="concept-1-ivory-luxe.html">Open Mobile</a><a class="web" href="concept-1-ivory-luxe.html" target="_blank">Web View ↗</a></div>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="phone"><div class="screen"><span class="island"></span><iframe src="concept-2-noir-neon.html" loading="lazy" title="Noir Neon"></iframe></div></div>
+      <div class="meta"><span class="n">CONCEPT 02</span><b>Noir Neon</b><p>Dark graphite, neon green, ID-badge hero with stats.</p>
+        <div class="links"><a class="full" href="concept-2-noir-neon.html">Open Mobile</a><a class="web" href="concept-2-noir-neon.html" target="_blank">Web View ↗</a></div>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="phone"><div class="screen"><span class="island"></span><iframe src="concept-3-photo-hero.html" loading="lazy" title="Photo Hero"></iframe></div></div>
+      <div class="meta"><span class="n">CONCEPT 03</span><b>Photo Hero</b><p>Full-bleed portrait, sticky action dock, ticket payments.</p>
+        <div class="links"><a class="full" href="concept-3-photo-hero.html">Open Mobile</a><a class="web" href="concept-3-photo-hero.html" target="_blank">Web View ↗</a></div>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="phone"><div class="screen"><span class="island"></span><iframe src="concept-4-glass-aurora.html" loading="lazy" title="Glass Aurora"></iframe></div></div>
+      <div class="meta"><span class="n">CONCEPT 04</span><b>Glass Aurora</b><p>Frosted glass on a green aurora, conic-ring avatar.</p>
+        <div class="links"><a class="full" href="concept-4-glass-aurora.html">Open Mobile</a><a class="web" href="concept-4-glass-aurora.html" target="_blank">Web View ↗</a></div>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="phone"><div class="screen"><span class="island"></span><iframe src="concept-5-bento-studio.html" loading="lazy" title="Bento Studio"></iframe></div></div>
+      <div class="meta"><span class="n">CONCEPT 05</span><b>Bento Studio</b><p>Bento tiles — identity, video, QR and pay as blocks.</p>
+        <div class="links"><a class="full" href="concept-5-bento-studio.html">Open Mobile</a><a class="web" href="concept-5-bento-studio.html" target="_blank">Web View ↗</a></div>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="phone"><div class="screen"><span class="island"></span><iframe src="concept-6-green-ledger.html" loading="lazy" title="Green Ledger"></iframe></div></div>
+      <div class="meta"><span class="n">CONCEPT 06</span><b>Green Ledger</b><p>Graph-paper editorial, script accents, receipt payments.</p>
+        <div class="links"><a class="full" href="concept-6-green-ledger.html">Open Mobile</a><a class="web" href="concept-6-green-ledger.html" target="_blank">Web View ↗</a></div>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="phone"><div class="screen"><span class="island"></span><iframe src="concept-7-ink-script.html" loading="lazy" title="Ink &amp; Script"></iframe></div></div>
+      <div class="meta"><span class="n">CONCEPT 07</span><b>Ink &amp; Script</b><p>Giant typography, handwritten script, green highlights.</p>
+        <div class="links"><a class="full" href="concept-7-ink-script.html">Open Mobile</a><a class="web" href="concept-7-ink-script.html" target="_blank">Web View ↗</a></div>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="phone"><div class="screen"><span class="island"></span><iframe src="concept-8-signature-split.html" loading="lazy" title="Signature Split"></iframe></div></div>
+      <div class="meta"><span class="n">CONCEPT 08</span><b>Signature Split</b><p>Email-signature layout — photo left, fields grid, green band.</p>
+        <div class="links"><a class="full" href="concept-8-signature-split.html">Open Mobile</a><a class="web" href="concept-8-signature-split.html" target="_blank">Web View ↗</a></div>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="phone"><div class="screen"><span class="island"></span><iframe src="concept-9-violet-wave.html" loading="lazy" title="Emerald Wave"></iframe></div></div>
+      <div class="meta"><span class="n">CONCEPT 09</span><b>Emerald Wave</b><p>Soft SaaS — blob avatar, wavy dividers, gradient accents.</p>
+        <div class="links"><a class="full" href="concept-9-violet-wave.html">Open Mobile</a><a class="web" href="concept-9-violet-wave.html" target="_blank">Web View ↗</a></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="hint">Every concept is <b>responsive</b>: phone-first, and at desktop width the hero spans full width while sections flow into a two-column magazine layout. Use <b>Web View ↗</b> on a large screen to see it.</p>
+</div>
+</body>
+</html>
