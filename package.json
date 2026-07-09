@@ -1,0 +1,14 @@
+{
+  "name": "nfc-card",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "PrintVana NFC digital business card — research, IA, and UI prototypes",
+  "scripts": {
+    "design:extract": "node tools/design-extract.mjs",
+    "serve": "npx --yes serve ."
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
+  }
+}
