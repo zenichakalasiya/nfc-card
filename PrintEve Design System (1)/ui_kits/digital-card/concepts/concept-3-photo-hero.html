@@ -15,21 +15,21 @@
   .page { max-width: 430px; margin: 0 auto; min-height: 100vh; background: var(--card); }
   @media (min-width: 640px) { .page { margin: 28px auto; border-radius: 28px; overflow: hidden; box-shadow: 0 30px 80px -30px rgb(25 27 30 / 0.35); } }
 
-  /* Full-bleed portrait hero */
-  .hero { position: relative; height: 470px; background:
+  /* Full-bleed portrait hero — compact */
+  .hero { position: relative; height: 350px; background:
     radial-gradient(120% 90% at 80% 8%, #BDECCB 0%, transparent 55%),
     linear-gradient(165deg, #A7E3BC 0%, #5FBF82 34%, #2E7D4C 72%, #123A22 100%); overflow: hidden; }
   /* abstract portrait silhouette */
-  .hero .fig { position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%); width: 320px; height: 350px; }
-  .hero .fig::before { content: ""; position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 118px; height: 138px; border-radius: 54px 54px 60px 60px; background: linear-gradient(175deg, #14331F, #0A2012); }
-  .hero .fig::after { content: ""; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 300px; height: 210px; border-radius: 120px 120px 0 0; background: linear-gradient(180deg, #0F2A18, #071A0E); }
+  .hero .fig { position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%); width: 250px; height: 262px; }
+  .hero .fig::before { content: ""; position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 94px; height: 108px; border-radius: 44px 44px 48px 48px; background: linear-gradient(175deg, #14331F, #0A2012); }
+  .hero .fig::after { content: ""; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 234px; height: 158px; border-radius: 100px 100px 0 0; background: linear-gradient(180deg, #0F2A18, #071A0E); }
   .hero .topbar { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; z-index: 2; }
   .pillb { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 999px; background: rgb(255 255 255 / 0.85); backdrop-filter: blur(8px); border: 0; font-family: inherit; font-size: 12px; font-weight: 700; color: var(--ink); cursor: pointer; }
   .hero .scrim { position: absolute; inset: 55% 0 0; background: linear-gradient(180deg, transparent, rgb(4 20 10 / 0.72)); }
   .hero .name { position: absolute; left: 22px; right: 22px; bottom: 46px; color: #fff; z-index: 2; }
   .hero .name .verified { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #CFF5DC; }
   .hero .name .verified svg { color: #7CFC9E; }
-  .hero .name h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; margin-top: 6px; }
+  .hero .name h1 { font-size: 29px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; margin-top: 6px; }
   .hero .name p { font-size: 13.5px; color: rgb(255 255 255 / 0.82); margin-top: 6px; }
 
   /* Floating action dock */
@@ -70,54 +70,55 @@
   .bars i:nth-child(3) { height: 22px; animation-delay: .3s; } .bars i:nth-child(4) { height: 36px; animation-delay: .45s; }
   @keyframes eq { 0%, 100% { transform: scaleY(.55); } 50% { transform: scaleY(1.1); } }
 
-  /* Services — horizontal snap cards */
-  .rail { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -22px; padding: 2px 22px 6px; scrollbar-width: none; }
+  /* Services — trending soft cards */
+  .rail { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -22px; padding: 6px 22px 14px; scrollbar-width: none; }
   .rail::-webkit-scrollbar { display: none; }
-  .off { flex: 0 0 200px; scroll-snap-align: start; border: 1px solid var(--line); border-radius: 18px; padding: 16px; background: var(--card); }
-  .off .num { width: 34px; height: 34px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; }
-  .off b { display: block; font-size: 14.5px; margin-top: 12px; letter-spacing: -0.01em; }
-  .off span { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
-  .off .lnk { display: inline-block; margin-top: 12px; font-size: 12px; font-weight: 700; color: var(--accent); }
+  .off { flex: 0 0 208px; scroll-snap-align: start; border-radius: 22px; padding: 18px; background: var(--card); box-shadow: 0 14px 36px -22px rgb(25 27 30 / 0.4); transition: transform .15s, box-shadow .15s; }
+  .off:hover { transform: translateY(-3px); box-shadow: 0 20px 44px -22px rgb(25 27 30 / 0.5); }
+  .off .tile { width: 46px; height: 46px; border-radius: 15px; background: var(--accent-soft); color: #15803D; display: flex; align-items: center; justify-content: center; }
+  .off b { display: block; font-size: 14.5px; font-weight: 800; margin-top: 14px; letter-spacing: -0.01em; }
+  .off span { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.55; }
+  .off .lnk { display: inline-flex; align-items: center; gap: 4px; margin-top: 14px; font-size: 12px; font-weight: 800; color: var(--accent); background: var(--accent-soft); padding: 7px 14px; border-radius: 999px; }
 
-  /* Details grid */
-  .det { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .dcell { border: 1px solid var(--line); border-radius: 16px; padding: 14px; position: relative; }
-  .dcell b { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); display: block; }
-  .dcell .v { font-size: 13px; font-weight: 600; margin-top: 5px; word-break: break-all; }
-  .dcell button { position: absolute; top: 10px; right: 10px; border: 0; background: var(--bg); color: var(--muted); width: 26px; height: 26px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .dcell button:hover { color: var(--accent); }
-  .dcell.wide { grid-column: 1 / -1; }
+  /* Details — minimal vertical, no outline */
+  .drow { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; }
+  .drow b { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 2px; }
+  .drow .v { font-size: 13.5px; font-weight: 600; }
+  .cpi { border: 0; background: none; color: var(--muted); cursor: pointer; padding: 8px; border-radius: 10px; flex-shrink: 0; display: inline-flex; transition: color .15s, background .15s; }
+  .cpi:hover { color: var(--accent); background: var(--accent-soft); }
 
-  /* Gallery */
-  .gal { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .gal figure { margin: 0; }
-  .gal .ph { aspect-ratio: 4/5; border-radius: 16px; }
+  /* Gallery — 1 big + 2 small */
+  .gal { display: grid; grid-template-columns: 1.55fr 1fr; grid-template-rows: repeat(2, 1fr); gap: 10px; height: 296px; }
+  .gal figure { margin: 0; display: flex; flex-direction: column; min-height: 0; }
+  .gal figure:first-child { grid-row: 1 / 3; }
+  .gal .ph { flex: 1; min-height: 0; border-radius: 18px; }
   .gal figure:nth-child(1) .ph { background: linear-gradient(150deg, #A7E3BC, #3E9B63); }
   .gal figure:nth-child(2) .ph { background: linear-gradient(150deg, #CBE8D4, #63A87D); }
   .gal figure:nth-child(3) .ph { background: linear-gradient(150deg, #4C9A6B, #1E5C38); }
-  .gal figcaption { font-size: 11px; font-weight: 600; color: var(--muted); margin-top: 7px; text-align: center; }
-  /* Files */
-  .file { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--line); border-radius: 16px; padding: 13px 15px; margin-bottom: 9px; }
-  .file b { font-size: 13.5px; display: block; letter-spacing: -0.01em; }
+  .gal figcaption { font-size: 10.5px; font-weight: 700; color: var(--muted); margin-top: 6px; text-align: center; }
+  /* Files — minimal rows */
+  .file { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; }
+  .file b { font-size: 13.5px; font-weight: 700; display: block; letter-spacing: -0.01em; }
   .file span.m { font-size: 11px; color: var(--muted); font-weight: 600; }
   .file a { font-size: 12px; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; }
   /* Quote */
   .tq { border-left: 3px solid var(--accent); padding: 4px 0 4px 16px; margin: 0; }
   .tq p { font-size: 14px; line-height: 1.65; font-style: italic; color: #3B3E44; }
   .tq footer { margin-top: 10px; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); padding: 0; }
-  /* Payments — split ticket */
-  .pay { border-radius: 20px; overflow: hidden; border: 1px solid var(--line); }
-  .pay-top { background: var(--ink); color: #fff; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; }
-  .pay-top b { font-size: 15px; font-weight: 800; }
-  .pay-top span { font-size: 11px; color: rgb(255 255 255 / 0.6); display: block; margin-top: 2px; }
-  .pay-top .amt { text-align: right; font-size: 11px; color: rgb(255 255 255 / 0.6); }
-  .pay-top .amt b { display: block; font-size: 16px; color: #CFF5DC; }
-  .pay-body { padding: 16px 20px; background: var(--card); border-top: 2px dashed var(--line); }
-  .upi { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--bg); border-radius: 12px; padding: 11px 14px; }
-  .upi code { font-size: 13px; font-weight: 600; }
-  .upi button { background: var(--ink); color: #fff; border: 0; font-family: inherit; font-size: 11px; font-weight: 700; padding: 7px 13px; border-radius: 999px; cursor: pointer; }
+  /* Payments — soft two-tone (per concept 9) */
+  .pay { border-radius: 20px; overflow: hidden; box-shadow: 0 16px 40px -24px rgb(25 27 30 / 0.35); border: 1px solid var(--line); }
+  .pay-top { background: linear-gradient(120deg, #EAF9EF, #DCFCE7); color: var(--ink); padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .pay-top b { font-size: 14.5px; font-weight: 900; }
+  .pay-top span.s { font-size: 11px; color: #4E6B58; display: block; margin-top: 2px; }
+  .pay-top .qrw { width: 62px; flex-shrink: 0; background: #fff; border-radius: 12px; padding: 5px; border: 1px solid #CDE9D6; }
+  .pay-top .qrw svg { display: block; width: 100%; height: auto; }
+  .pay-body { padding: 14px 18px 16px; background: var(--card); }
+  .upi { display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 6px 6px 15px; }
+  .upi code { font-size: 12.5px; font-weight: 700; }
+  .upi button { background: var(--accent); color: #fff; border: 0; font-family: inherit; font-size: 10.5px; font-weight: 800; padding: 8px 15px; border-radius: 999px; cursor: pointer; }
+  .upi button:hover { background: #15803D; }
   .apps { display: flex; gap: 8px; margin-top: 10px; }
-  .apps a { flex: 1; text-align: center; font-size: 12px; font-weight: 700; color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 9px 0; }
+  .apps a { flex: 1; text-align: center; font-size: 11.5px; font-weight: 700; color: var(--muted); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 9px 0; }
   .apps a:hover { border-color: var(--accent); color: var(--accent); }
 
   footer { text-align: center; padding: 30px 0 0; font-size: 11.5px; color: var(--muted); }
@@ -195,9 +196,9 @@
     <section class="sec">
       <div class="sec-head"><h2>What we make</h2><span>3 services</span></div>
       <div class="rail">
-        <article class="off"><span class="num">01</span><b>Business Cards</b><span>Premium 350gsm cards, matte or gloss. Produced in 24–72 hours.</span><span class="lnk">Enquire →</span></article>
-        <article class="off"><span class="num">02</span><b>Flyers &amp; Brochures</b><span>Offset marketing prints, folded or flat.</span><span class="lnk">Enquire →</span></article>
-        <article class="off"><span class="num">03</span><b>Custom Packaging</b><span>Boxes and stickers that make your brand unforgettable.</span><span class="lnk">Enquire →</span></article>
+        <article class="off"><span class="tile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"/><circle cx="8.5" cy="11" r="2"/><path d="M13 9h5m-5 4h5M5.5 17c.5-1.5 1.7-2 3-2s2.5.5 3 2"/></svg></span><b>Business Cards</b><span>Premium 350gsm cards, matte or gloss. Produced in 24–72 hours.</span><span class="lnk">Enquire →</span></article>
+        <article class="off"><span class="tile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M8 13h8M8 17h5"/></svg></span><b>Flyers &amp; Brochures</b><span>Offset marketing prints with 3mm bleed, folded or flat.</span><span class="lnk">Enquire →</span></article>
+        <article class="off"><span class="tile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg></span><b>Custom Packaging</b><span>Boxes and stickers that make your brand unforgettable.</span><span class="lnk">Enquire →</span></article>
       </div>
     </section>
 
@@ -217,36 +218,36 @@
     </section>
 
     <section class="sec">
-      <div class="sec-head"><h2>Kind words</h2></div>
-      <blockquote class="tq">
-        <p>"PrintEve turned a week of printer phone calls into a ten-minute order. Proofs in a day, delivery in three — every single time."</p>
-        <footer>Kavya Iyer · Terra Foods</footer>
-      </blockquote>
-    </section>
-
-    <section class="sec">
       <div class="sec-head"><h2>Details</h2></div>
-      <div class="det">
-        <div class="dcell"><b>Phone</b><span class="v">+91 98250 12345</span><button data-copy="+919825012345" aria-label="Copy phone"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></div>
-        <div class="dcell"><b>Email</b><span class="v">tarang@printeve.in</span><button data-copy="tarang@printeve.in" aria-label="Copy email"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></div>
-        <div class="dcell"><b>GSTIN</b><span class="v">24ABCDE1234F1Z5</span><button data-copy="24ABCDE1234F1Z5" aria-label="Copy GSTIN"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></div>
-        <div class="dcell"><b>Hours</b><span class="v">Mon–Sat, 9–7</span></div>
-        <div class="dcell wide"><b>Studio</b><span class="v">214 GIDC Estate, Vatva, Ahmedabad 382445, Gujarat</span><button data-copy="214 GIDC Estate, Vatva, Ahmedabad 382445" aria-label="Copy address"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></div>
-      </div>
+      <div class="drow"><span><b>Phone</b><span class="v">+91 98250 12345</span></span><button class="cpi" data-copy="+919825012345" aria-label="Copy phone"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></div>
+      <div class="drow"><span><b>Email</b><span class="v">tarang@printeve.in</span></span><button class="cpi" data-copy="tarang@printeve.in" aria-label="Copy email"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></div>
+      <div class="drow"><span><b>GSTIN</b><span class="v">24ABCDE1234F1Z5</span></span><button class="cpi" data-copy="24ABCDE1234F1Z5" aria-label="Copy GSTIN"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></div>
+      <div class="drow"><span><b>Hours</b><span class="v">Mon–Sat, 9–7</span></span></div>
+      <div class="drow"><span><b>Studio</b><span class="v">214 GIDC Estate, Vatva, Ahmedabad 382445</span></span><button class="cpi" data-copy="214 GIDC Estate, Vatva, Ahmedabad 382445" aria-label="Copy address"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></div>
     </section>
 
     <section class="sec">
       <div class="sec-head"><h2>Pay Tarang</h2><span>UPI</span></div>
       <div class="pay">
         <div class="pay-top">
-          <span><b>PrintEve</b><span>ICICI Bank · Verified merchant</span></span>
-          <span class="amt">accepts<b>Any amount</b></span>
+          <span><b>Pay Tarang</b><span class="s">PrintEve · ICICI Bank · Verified merchant</span></span>
+          <span class="qrw">
+            <svg viewBox="0 0 29 29" shape-rendering="crispEdges"><rect width="29" height="29" fill="#fff"/><g fill="#191B1E"><rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="#fff"/><rect x="2" y="2" width="3" height="3"/><rect x="22" y="0" width="7" height="7"/><rect x="23" y="1" width="5" height="5" fill="#fff"/><rect x="24" y="2" width="3" height="3"/><rect x="0" y="22" width="7" height="7"/><rect x="1" y="23" width="5" height="5" fill="#fff"/><rect x="2" y="24" width="3" height="3"/><rect x="9" y="2" width="2" height="2"/><rect x="13" y="1" width="1" height="3"/><rect x="16" y="2" width="3" height="1"/><rect x="10" y="6" width="1" height="2"/><rect x="14" y="5" width="2" height="2"/><rect x="18" y="6" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="5" y="9" width="1" height="3"/><rect x="1" y="14" width="2" height="2"/><rect x="4" y="13" width="2" height="1"/><rect x="2" y="18" width="1" height="2"/><rect x="5" y="17" width="2" height="2"/><rect x="9" y="9" width="3" height="1"/><rect x="13" y="10" width="1" height="2"/><rect x="15" y="9" width="2" height="2"/><rect x="19" y="10" width="1" height="1"/><rect x="9" y="13" width="1" height="2"/><rect x="12" y="12" width="2" height="2"/><rect x="16" y="13" width="2" height="1"/><rect x="19" y="12" width="2" height="2"/><rect x="10" y="17" width="2" height="1"/><rect x="13" y="16" width="1" height="3"/><rect x="16" y="17" width="2" height="2"/><rect x="9" y="21" width="1" height="1"/><rect x="12" y="20" width="2" height="2"/><rect x="15" y="21" width="3" height="1"/><rect x="19" y="20" width="1" height="2"/><rect x="10" y="24" width="2" height="2"/><rect x="14" y="25" width="2" height="1"/><rect x="17" y="24" width="1" height="2"/><rect x="22" y="9" width="1" height="2"/><rect x="25" y="10" width="2" height="1"/><rect x="23" y="13" width="2" height="2"/><rect x="26" y="14" width="1" height="1"/><rect x="22" y="17" width="2" height="1"/><rect x="25" y="16" width="1" height="3"/><rect x="23" y="21" width="1" height="1"/><rect x="25" y="20" width="2" height="2"/><rect x="22" y="24" width="2" height="2"/><rect x="25" y="25" width="2" height="1"/></g></svg>
+          </span>
         </div>
         <div class="pay-body">
           <div class="upi"><code>printeve@icici</code><button data-copy="printeve@icici">Copy</button></div>
-          <div class="apps"><a href="#">GPay</a><a href="#">PhonePe</a><a href="#">Paytm</a><a href="#">QR</a></div>
+          <div class="apps"><a href="#">GPay</a><a href="#">PhonePe</a><a href="#">Paytm</a></div>
         </div>
       </div>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head"><h2>Kind words</h2></div>
+      <blockquote class="tq">
+        <p>"PrintEve turned a week of printer phone calls into a ten-minute order. Proofs in a day, delivery in three — every single time."</p>
+        <footer>Kavya Iyer · Terra Foods</footer>
+      </blockquote>
     </section>
 
     <footer>Made with <b>PrintEve</b> Digital Cards<br /><span style="font-size: 10.5px;"><a href="#" style="color: inherit; text-decoration: none;">Privacy</a> · <a href="#" style="color: inherit; text-decoration: none;">Terms</a> · <a href="#" style="color: inherit; text-decoration: none;">Support</a></span></footer>

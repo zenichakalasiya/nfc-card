@@ -7,41 +7,64 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; }
   :root {
-    --ivory: #FAF7F0; --card: #FFFFFF; --navy: #12351F; --navy-deep: #0C2617;
-    --gold: #B98A2F; --gold-soft: #F3E8D2; --muted: #7A8194; --line: #E9E3D6;
+    --ivory: #EDF5EE; --card: #FFFFFF; --navy: #12351F; --navy-deep: #0C2617;
+    --gold: #B98A2F; --gold-soft: #F3E8D2; --muted: #6E7D72; --line: #DCEADF;
+    --green-soft: #E2F1E5;
     --serif: Georgia, "Times New Roman", serif;
     --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   }
-  body { background: var(--ivory); color: var(--navy); font-family: var(--sans); font-size: 14px; -webkit-font-smoothing: antialiased; }
+  html { scrollbar-width: none; }
+  html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; }
+  body { background: var(--ivory); color: var(--navy); font-family: var(--sans); font-size: 14px; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   .page { max-width: 430px; margin: 0 auto; min-height: 100vh; padding-bottom: 48px; }
   @media (min-width: 640px) { .page { margin: 32px auto; } }
 
   /* Hero */
-  .hero { background: var(--navy); color: #fff; text-align: center; padding: 44px 24px 84px; position: relative; }
+  .hero { background: var(--navy); color: #fff; text-align: center; padding: 46px 24px 34px; position: relative; }
   @media (min-width: 640px) { .hero { border-radius: 20px 20px 0 0; } }
-  .hero::after { content: ""; position: absolute; left: 50%; bottom: 58px; transform: translateX(-50%); width: 56px; height: 1px; background: var(--gold); }
   .hero .mono { font-size: 11px; letter-spacing: .35em; text-transform: uppercase; color: #C9B37E; }
-  .avatar { width: 108px; height: 108px; margin: 22px auto 0; border-radius: 50%; border: 2px solid var(--gold); padding: 5px; }
-  .avatar > div { width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, #1E4D33, #12351F); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 34px; color: #E8D9B5; }
-  h1 { font-family: var(--serif); font-size: 30px; font-weight: 400; letter-spacing: .01em; margin-top: 18px; }
+  .hero-tools { position: absolute; top: 14px; right: 14px; display: flex; gap: 8px; }
+  .htool { width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgb(255 255 255 / 0.22); background: rgb(255 255 255 / 0.08); color: #F3E8D2; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background .15s; }
+  .htool:hover { background: rgb(255 255 255 / 0.18); }
+  .avatar { width: 104px; height: 104px; margin: 20px auto 0; border-radius: 50%; border: 2px solid var(--gold); padding: 5px; }
+  .avatar > div { width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, #1E4D33, #12351F); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 32px; color: #E8D9B5; }
+  h1 { font-family: var(--serif); font-size: 30px; font-weight: 400; letter-spacing: .01em; margin-top: 16px; }
   .role { margin-top: 7px; font-size: 13px; color: #A9C4B2; letter-spacing: .04em; }
   .tagline { margin-top: 3px; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: #C9B37E; }
 
-  /* Action band overlapping hero */
-  .band { display: flex; justify-content: center; gap: 26px; margin: -46px 20px 0; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 12px; box-shadow: 0 14px 34px -18px rgb(18 53 31 / 0.35); position: relative; }
-  .act { display: flex; flex-direction: column; align-items: center; gap: 7px; font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); text-decoration: none; background: none; border: 0; font-family: inherit; cursor: pointer; }
-  .act svg { width: 20px; height: 20px; color: var(--navy); }
-  .act:hover svg, .act:hover { color: var(--gold); }
-
-  .save { display: flex; align-items: center; justify-content: center; gap: 9px; margin: 16px 20px 0; height: 52px; background: var(--navy); color: #F3E8D2; border: 0; border-radius: 12px; font-family: inherit; font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; }
-  .save:hover { background: var(--navy-deep); }
+  /* CTA row — Save + WhatsApp first (per concept 9), then transparent icon row */
+  .cta { display: flex; gap: 10px; margin-top: 24px; }
+  .btn { flex: 1; height: 50px; border-radius: 999px; font-family: inherit; font-size: 12.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 9px; text-decoration: none; transition: background .15s, border-color .15s, transform .12s; }
+  .btn:active { transform: scale(.98); }
+  .btn--gold { background: var(--gold); color: #12351F; border: 0; }
+  .btn--gold:hover { background: #CC9C3E; }
+  .btn--ghost { background: rgb(255 255 255 / 0.06); color: #F3E8D2; border: 1px solid rgb(255 255 255 / 0.3); }
+  .btn--ghost:hover { border-color: var(--gold); color: #fff; }
+  .quick { display: flex; justify-content: center; gap: 18px; margin-top: 18px; }
+  .q { width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgb(255 255 255 / 0.26); background: rgb(255 255 255 / 0.08); color: #F3E8D2; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; cursor: pointer; font-family: inherit; transition: background .15s, border-color .15s, transform .15s; }
+  .q svg { width: 18px; height: 18px; }
+  .q:hover { background: rgb(255 255 255 / 0.16); border-color: var(--gold); transform: translateY(-2px); }
 
   /* Sections */
-  .sec { margin: 26px 20px 0; }
+  .sec { margin: 28px 20px 0; }
   .sec-title { display: flex; align-items: center; gap: 12px; font-family: var(--serif); font-size: 19px; margin-bottom: 14px; }
   .sec-title::after { content: ""; flex: 1; height: 1px; background: var(--line); }
-  .sec p { color: #4A5468; line-height: 1.75; font-size: 13.5px; }
+  .sec p { color: #435247; line-height: 1.75; font-size: 13.5px; }
   .sec p + p { margin-top: 10px; }
+
+  /* About pills */
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .tag { background: var(--card); color: #1E4D33; font-size: 11px; font-weight: 700; padding: 8px 15px; border-radius: 999px; box-shadow: 0 5px 14px -7px rgb(18 53 31 / 0.3); }
+
+  /* Services — trending cards */
+  .svc { display: flex; align-items: center; gap: 14px; background: var(--card); border-radius: 18px; padding: 16px; margin-bottom: 10px; box-shadow: 0 12px 30px -20px rgb(18 53 31 / 0.35); text-decoration: none; color: var(--navy); transition: transform .15s, box-shadow .15s; }
+  .svc:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -20px rgb(18 53 31 / 0.45); }
+  .svc:last-of-type { margin-bottom: 0; }
+  .svc .tile { width: 48px; height: 48px; border-radius: 14px; background: var(--green-soft); color: #1E4D33; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .svc .n { display: block; font-family: var(--serif); font-size: 15.5px; }
+  .svc .d { display: block; font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .svc .go { margin-left: auto; color: var(--gold); flex-shrink: 0; font-size: 16px; transition: transform .15s; }
+  .svc:hover .go { transform: translateX(3px); }
 
   /* Video intro */
   .video { position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 16/9; background:
@@ -64,54 +87,67 @@
   .video .playing i:nth-child(3) { height: 22px; animation-delay: .3s; } .video .playing i:nth-child(4) { height: 34px; animation-delay: .45s; }
   @keyframes eq { 0%, 100% { transform: scaleY(.6); } 50% { transform: scaleY(1.15); } }
 
-  /* Services */
-  .svc { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--line); }
-  .svc:last-child { border-bottom: 0; }
-  .svc .n { display: block; font-family: var(--serif); font-size: 15.5px; }
-  .svc .d { display: block; font-size: 12px; color: var(--muted); margin-top: 3px; }
-  .svc .no { font-family: var(--serif); color: var(--gold); font-size: 13px; flex-shrink: 0; }
+  /* Portfolio — stacked deck, spreads on hover */
+  .deck { position: relative; height: 258px; margin-top: 18px; }
+  .deck figure { position: absolute; left: 50%; top: 6px; width: 46%; margin: 0; background: var(--card); border: 1px solid var(--line); padding: 7px 7px 9px; box-shadow: 0 14px 34px -18px rgb(18 53 31 / 0.4); transition: transform .38s cubic-bezier(.22,.9,.3,1.2); }
+  .deck figure:nth-child(1) { transform: translateX(-84%) rotate(-8deg); z-index: 1; }
+  .deck figure:nth-child(2) { transform: translateX(-50%); z-index: 3; }
+  .deck figure:nth-child(3) { transform: translateX(-16%) rotate(8deg); z-index: 2; }
+  .deck:hover figure:nth-child(1) { transform: translateX(-153%) rotate(0deg); }
+  .deck:hover figure:nth-child(2) { transform: translateX(-50%); }
+  .deck:hover figure:nth-child(3) { transform: translateX(53%) rotate(0deg); }
+  .deck .ph { aspect-ratio: 4/5; position: relative; }
+  .deck .ph::after { content: ""; position: absolute; left: 8px; right: 8px; bottom: 8px; height: 1px; background: var(--gold); opacity: .6; }
+  .deck figure:nth-child(1) .ph { background: linear-gradient(150deg, #E7DCC3, #CBB98C); }
+  .deck figure:nth-child(2) .ph { background: linear-gradient(150deg, #1E4D33, #12351F); }
+  .deck figure:nth-child(3) .ph { background: linear-gradient(150deg, #2A6644, #1B4A2E); }
+  .deck figcaption { font-family: var(--serif); font-size: 11px; color: var(--muted); margin-top: 7px; text-align: center; }
+  .deck-hint { text-align: center; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-top: 10px; }
 
-  /* Details */
-  .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; }
-  .row:last-child { border-bottom: 0; }
-  .row b { font-size: 10.5px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 3px; }
-  .copy { border: 1px solid var(--line); background: none; color: var(--gold); font-family: inherit; font-size: 11px; font-weight: 600; letter-spacing: .08em; padding: 6px 12px; border-radius: 999px; cursor: pointer; flex-shrink: 0; }
-  .copy:hover { border-color: var(--gold); }
+  /* Files — concept 7 style rows */
+  .frow { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .frow:last-of-type { border-bottom: 0; }
+  .frow b { font-size: 13.5px; font-weight: 700; display: block; font-family: var(--serif); font-weight: 400; font-size: 14.5px; }
+  .frow span.m { font-size: 11px; color: var(--muted); }
+  .frow a { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; color: var(--gold); text-decoration: none; border: 1px solid var(--line); border-radius: 2px; padding: 7px 14px; flex-shrink: 0; transition: border-color .15s; }
+  .frow a:hover { border-color: var(--gold); }
 
-  /* Payments — improved */
-  .pay { background: var(--navy); border-radius: 16px; padding: 22px 20px; color: #fff; }
-  .pay h3 { font-family: var(--serif); font-weight: 400; font-size: 19px; color: #F3E8D2; }
-  .pay .sub { font-size: 12px; color: #A9C4B2; margin-top: 3px; }
-  .pay-grid { display: grid; grid-template-columns: 96px 1fr; gap: 14px; margin-top: 16px; align-items: center; }
-  .pay-qr { background: #fff; border-radius: 10px; padding: 8px; }
+  /* Details — minimal, no dividers, icon copy */
+  .drow { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; }
+  .drow b { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 2px; }
+  .drow .v { font-size: 13.5px; color: var(--navy); }
+  .cpi { border: 0; background: none; color: var(--gold); cursor: pointer; padding: 8px; border-radius: 8px; flex-shrink: 0; display: inline-flex; transition: background .15s; }
+  .cpi:hover { background: var(--green-soft); }
+
+  /* Payments — luxurious pastel green merged with white */
+  .pay { background: linear-gradient(155deg, #FFFFFF 0%, #E9F4EB 55%, #D8ECDD 100%); border: 1px solid #D3E7D8; border-radius: 20px; padding: 22px 20px; color: var(--navy); box-shadow: 0 18px 40px -24px rgb(18 53 31 / 0.35); }
+  .pay-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .pay h3 { font-family: var(--serif); font-weight: 400; font-size: 20px; }
+  .pay .sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .pay-head .tick { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #1E4D33; background: rgb(255 255 255 / 0.7); border: 1px solid #CBE2D1; padding: 5px 11px; border-radius: 999px; }
+  .pay-grid { display: grid; grid-template-columns: 92px 1fr; gap: 14px; margin-top: 16px; align-items: center; }
+  .pay-qr { background: #fff; border-radius: 12px; padding: 7px; border: 1px solid #D3E7D8; }
   .pay-qr svg { display: block; width: 100%; height: auto; }
-  .upi-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: rgb(255 255 255 / 0.08); border: 1px solid rgb(255 255 255 / 0.14); border-radius: 10px; padding: 10px 12px; }
-  .upi-line code { font-size: 13px; color: #F3E8D2; }
-  .upi-line button { background: var(--gold); border: 0; color: #0C2617; font-family: inherit; font-size: 11px; font-weight: 700; letter-spacing: .06em; padding: 6px 12px; border-radius: 999px; cursor: pointer; }
+  .upi-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: rgb(255 255 255 / 0.85); border: 1px solid #D3E7D8; border-radius: 999px; padding: 6px 6px 6px 14px; }
+  .upi-line code { font-size: 12.5px; font-weight: 600; color: #12351F; }
+  .upi-line button { background: var(--navy); border: 0; color: #F3E8D2; font-family: inherit; font-size: 10.5px; font-weight: 700; letter-spacing: .08em; padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+  .upi-line button:hover { background: var(--navy-deep); }
   .pay-apps { display: flex; gap: 8px; margin-top: 10px; }
-  .pay-apps a { flex: 1; text-align: center; font-size: 11.5px; font-weight: 600; color: #E8EDF7; text-decoration: none; border: 1px solid rgb(255 255 255 / 0.18); border-radius: 999px; padding: 9px 0; }
-  .pay-apps a:hover { border-color: var(--gold); color: #F3E8D2; }
+  .pay-apps a { flex: 1; text-align: center; font-size: 11.5px; font-weight: 600; color: #1E4D33; text-decoration: none; border: 1px solid #CBE2D1; background: rgb(255 255 255 / 0.55); border-radius: 999px; padding: 9px 0; transition: border-color .15s, background .15s; }
+  .pay-apps a:hover { border-color: var(--gold); background: #fff; }
 
-  /* Portfolio */
-  .gal { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .gal figure { margin: 0; }
-  .gal .ph { aspect-ratio: 4/5; border: 1px solid var(--line); position: relative; }
-  .gal .ph::after { content: ""; position: absolute; left: 8px; right: 8px; bottom: 8px; height: 1px; background: var(--gold); opacity: .6; }
-  .gal figure:nth-child(1) .ph { background: linear-gradient(150deg, #1E4D33, #12351F); }
-  .gal figure:nth-child(2) .ph { background: linear-gradient(150deg, #E7DCC3, #CBB98C); }
-  .gal figure:nth-child(3) .ph { background: linear-gradient(150deg, #2A6644, #1B4A2E); }
-  .gal figcaption { font-family: var(--serif); font-size: 11.5px; color: var(--muted); margin-top: 7px; text-align: center; }
-  /* Files */
-  .get { border: 1px solid var(--line); background: none; color: var(--gold); font-family: inherit; font-size: 11px; font-weight: 600; letter-spacing: .08em; padding: 6px 12px; border-radius: 999px; cursor: pointer; text-decoration: none; flex-shrink: 0; }
-  .get:hover { border-color: var(--gold); }
+  /* Quote */
+  .quote { text-align: center; padding: 8px 10px 0; }
+  .quote .qmark { font-family: var(--serif); font-size: 46px; line-height: .6; color: var(--gold); display: block; margin-bottom: 14px; }
+  .quote .q { font-family: var(--serif); font-size: 16.5px; line-height: 1.7; font-style: italic; color: #2F4A3A; }
+  .quote .rule { width: 42px; height: 1px; background: var(--gold); margin: 14px auto 10px; }
+  .quote .by { font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+
   /* Scan */
-  .scan { display: flex; align-items: center; gap: 14px; border: 1px solid var(--line); background: var(--card); padding: 14px 16px; }
-  .scan svg { width: 56px; height: 56px; flex-shrink: 0; color: var(--navy); }
+  .scan { display: flex; align-items: center; gap: 14px; border: 1px solid var(--line); background: var(--card); border-radius: 16px; padding: 14px 16px; }
+  .scan svg { width: 52px; height: 52px; flex-shrink: 0; color: var(--navy); }
   .scan b { font-family: var(--serif); font-weight: 400; font-size: 15px; display: block; }
   .scan span { font-size: 12px; color: var(--muted); }
-  .quote { text-align: center; padding: 6px 10px; }
-  .quote .q { font-family: var(--serif); font-size: 16px; line-height: 1.65; font-style: italic; color: #2F4A3A; }
-  .quote .by { margin-top: 10px; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
 
   footer { text-align: center; margin-top: 34px; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
   footer b { color: var(--navy); }
@@ -121,10 +157,9 @@
   /* Desktop — two-column editorial flow */
   @media (min-width: 1100px) {
     .page { max-width: 940px; columns: 2; column-gap: 30px; padding-bottom: 64px; }
-    .hero, .band, .save, footer { column-span: all; }
+    .hero, footer { column-span: all; }
+    .hero .cta, .hero .quick { max-width: 480px; margin-left: auto; margin-right: auto; }
     .sec { break-inside: avoid; margin-left: 0; margin-right: 0; }
-    .band { margin-left: 120px; margin-right: 120px; }
-    .save { margin-left: 120px; margin-right: 120px; }
     footer { margin-top: 44px; }
   }
 </style>
@@ -132,30 +167,63 @@
 <body>
 <div class="page">
   <header class="hero">
+    <div class="hero-tools">
+      <button class="htool" data-share aria-label="Share this card">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98m-.01-10.98-6.82 3.98"/></svg>
+      </button>
+      <button class="htool" id="qrTop" aria-label="Show QR">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3m5-1v.01M12 7v3a2 2 0 0 1-2 2H7m-4 0h.01M12 3h.01M12 16v.01M16 12h1m4 0v.01M12 21v-1"/></svg>
+      </button>
+    </div>
     <p class="mono">PrintEve</p>
     <div class="avatar"><div>TS</div></div>
     <h1>Tarang Sachaniya</h1>
     <p class="role">CEO &amp; Founder · Ahmedabad, Gujarat</p>
     <p class="tagline">Professional Printing</p>
+    <div class="cta">
+      <button class="btn btn--gold" id="save">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Save Contact
+      </button>
+      <a class="btn btn--ghost" href="#">WhatsApp</a>
+    </div>
+    <nav class="quick" aria-label="Quick actions">
+      <a class="q" href="#" aria-label="Call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.58 2.81.7A2 2 0 0 1 22 16.92z"/></svg></a>
+      <a class="q" href="#" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
+      <a class="q" href="#" aria-label="Website"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg></a>
+      <a class="q" href="#" aria-label="Directions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></a>
+    </nav>
   </header>
-
-  <nav class="band" aria-label="Actions">
-    <a class="act" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.58 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call</a>
-    <a class="act" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>WhatsApp</a>
-    <a class="act" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>Email</a>
-    <a class="act" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>Website</a>
-    <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98m-.01-10.98-6.82 3.98"/></svg>Share</button>
-  </nav>
-
-  <button class="save" id="save">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    Save Contact
-  </button>
 
   <section class="sec">
     <h2 class="sec-title">About</h2>
     <p>PrintEve connects your business with vetted local printing partners across India — business cards, flyers, brochures and packaging, each with free design proofing and doorstep delivery.</p>
     <p>10,000+ orders. 500+ partner presses. One standard.</p>
+    <div class="tags">
+      <span class="tag">Business Cards</span>
+      <span class="tag">Marketing Prints</span>
+      <span class="tag">Packaging</span>
+      <span class="tag">Bulk Orders</span>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2 class="sec-title">Services</h2>
+    <a class="svc" href="#">
+      <span class="tile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"/><circle cx="8.5" cy="11" r="2"/><path d="M13 9h5m-5 4h5M5.5 17c.5-1.5 1.7-2 3-2s2.5.5 3 2"/></svg></span>
+      <span><span class="n">Business Cards</span><span class="d">Premium 350gsm, matte or gloss · 24–72 hrs</span></span>
+      <span class="go">→</span>
+    </a>
+    <a class="svc" href="#">
+      <span class="tile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M8 13h8M8 17h5"/></svg></span>
+      <span><span class="n">Flyers &amp; Brochures</span><span class="d">Offset marketing prints, folded or flat</span></span>
+      <span class="go">→</span>
+    </a>
+    <a class="svc" href="#">
+      <span class="tile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg></span>
+      <span><span class="n">Custom Packaging</span><span class="d">Boxes and stickers that sell your brand</span></span>
+      <span class="go">→</span>
+    </a>
   </section>
 
   <section class="sec">
@@ -169,39 +237,35 @@
   </section>
 
   <section class="sec">
-    <h2 class="sec-title">Services</h2>
-    <div class="svc"><span><span class="n">Business Cards</span><span class="d">Custom corrugated, 100–50,000 units, 5-day ship</span></span><span class="no">№ 01</span></div>
-    <div class="svc"><span><span class="n">Flyers &amp; Brochures</span><span class="d">Offset marketing prints, folded or flat</span></span><span class="no">№ 02</span></div>
-    <div class="svc"><span><span class="n">Custom Packaging</span><span class="d">Boxes and stickers that sell your brand</span></span><span class="no">№ 03</span></div>
-  </section>
-
-  <section class="sec">
     <h2 class="sec-title">Portfolio</h2>
-    <div class="gal">
+    <div class="deck">
+      <figure><div class="ph"></div><figcaption>Flyers &amp; brochures</figcaption></figure>
       <figure><div class="ph"></div><figcaption>Business cards</figcaption></figure>
-      <figure><div class="ph"></div><figcaption>Flyers & brochures</figcaption></figure>
       <figure><div class="ph"></div><figcaption>Custom packaging</figcaption></figure>
     </div>
+    <p class="deck-hint">Hover to spread the collection</p>
   </section>
 
   <section class="sec">
     <h2 class="sec-title">Files</h2>
-    <div class="row"><span><b>Company Profile 2026</b>PDF · 3.1 MB</span><a class="get" href="#">Get</a></div>
-    <div class="row"><span><b>Price List — Business Cards</b>PDF · 800 KB</span><a class="get" href="#">Get</a></div>
+    <div class="frow"><span><b>Company Profile 2026</b><span class="m">PDF · 3.1 MB</span></span><a href="#">GET</a></div>
+    <div class="frow"><span><b>Price List — Business Cards</b><span class="m">PDF · 800 KB</span></span><a href="#">GET</a></div>
   </section>
 
   <section class="sec">
     <h2 class="sec-title">Details</h2>
-    <div class="row"><span><b>Phone</b>+91 98250 12345</span><button class="copy" data-copy="+919825012345">Copy</button></div>
-    <div class="row"><span><b>Email</b>tarang@printeve.in</span><button class="copy" data-copy="tarang@printeve.in">Copy</button></div>
-    <div class="row"><span><b>GSTIN</b>24ABCDE1234F1Z5</span><button class="copy" data-copy="24ABCDE1234F1Z5">Copy</button></div>
-    <div class="row"><span><b>Studio</b>214 GIDC Estate, Vatva, Ahmedabad</span><button class="copy" data-copy="214 GIDC Estate, Vatva, Ahmedabad 382445">Copy</button></div>
+    <div class="drow"><span><b>Phone</b><span class="v">+91 98250 12345</span></span><button class="cpi" data-copy="+919825012345" aria-label="Copy phone"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></div>
+    <div class="drow"><span><b>Email</b><span class="v">tarang@printeve.in</span></span><button class="cpi" data-copy="tarang@printeve.in" aria-label="Copy email"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></div>
+    <div class="drow"><span><b>GSTIN</b><span class="v">24ABCDE1234F1Z5</span></span><button class="cpi" data-copy="24ABCDE1234F1Z5" aria-label="Copy GSTIN"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></div>
+    <div class="drow"><span><b>Studio</b><span class="v">214 GIDC Estate, Vatva, Ahmedabad</span></span><button class="cpi" data-copy="214 GIDC Estate, Vatva, Ahmedabad 382445" aria-label="Copy address"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></div>
   </section>
 
   <section class="sec">
     <div class="pay">
-      <h3>Pay Tarang</h3>
-      <p class="sub">Scan with any UPI app, or copy the ID.</p>
+      <div class="pay-head">
+        <span><h3>Pay Tarang</h3><p class="sub">Scan with any UPI app, or copy the ID.</p></span>
+        <span class="tick">ICICI ✓</span>
+      </div>
       <div class="pay-grid">
         <div class="pay-qr">
           <svg viewBox="0 0 29 29" shape-rendering="crispEdges"><rect width="29" height="29" fill="#fff"/><g fill="#0C2617"><rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="#fff"/><rect x="2" y="2" width="3" height="3"/><rect x="22" y="0" width="7" height="7"/><rect x="23" y="1" width="5" height="5" fill="#fff"/><rect x="24" y="2" width="3" height="3"/><rect x="0" y="22" width="7" height="7"/><rect x="1" y="23" width="5" height="5" fill="#fff"/><rect x="2" y="24" width="3" height="3"/><rect x="9" y="2" width="2" height="2"/><rect x="13" y="1" width="1" height="3"/><rect x="16" y="2" width="3" height="1"/><rect x="10" y="6" width="1" height="2"/><rect x="14" y="5" width="2" height="2"/><rect x="18" y="6" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="5" y="9" width="1" height="3"/><rect x="1" y="14" width="2" height="2"/><rect x="4" y="13" width="2" height="1"/><rect x="2" y="18" width="1" height="2"/><rect x="5" y="17" width="2" height="2"/><rect x="9" y="9" width="3" height="1"/><rect x="13" y="10" width="1" height="2"/><rect x="15" y="9" width="2" height="2"/><rect x="19" y="10" width="1" height="1"/><rect x="9" y="13" width="1" height="2"/><rect x="12" y="12" width="2" height="2"/><rect x="16" y="13" width="2" height="1"/><rect x="19" y="12" width="2" height="2"/><rect x="10" y="17" width="2" height="1"/><rect x="13" y="16" width="1" height="3"/><rect x="16" y="17" width="2" height="2"/><rect x="9" y="21" width="1" height="1"/><rect x="12" y="20" width="2" height="2"/><rect x="15" y="21" width="3" height="1"/><rect x="19" y="20" width="1" height="2"/><rect x="10" y="24" width="2" height="2"/><rect x="14" y="25" width="2" height="1"/><rect x="17" y="24" width="1" height="2"/><rect x="22" y="9" width="1" height="2"/><rect x="25" y="10" width="2" height="1"/><rect x="23" y="13" width="2" height="2"/><rect x="26" y="14" width="1" height="1"/><rect x="22" y="17" width="2" height="1"/><rect x="25" y="16" width="1" height="3"/><rect x="23" y="21" width="1" height="1"/><rect x="25" y="20" width="2" height="2"/><rect x="22" y="24" width="2" height="2"/><rect x="25" y="25" width="2" height="1"/></g></svg>
@@ -215,7 +279,9 @@
   </section>
 
   <section class="sec quote">
-    <p class="q">"PrintEve turned a week of printer phone calls into a ten-minute order — proofs in a day, delivery in three, every single time."</p>
+    <span class="qmark">"</span>
+    <p class="q">PrintEve turned a week of printer phone calls into a ten-minute order — proofs in a day, delivery in three, every single time.</p>
+    <div class="rule"></div>
     <p class="by">Kavya Iyer · Terra Foods</p>
   </section>
 
@@ -249,6 +315,9 @@
   document.querySelector('[data-share]').addEventListener('click', function () {
     if (navigator.share) navigator.share({ title: "Tarang Sachaniya's card", url: location.href }).catch(function(){});
     else { navigator.clipboard && navigator.clipboard.writeText(location.href); toast('Link copied'); }
+  });
+  document.getElementById('qrTop').addEventListener('click', function () {
+    document.querySelector('.scan').scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 </script>
 </body>

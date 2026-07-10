@@ -108,7 +108,7 @@ const contrast = (a, b) => {
 const EXTRACT = (opts) => {
   const MAX = 8000;
   const scopeEl = (opts.scope && document.querySelector(opts.scope)) || document.body;
-  const vis = (el, cs, r) =>
+  const vis = (cs, r) =>
     r.width > 0 && r.height > 0 &&
     cs.visibility !== 'hidden' && cs.display !== 'none' && cs.opacity !== '0';
 
@@ -128,7 +128,7 @@ const EXTRACT = (opts) => {
   for (const el of all) {
     const r = el.getBoundingClientRect();
     const cs = getComputedStyle(el);
-    if (!vis(el, cs, r)) continue;
+    if (!vis(cs, r)) continue;
     const area = r.width * r.height;
 
     bump(colors, cs.backgroundColor, area, 'bg');
@@ -166,7 +166,7 @@ const EXTRACT = (opts) => {
   scopeEl.querySelectorAll('a,button,input,select,textarea,[role="button"]').forEach((el) => {
     const r = el.getBoundingClientRect();
     const cs = getComputedStyle(el);
-    if (!vis(el, cs, r) || r.height < 8) return;
+    if (!vis(cs, r) || r.height < 8) return;
     targets.push({
       tag: el.tagName.toLowerCase(),
       text: (el.innerText || el.value || '').trim().slice(0, 28),
