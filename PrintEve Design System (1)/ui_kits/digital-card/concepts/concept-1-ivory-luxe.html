@@ -7,7 +7,7 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; }
   :root {
-    --ivory: #EDF5EE; --card: #FFFFFF; --navy: #12351F; --navy-deep: #0C2617;
+    --ivory: #EDF5EE; --card: #FFFFFF; --navy: #14532D; --navy-deep: #0F3D21;
     --gold: #B98A2F; --gold-soft: #F3E8D2; --muted: #6E7D72; --line: #DCEADF;
     --green-soft: #E2F1E5;
     --serif: Georgia, "Times New Roman", serif;
@@ -27,7 +27,7 @@
   .htool { width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgb(255 255 255 / 0.22); background: rgb(255 255 255 / 0.08); color: #F3E8D2; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background .15s; }
   .htool:hover { background: rgb(255 255 255 / 0.18); }
   .avatar { width: 104px; height: 104px; margin: 20px auto 0; border-radius: 50%; border: 2px solid var(--gold); padding: 5px; }
-  .avatar > div { width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, #1E4D33, #12351F); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 32px; color: #E8D9B5; }
+  .avatar > div { width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, #1E6B3C, #14532D); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 32px; color: #E8D9B5; }
   h1 { font-family: var(--serif); font-size: 30px; font-weight: 400; letter-spacing: .01em; margin-top: 16px; }
   .role { margin-top: 7px; font-size: 13px; color: #A9C4B2; letter-spacing: .04em; }
   .tagline { margin-top: 3px; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: #C9B37E; }
@@ -36,7 +36,7 @@
   .cta { display: flex; gap: 10px; margin-top: 24px; }
   .btn { flex: 1; height: 50px; border-radius: 999px; font-family: inherit; font-size: 12.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 9px; text-decoration: none; transition: background .15s, border-color .15s, transform .12s; }
   .btn:active { transform: scale(.98); }
-  .btn--gold { background: var(--gold); color: #12351F; border: 0; }
+  .btn--gold { background: var(--gold); color: #14532D; border: 0; }
   .btn--gold:hover { background: #CC9C3E; }
   .btn--ghost { background: rgb(255 255 255 / 0.06); color: #F3E8D2; border: 1px solid rgb(255 255 255 / 0.3); }
   .btn--ghost:hover { border-color: var(--gold); color: #fff; }
@@ -54,13 +54,13 @@
 
   /* About pills */
   .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-  .tag { background: var(--card); color: #1E4D33; font-size: 11px; font-weight: 700; padding: 8px 15px; border-radius: 999px; box-shadow: 0 5px 14px -7px rgb(18 53 31 / 0.3); }
+  .tag { background: var(--card); color: #1E6B3C; font-size: 11px; font-weight: 700; padding: 8px 15px; border-radius: 999px; box-shadow: 0 5px 14px -7px rgb(20 83 45 / 0.3); }
 
   /* Services — trending cards */
-  .svc { display: flex; align-items: center; gap: 14px; background: var(--card); border-radius: 18px; padding: 16px; margin-bottom: 10px; box-shadow: 0 12px 30px -20px rgb(18 53 31 / 0.35); text-decoration: none; color: var(--navy); transition: transform .15s, box-shadow .15s; }
-  .svc:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -20px rgb(18 53 31 / 0.45); }
+  .svc { display: flex; align-items: center; gap: 14px; background: var(--card); border-radius: 18px; padding: 16px; margin-bottom: 10px; box-shadow: 0 12px 30px -20px rgb(20 83 45 / 0.35); text-decoration: none; color: var(--navy); transition: transform .15s, box-shadow .15s; }
+  .svc:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -20px rgb(20 83 45 / 0.45); }
   .svc:last-of-type { margin-bottom: 0; }
-  .svc .tile { width: 48px; height: 48px; border-radius: 14px; background: var(--green-soft); color: #1E4D33; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .svc .tile { width: 48px; height: 48px; border-radius: 14px; background: var(--green-soft); color: #1E6B3C; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .svc .n { display: block; font-family: var(--serif); font-size: 15.5px; }
   .svc .d { display: block; font-size: 12px; color: var(--muted); margin-top: 3px; }
   .svc .go { margin-left: auto; color: var(--gold); flex-shrink: 0; font-size: 16px; transition: transform .15s; }
@@ -69,7 +69,7 @@
   /* Video intro */
   .video { position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 16/9; background:
     radial-gradient(90% 120% at 15% 10%, #33477011 0%, transparent 50%),
-    linear-gradient(120deg, #12351F 0%, #1E4D33 55%, #2A6644 100%); border: 1px solid var(--line); cursor: pointer; }
+    linear-gradient(120deg, #14532D 0%, #1E6B3C 55%, #2E8653 100%); border: 1px solid var(--line); cursor: pointer; }
   .video::before { content: ""; position: absolute; inset: 0; background:
     repeating-linear-gradient(115deg, transparent 0 34px, rgb(185 138 47 / 0.06) 34px 35px); }
   .video .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 62px; height: 62px; border-radius: 50%; background: rgb(250 247 240 / 0.94); display: flex; align-items: center; justify-content: center; transition: transform .18s; box-shadow: 0 10px 30px -8px rgb(0 0 0 / .45); }
@@ -89,7 +89,7 @@
 
   /* Portfolio — stacked deck, spreads on hover */
   .deck { position: relative; height: 258px; margin-top: 18px; }
-  .deck figure { position: absolute; left: 50%; top: 6px; width: 46%; margin: 0; background: var(--card); border: 1px solid var(--line); padding: 7px 7px 9px; box-shadow: 0 14px 34px -18px rgb(18 53 31 / 0.4); transition: transform .38s cubic-bezier(.22,.9,.3,1.2); }
+  .deck figure { position: absolute; left: 50%; top: 6px; width: 46%; margin: 0; background: var(--card); border: 1px solid var(--line); padding: 7px 7px 9px; box-shadow: 0 14px 34px -18px rgb(20 83 45 / 0.4); transition: transform .38s cubic-bezier(.22,.9,.3,1.2); }
   .deck figure:nth-child(1) { transform: translateX(-84%) rotate(-8deg); z-index: 1; }
   .deck figure:nth-child(2) { transform: translateX(-50%); z-index: 3; }
   .deck figure:nth-child(3) { transform: translateX(-16%) rotate(8deg); z-index: 2; }
@@ -99,8 +99,8 @@
   .deck .ph { aspect-ratio: 4/5; position: relative; }
   .deck .ph::after { content: ""; position: absolute; left: 8px; right: 8px; bottom: 8px; height: 1px; background: var(--gold); opacity: .6; }
   .deck figure:nth-child(1) .ph { background: linear-gradient(150deg, #E7DCC3, #CBB98C); }
-  .deck figure:nth-child(2) .ph { background: linear-gradient(150deg, #1E4D33, #12351F); }
-  .deck figure:nth-child(3) .ph { background: linear-gradient(150deg, #2A6644, #1B4A2E); }
+  .deck figure:nth-child(2) .ph { background: linear-gradient(150deg, #1E6B3C, #14532D); }
+  .deck figure:nth-child(3) .ph { background: linear-gradient(150deg, #2E8653, #1F5B37); }
   .deck figcaption { font-family: var(--serif); font-size: 11px; color: var(--muted); margin-top: 7px; text-align: center; }
   .deck-hint { text-align: center; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-top: 10px; }
 
@@ -120,20 +120,20 @@
   .cpi:hover { background: var(--green-soft); }
 
   /* Payments — luxurious pastel green merged with white */
-  .pay { background: linear-gradient(155deg, #FFFFFF 0%, #E9F4EB 55%, #D8ECDD 100%); border: 1px solid #D3E7D8; border-radius: 20px; padding: 22px 20px; color: var(--navy); box-shadow: 0 18px 40px -24px rgb(18 53 31 / 0.35); }
+  .pay { background: linear-gradient(155deg, #FFFFFF 0%, #E9F4EB 55%, #D8ECDD 100%); border: 1px solid #D3E7D8; border-radius: 20px; padding: 22px 20px; color: var(--navy); box-shadow: 0 18px 40px -24px rgb(20 83 45 / 0.35); }
   .pay-head { display: flex; justify-content: space-between; align-items: baseline; }
   .pay h3 { font-family: var(--serif); font-weight: 400; font-size: 20px; }
   .pay .sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
-  .pay-head .tick { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #1E4D33; background: rgb(255 255 255 / 0.7); border: 1px solid #CBE2D1; padding: 5px 11px; border-radius: 999px; }
+  .pay-head .tick { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #1E6B3C; background: rgb(255 255 255 / 0.7); border: 1px solid #CBE2D1; padding: 5px 11px; border-radius: 999px; }
   .pay-grid { display: grid; grid-template-columns: 92px 1fr; gap: 14px; margin-top: 16px; align-items: center; }
   .pay-qr { background: #fff; border-radius: 12px; padding: 7px; border: 1px solid #D3E7D8; }
   .pay-qr svg { display: block; width: 100%; height: auto; }
   .upi-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: rgb(255 255 255 / 0.85); border: 1px solid #D3E7D8; border-radius: 999px; padding: 6px 6px 6px 14px; }
-  .upi-line code { font-size: 12.5px; font-weight: 600; color: #12351F; }
+  .upi-line code { font-size: 12.5px; font-weight: 600; color: #14532D; }
   .upi-line button { background: var(--navy); border: 0; color: #F3E8D2; font-family: inherit; font-size: 10.5px; font-weight: 700; letter-spacing: .08em; padding: 8px 14px; border-radius: 999px; cursor: pointer; }
   .upi-line button:hover { background: var(--navy-deep); }
   .pay-apps { display: flex; gap: 8px; margin-top: 10px; }
-  .pay-apps a { flex: 1; text-align: center; font-size: 11.5px; font-weight: 600; color: #1E4D33; text-decoration: none; border: 1px solid #CBE2D1; background: rgb(255 255 255 / 0.55); border-radius: 999px; padding: 9px 0; transition: border-color .15s, background .15s; }
+  .pay-apps a { flex: 1; text-align: center; font-size: 11.5px; font-weight: 600; color: #1E6B3C; text-decoration: none; border: 1px solid #CBE2D1; background: rgb(255 255 255 / 0.55); border-radius: 999px; padding: 9px 0; transition: border-color .15s, background .15s; }
   .pay-apps a:hover { border-color: var(--gold); background: #fff; }
 
   /* Quote */
@@ -269,7 +269,7 @@
       </div>
       <div class="pay-grid">
         <div class="pay-qr">
-          <svg viewBox="0 0 29 29" shape-rendering="crispEdges"><rect width="29" height="29" fill="#fff"/><g fill="#0C2617"><rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="#fff"/><rect x="2" y="2" width="3" height="3"/><rect x="22" y="0" width="7" height="7"/><rect x="23" y="1" width="5" height="5" fill="#fff"/><rect x="24" y="2" width="3" height="3"/><rect x="0" y="22" width="7" height="7"/><rect x="1" y="23" width="5" height="5" fill="#fff"/><rect x="2" y="24" width="3" height="3"/><rect x="9" y="2" width="2" height="2"/><rect x="13" y="1" width="1" height="3"/><rect x="16" y="2" width="3" height="1"/><rect x="10" y="6" width="1" height="2"/><rect x="14" y="5" width="2" height="2"/><rect x="18" y="6" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="5" y="9" width="1" height="3"/><rect x="1" y="14" width="2" height="2"/><rect x="4" y="13" width="2" height="1"/><rect x="2" y="18" width="1" height="2"/><rect x="5" y="17" width="2" height="2"/><rect x="9" y="9" width="3" height="1"/><rect x="13" y="10" width="1" height="2"/><rect x="15" y="9" width="2" height="2"/><rect x="19" y="10" width="1" height="1"/><rect x="9" y="13" width="1" height="2"/><rect x="12" y="12" width="2" height="2"/><rect x="16" y="13" width="2" height="1"/><rect x="19" y="12" width="2" height="2"/><rect x="10" y="17" width="2" height="1"/><rect x="13" y="16" width="1" height="3"/><rect x="16" y="17" width="2" height="2"/><rect x="9" y="21" width="1" height="1"/><rect x="12" y="20" width="2" height="2"/><rect x="15" y="21" width="3" height="1"/><rect x="19" y="20" width="1" height="2"/><rect x="10" y="24" width="2" height="2"/><rect x="14" y="25" width="2" height="1"/><rect x="17" y="24" width="1" height="2"/><rect x="22" y="9" width="1" height="2"/><rect x="25" y="10" width="2" height="1"/><rect x="23" y="13" width="2" height="2"/><rect x="26" y="14" width="1" height="1"/><rect x="22" y="17" width="2" height="1"/><rect x="25" y="16" width="1" height="3"/><rect x="23" y="21" width="1" height="1"/><rect x="25" y="20" width="2" height="2"/><rect x="22" y="24" width="2" height="2"/><rect x="25" y="25" width="2" height="1"/></g></svg>
+          <svg viewBox="0 0 29 29" shape-rendering="crispEdges"><rect width="29" height="29" fill="#fff"/><g fill="#0F3D21"><rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="#fff"/><rect x="2" y="2" width="3" height="3"/><rect x="22" y="0" width="7" height="7"/><rect x="23" y="1" width="5" height="5" fill="#fff"/><rect x="24" y="2" width="3" height="3"/><rect x="0" y="22" width="7" height="7"/><rect x="1" y="23" width="5" height="5" fill="#fff"/><rect x="2" y="24" width="3" height="3"/><rect x="9" y="2" width="2" height="2"/><rect x="13" y="1" width="1" height="3"/><rect x="16" y="2" width="3" height="1"/><rect x="10" y="6" width="1" height="2"/><rect x="14" y="5" width="2" height="2"/><rect x="18" y="6" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="5" y="9" width="1" height="3"/><rect x="1" y="14" width="2" height="2"/><rect x="4" y="13" width="2" height="1"/><rect x="2" y="18" width="1" height="2"/><rect x="5" y="17" width="2" height="2"/><rect x="9" y="9" width="3" height="1"/><rect x="13" y="10" width="1" height="2"/><rect x="15" y="9" width="2" height="2"/><rect x="19" y="10" width="1" height="1"/><rect x="9" y="13" width="1" height="2"/><rect x="12" y="12" width="2" height="2"/><rect x="16" y="13" width="2" height="1"/><rect x="19" y="12" width="2" height="2"/><rect x="10" y="17" width="2" height="1"/><rect x="13" y="16" width="1" height="3"/><rect x="16" y="17" width="2" height="2"/><rect x="9" y="21" width="1" height="1"/><rect x="12" y="20" width="2" height="2"/><rect x="15" y="21" width="3" height="1"/><rect x="19" y="20" width="1" height="2"/><rect x="10" y="24" width="2" height="2"/><rect x="14" y="25" width="2" height="1"/><rect x="17" y="24" width="1" height="2"/><rect x="22" y="9" width="1" height="2"/><rect x="25" y="10" width="2" height="1"/><rect x="23" y="13" width="2" height="2"/><rect x="26" y="14" width="1" height="1"/><rect x="22" y="17" width="2" height="1"/><rect x="25" y="16" width="1" height="3"/><rect x="23" y="21" width="1" height="1"/><rect x="25" y="20" width="2" height="2"/><rect x="22" y="24" width="2" height="2"/><rect x="25" y="25" width="2" height="1"/></g></svg>
         </div>
         <div>
           <div class="upi-line"><code>printeve@icici</code><button data-copy="printeve@icici">COPY</button></div>
